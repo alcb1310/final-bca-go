@@ -10,6 +10,8 @@ import (
 func main() {
 	r := router.NewRouter()
 
+	r.GenerateRoutes()
+
 	fmt.Println("Server running on port 8080")
 	http.ListenAndServe(":8080", r.Router)
 }
