@@ -13,6 +13,9 @@ var port = os.Getenv("PORT")
 
 func main() {
 	r := router.NewRouter()
+	if r == nil {
+		os.Exit(1)
+	}
 
 	r.GenerateRoutes()
 
