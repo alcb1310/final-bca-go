@@ -8,7 +8,9 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-type Service interface{}
+type Service interface {
+	GetHealth() bool
+}
 
 type service struct {
 	db *sql.DB
