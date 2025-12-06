@@ -43,5 +43,9 @@ func (rf *Router) GenerateRoutes() {
 			w.WriteHeader(http.StatusOK)
 			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Hello World"})
 		})
+
+		r.Route("/api/v2", func(r chi.Router) {
+			r.Get("/health", rf.HealthCheck)
+		})
 	})
 }
