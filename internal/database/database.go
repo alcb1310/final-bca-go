@@ -28,6 +28,12 @@ func New() Service {
 		fmt.Fprintf(os.Stderr, "New Database: Unable to connect to database: %v\n", err)
 		return nil
 	}
+
+	if err = createTables(db); err != nil {
+		fmt.Fprintf(os.Stderr, "New Database: Unable to create tables: %v\n", err)
+		return nil
+	}
+
 	s := &service{
 		db: db,
 	}
