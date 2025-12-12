@@ -46,6 +46,10 @@ func (rf *Router) GenerateRoutes() {
 
 		r.Route("/api/v2", func(r chi.Router) {
 			r.Get("/health", rf.HealthCheck)
+
+			r.Route("/projects", func(r chi.Router) {
+				r.Post("/", rf.CreateProject)
+			})
 		})
 	})
 }
