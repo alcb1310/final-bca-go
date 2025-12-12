@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/alcb1310/final-bca-go/internal/types"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type Service interface {
 	GetHealth() bool
+
+	// file project.go
+	CreateProject(p types.Project) error
 }
 
 type service struct {
