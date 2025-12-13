@@ -2,9 +2,7 @@ package router
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/alcb1310/final-bca-go/internal/database"
 	"github.com/go-chi/chi/v5"
@@ -16,12 +14,7 @@ type Router struct {
 	DB     database.Service
 }
 
-func NewRouter() *Router {
-	db := database.New()
-	if db == nil {
-		fmt.Fprintf(os.Stderr, "New Router: Unable to connect to database\n")
-		return nil
-	}
+func NewRouter(db database.Service) *Router {
 
 	r := chi.NewRouter()
 
