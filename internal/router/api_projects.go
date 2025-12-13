@@ -9,6 +9,10 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
+func (rf *Router) GetProjects(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 	errorResponse := make(map[string]any)
 	p := make(map[string]any)
