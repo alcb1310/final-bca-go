@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/alcb1310/final-bca-go/internal/database"
 	"github.com/alcb1310/final-bca-go/internal/router"
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -12,7 +13,12 @@ import (
 var port = os.Getenv("PORT")
 
 func main() {
-	r := router.NewRouter()
+	db := database.New()
+	if db == nil {
+		fmt.Fprintf(os.Stderr, "New Router: Unable to connect to database\n")
+		os.Exit(1)
+	}
+	r := router.NewRouter(db)
 	if r == nil {
 		os.Exit(1)
 	}
