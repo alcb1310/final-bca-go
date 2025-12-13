@@ -43,6 +43,7 @@ func (rf *Router) GenerateRoutes() {
 			r.Route("/projects", func(r chi.Router) {
 				r.Get("/", rf.GetProjects)
 				r.Post("/", rf.CreateProject)
+				r.Put("/{id}", rf.UpdateProject)
 			})
 		})
 	})

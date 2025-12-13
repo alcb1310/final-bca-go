@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
@@ -79,4 +80,10 @@ func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto creado correctamente"})
+}
+
+func (rf *Router) UpdateProject(w http.ResponseWriter, r *http.Request) {
+	pId := chi.URLParam(r, "id")
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Método no permitido", "id": pId})
 }
