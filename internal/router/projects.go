@@ -47,6 +47,13 @@ func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = rf.DB.CreateProject(project); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		errorResponse["message"] = err.Error()
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "No implementado"})
 }
