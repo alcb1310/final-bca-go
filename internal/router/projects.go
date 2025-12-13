@@ -54,6 +54,6 @@ func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "No implementado"})
+	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Projecto creado correctamente"})
 }
