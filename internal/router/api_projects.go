@@ -1,12 +1,14 @@
 package router
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
@@ -84,6 +86,27 @@ func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 func (rf *Router) UpdateProject(w http.ResponseWriter, r *http.Request) {
 	pId := chi.URLParam(r, "id")
+	parsedId, err := uuid.Parse(pId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
+		return
+	}
+
+	project, err := rf.DB.GetProject(parsedId)
+	if err != nil {
+
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Error al buscar el projecto", "err": err})
+		return
+	}
+
 	w.WriteHeader(http.StatusMethodNotAllowed)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Método no permitido", "id": pId})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Método no permitido", "project": project})
 }
