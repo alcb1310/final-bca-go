@@ -10,7 +10,18 @@ import (
 )
 
 func (rf *Router) GetProjects(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+	var projects []types.Project
+	var err error
+
+	if projects, err = rf.DB.GetProjects(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		res := map[string]any{"message": err.Error()}
+		_ = json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(projects)
 }
 
 func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
