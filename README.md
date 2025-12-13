@@ -6,7 +6,11 @@
 
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 
-**Framwork:** `Go - Chi`<br />
+**Framework:** `Go - Chi`<br />
+
+**Database:**<br/>
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+
 
 ## ⚡ Quick Start
 
@@ -16,6 +20,14 @@ go mod tidy
 
 # 2. Run the app
 go run main.go
+```
+
+## Generate Mocks
+
+In order to generate the mocks, run the following command:
+
+```bash
+mockery --with-expecter --all
 ```
 
 ## 🛠️ Tools
