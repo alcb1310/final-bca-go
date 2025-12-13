@@ -107,6 +107,38 @@ func (rf *Router) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	errorResponse := make(map[string]any)
+	p := make(map[string]any)
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+	}
+
+	valStr, ok := p["name"].(string)
+	if ok {
+		project.Name = valStr
+	}
+
+	valBool, ok := p["is_active"].(bool)
+	if ok {
+		project.IsActive = valBool
+	}
+
+	valFloat, ok := p["gross_area"].(float64)
+	if ok {
+		project.GrossArea = valFloat
+	}
+
+	valFloat, ok = p["net_area"].(float64)
+	if ok {
+		project.NetArea = valFloat
+	}
+
+	if len(errorResponse) == 0 {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Método no permitido", "project": project})
 }
