@@ -1,0 +1,15 @@
+name: Unit Tests
+
+on: pull_request
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.25
+      - name: Run tests
+        run: go test ./internal/router/...
