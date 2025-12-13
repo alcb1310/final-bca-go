@@ -63,5 +63,5 @@ func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Projecto creado correctamente"})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto creado correctamente"})
 }
