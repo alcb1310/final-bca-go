@@ -5,5 +5,7 @@ create table if not exists project (
     gross_area numeric not null default 0,
     net_area numeric not null default 0,
     last_closure date default null,
-    created_at timestamp default now()
+    created_at timestamp default now(),
+
+    unique (name)
 );
