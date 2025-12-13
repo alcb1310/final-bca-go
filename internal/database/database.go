@@ -14,6 +14,7 @@ type Service interface {
 
 	// file project.go
 	CreateProject(p types.Project) error
+	GetProjects() ([]types.Project, error)
 }
 
 type service struct {
