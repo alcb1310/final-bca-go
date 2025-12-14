@@ -4,6 +4,7 @@ package mocks
 
 import (
 	types "github.com/alcb1310/final-bca-go/internal/types"
+	uuid "github.com/google/uuid"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -111,6 +112,62 @@ func (_c *Service_GetHealth_Call) RunAndReturn(run func() bool) *Service_GetHeal
 	return _c
 }
 
+// GetProject provides a mock function with given fields: id
+func (_m *Service) GetProject(id uuid.UUID) (types.Project, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetProject")
+	}
+
+	var r0 types.Project
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (types.Project, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) types.Project); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(types.Project)
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetProject_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetProject'
+type Service_GetProject_Call struct {
+	*mock.Call
+}
+
+// GetProject is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) GetProject(id interface{}) *Service_GetProject_Call {
+	return &Service_GetProject_Call{Call: _e.mock.On("GetProject", id)}
+}
+
+func (_c *Service_GetProject_Call) Run(run func(id uuid.UUID)) *Service_GetProject_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetProject_Call) Return(_a0 types.Project, _a1 error) *Service_GetProject_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetProject_Call) RunAndReturn(run func(uuid.UUID) (types.Project, error)) *Service_GetProject_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetProjects provides a mock function with no fields
 func (_m *Service) GetProjects() ([]types.Project, error) {
 	ret := _m.Called()
@@ -164,6 +221,52 @@ func (_c *Service_GetProjects_Call) Return(_a0 []types.Project, _a1 error) *Serv
 }
 
 func (_c *Service_GetProjects_Call) RunAndReturn(run func() ([]types.Project, error)) *Service_GetProjects_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateProject provides a mock function with given fields: p
+func (_m *Service) UpdateProject(p types.Project) error {
+	ret := _m.Called(p)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateProject")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Project) error); ok {
+		r0 = rf(p)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_UpdateProject_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateProject'
+type Service_UpdateProject_Call struct {
+	*mock.Call
+}
+
+// UpdateProject is a helper method to define mock.On call
+//   - p types.Project
+func (_e *Service_Expecter) UpdateProject(p interface{}) *Service_UpdateProject_Call {
+	return &Service_UpdateProject_Call{Call: _e.mock.On("UpdateProject", p)}
+}
+
+func (_c *Service_UpdateProject_Call) Run(run func(p types.Project)) *Service_UpdateProject_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Project))
+	})
+	return _c
+}
+
+func (_c *Service_UpdateProject_Call) Return(_a0 error) *Service_UpdateProject_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_UpdateProject_Call) RunAndReturn(run func(types.Project) error) *Service_UpdateProject_Call {
 	_c.Call.Return(run)
 	return _c
 }
