@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func createTables(d *sql.DB) error {
+func CreateTables(d *sql.DB) error {
 	file, err := os.ReadFile("./schema/tables.sql")
 	if err != nil {
 		slog.Error("Error reading file", "error", err)
