@@ -51,3 +51,14 @@ func (s *service) GetProject(id uuid.UUID) (types.Project, error) {
 
 	return project, err
 }
+
+func (s *service) UpdateProject(p types.Project) error {
+	var err error
+	sql := "update project set name = $1, is_active = $2, gross_area = $3, net_area = $4 where id = $5"
+
+	if _, err = s.db.Exec(sql, p.Name, p.IsActive, p.GrossArea, p.NetArea, p.Id); err != nil {
+		slog.Error("UpdateProject: Error updating project", "err", err)
+	}
+
+	return err
+}
