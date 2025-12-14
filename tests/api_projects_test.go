@@ -162,4 +162,55 @@ func TestApiProjects(t *testing.T) {
 
 		assert.Equal(t, "Proyecto no encontrado", mapBody["message"])
 	})
+
+	t.Run("should update a project", func(t *testing.T) {
+		req, err := http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		id := r[0].(map[string]any)["id"].(string)
+
+		form := map[string]any{
+			"name":       "Project 1 Edited",
+			"is_active":  false,
+			"gross_area": 150.54,
+			"net_area":   180.54,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("%s/%s", testUrl, id), strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusNoContent, res.Code)
+
+		req, err = http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		for _, v := range r {
+			assert.Equal(t, "Project 1 Edited", v.(map[string]any)["name"])
+			assert.Equal(t, false, v.(map[string]any)["is_active"])
+			assert.Equal(t, 150.54, v.(map[string]any)["gross_area"])
+			assert.Equal(t, 180.54, v.(map[string]any)["net_area"])
+		}
+	})
 }
