@@ -113,4 +113,23 @@ func TestApiProjects(t *testing.T) {
 			assert.Equal(t, 150.54, v.(map[string]any)["net_area"])
 		}
 	})
+	t.Run("should conflict when creating an existing project", func(t *testing.T) {
+		form := map[string]any{
+			"name":       "Project 1",
+			"is_active":  true,
+			"gross_area": 100.54,
+			"net_area":   150.54,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodPost, testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusConflict, res.Code)
+	})
 }
