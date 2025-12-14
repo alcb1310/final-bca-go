@@ -17,6 +17,7 @@ type Service interface {
 	CreateProject(p types.Project) error
 	GetProjects() ([]types.Project, error)
 	GetProject(id uuid.UUID) (types.Project, error)
+	UpdateProject(p types.Project) error
 }
 
 type service struct {
