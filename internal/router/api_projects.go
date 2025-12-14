@@ -133,12 +133,24 @@ func (rf *Router) UpdateProject(w http.ResponseWriter, r *http.Request) {
 		project.NetArea = valFloat
 	}
 
-	if len(errorResponse) == 0 {
+	if len(errorResponse) != 0 {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		_ = json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
 
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Método no permitido", "project": project})
+	if err = rf.DB.UpdateProject(project); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "El projecto ya existe"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Error al actualizar el projecto", "err": err})
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
