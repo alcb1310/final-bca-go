@@ -14,8 +14,6 @@ import (
 func createServer(t *testing.T, ctx context.Context, pgContainer *postgres.PostgresContainer) (*router.Router, error) {
 	connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
 	assert.NoError(t, err)
-	fmt.Println("connStr", connStr)
-
 	db, _ := database.New(connStr)
 	assert.NotNil(t, db)
 	if db == nil {

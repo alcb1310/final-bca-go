@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -59,8 +60,9 @@ func TestApiProjects(t *testing.T) {
 
 		assert.Equal(t, http.StatusOK, res.Code)
 		var r []any
-		err = json.NewDecoder(res.Body).Decode(&r)
+		err = json.Unmarshal(res.Body.Bytes(), &r)
 		assert.NoError(t, err)
 		assert.Equal(t, 0, len(r))
+		assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
 	})
 }
