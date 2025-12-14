@@ -13,11 +13,18 @@ import (
 var port = os.Getenv("PORT")
 
 func main() {
-	db := database.New()
+	connStr := os.Getenv("DATABASE_URL")
+	db, data := database.New(connStr)
 	if db == nil {
 		fmt.Fprintf(os.Stderr, "New Router: Unable to connect to database\n")
 		os.Exit(1)
 	}
+
+	if err := database.CreateTables(data); err != nil {
+		fmt.Fprintf(os.Stderr, "New Database: Unable to create tables: %v\n", err)
+		os.Exit(1)
+	}
+
 	r := router.NewRouter(db)
 	if r == nil {
 		os.Exit(1)

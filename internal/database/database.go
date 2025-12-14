@@ -24,26 +24,20 @@ type service struct {
 	db *sql.DB
 }
 
-func New() Service {
+func New(connStr string) (Service, *sql.DB) {
 	var db *sql.DB
 	var err error
-	connStr := os.Getenv("DATABASE_URL")
 	if connStr == "" {
 		fmt.Fprintf(os.Stderr, "New Router: DATABASE_URL is not set\n")
-		return nil
+		return nil, nil
 	}
 	if db, err = sql.Open("pgx", connStr); err != nil {
 		fmt.Fprintf(os.Stderr, "New Database: Unable to connect to database: %v\n", err)
-		return nil
-	}
-
-	if err = createTables(db); err != nil {
-		fmt.Fprintf(os.Stderr, "New Database: Unable to create tables: %v\n", err)
-		return nil
+		return nil, nil
 	}
 
 	s := &service{
 		db: db,
 	}
-	return s
+	return s, db
 }
