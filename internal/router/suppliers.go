@@ -16,3 +16,7 @@ func (rf *Router) GetSuppliers(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(s)
 }
+
+func (rf *Router) CreateSupplier(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
