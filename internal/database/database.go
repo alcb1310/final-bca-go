@@ -13,11 +13,14 @@ import (
 type Service interface {
 	GetHealth() bool
 
-	// file project.go
+	// file: project.go
 	CreateProject(p types.Project) error
 	GetProjects() ([]types.Project, error)
 	GetProject(id uuid.UUID) (types.Project, error)
 	UpdateProject(p types.Project) error
+
+	// file: supplier.go
+	GetAllSuppliers() ([]types.Supplier, error)
 }
 
 type service struct {
