@@ -8,7 +8,7 @@ import (
 
 func (s *service) GetSuppliers() ([]types.Supplier, error) {
 	suppliers := []types.Supplier{}
-	sql := "select id, name, supplier_id, contact_name, contac_phone, contact_email from supplier"
+	sql := "select id, name, supplier_id, contact_name, contact_phone, contact_email from supplier"
 	rows, err := s.db.Query(sql)
 	if err != nil {
 		slog.Error("GetAllSuppliers: error fetchingh the suppliers", "err", err)
