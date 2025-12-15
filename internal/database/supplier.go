@@ -6,7 +6,7 @@ import (
 	"github.com/alcb1310/final-bca-go/internal/types"
 )
 
-func (s *service) GetAllSuppliers() ([]types.Supplier, error) {
+func (s *service) GetSuppliers() ([]types.Supplier, error) {
 	suppliers := []types.Supplier{}
 	sql := "select id, name, supplier_id, contact_name, contac_phone, contact_email from supplier"
 	rows, err := s.db.Query(sql)
