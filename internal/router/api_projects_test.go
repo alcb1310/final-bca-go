@@ -46,6 +46,19 @@ func TestApiCreateProject(t *testing.T) {
 			},
 		},
 		{
+			name: "should pass a name",
+			form: map[string]any{
+				"name": "",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"name":       "El nombre es obligatorio",
+				"is_active":  "El estado del projecto es obligatorio",
+				"gross_area": "El área bruta es obligatorio",
+				"net_area":   "El área neta es obligatorio",
+			},
+		},
+		{
 			name: "should pass a status",
 			form: map[string]any{
 				"name": "test",

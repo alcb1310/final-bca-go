@@ -47,6 +47,8 @@ func (rf *Router) CreateProject(w http.ResponseWriter, r *http.Request) {
 
 	if project.Name, ok = p["name"].(string); !ok {
 		errorResponse["name"] = "El nombre es obligatorio"
+	} else if len(project.Name) == 0 {
+		errorResponse["name"] = "El nombre es obligatorio"
 	}
 
 	if project.IsActive, ok = p["is_active"].(bool); !ok {
