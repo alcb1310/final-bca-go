@@ -1,7 +1,18 @@
 package router
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
 func (rf *Router) GetSuppliers(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+	s, err := rf.DB.GetSuppliers()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(s)
 }
