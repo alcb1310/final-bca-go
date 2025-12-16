@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/google/uuid"
 )
 
 func (s *service) GetSuppliers() ([]types.Supplier, error) {
@@ -35,4 +36,13 @@ func (s *service) CreateSupplier(su types.Supplier) error {
 		slog.Error("CreateSupplier: Error creating supplier", "err", err)
 	}
 	return err
+}
+
+func (s *service) GetSupplier(id uuid.UUID) (types.Supplier, error) {
+	sup := types.Supplier{}
+
+	sql := "select id, name, supplier_id, contact_name, contact_phone, contact_email from supplier where id = $1"
+	err := s.db.QueryRow(sql, id).Scan(&sup.Id, &sup.Name, &sup.SupplierId, &sup.ContactName, &sup.ContactPhone, &sup.ContactEmail)
+
+	return sup, err
 }
