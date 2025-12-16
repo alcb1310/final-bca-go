@@ -27,3 +27,12 @@ func (s *service) GetSuppliers() ([]types.Supplier, error) {
 
 	return suppliers, nil
 }
+
+func (s *service) CreateSupplier(su types.Supplier) error {
+	var err error
+	sql := "insert into supplier (name, supplier_id, contact_name, contact_phone, contact_email) values ($1, $2, $3, $4, $5)"
+	if _, err = s.db.Exec(sql, su.Name, su.SupplierId, su.ContactName, su.ContactPhone, su.ContactEmail); err != nil {
+		slog.Error("CreateSupplier: Error creating supplier", "err", err)
+	}
+	return err
+}
