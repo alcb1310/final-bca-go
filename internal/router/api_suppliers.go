@@ -2,9 +2,11 @@ package router
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (rf *Router) GetSuppliers(w http.ResponseWriter, r *http.Request) {
@@ -89,5 +91,19 @@ func (rf *Router) CreateSupplier(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
-	w.WriteHeader(http.StatusNotImplemented)
+
+	if err := rf.DB.CreateSupplier(supplier); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "El projecto ya existe"})
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto creado correctamente"})
 }
