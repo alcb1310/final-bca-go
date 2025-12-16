@@ -20,8 +20,9 @@ type Service interface {
 	UpdateProject(p types.Project) error
 
 	// file: supplier.go
-	GetSuppliers() ([]types.Supplier, error)
 	CreateSupplier(s types.Supplier) error
+	GetSuppliers() ([]types.Supplier, error)
+	GetSupplier(id uuid.UUID) (types.Supplier, error)
 }
 
 type service struct {
