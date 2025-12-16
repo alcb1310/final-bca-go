@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
@@ -109,5 +111,14 @@ func (rf *Router) CreateSupplier(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rf *Router) UpdateSupplier(w http.ResponseWriter, r *http.Request) {
+	pId := chi.URLParam(r, "id")
+	parsedId, err := uuid.Parse(pId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "id": parsedId})
 }
