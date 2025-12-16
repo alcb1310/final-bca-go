@@ -23,7 +23,6 @@ func TestApiProjects(t *testing.T) {
 	ctx := context.Background()
 	testUrl := "/api/v2/projects"
 	path := filepath.Join("..", "schema", "tables.sql")
-	fmt.Println("filepath", path)
 
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:18-alpine",
