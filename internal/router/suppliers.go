@@ -44,18 +44,44 @@ func (rf *Router) CreateSupplier(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if supplier.SupplierId, ok = p["supplier_id"].(string); !ok {
-		errorResponse["supplier_id"] = "El nombre es obligatorio"
+		errorResponse["supplier_id"] = "El RUC es obligatorio"
 	} else if len(supplier.SupplierId) == 0 {
-		errorResponse["supplier_id"] = "El nombre es obligatorio"
+		errorResponse["supplier_id"] = "El RUC es obligatorio"
 	}
 
 	var val string
 
+	if val, ok = p["contact_name"].(string); !ok {
+		supplier.ContactName.Valid = false
+	} else {
+		if len(val) == 0 {
+			supplier.ContactName.Valid = false
+		} else {
+			supplier.ContactName.Valid = true
+			supplier.ContactName.String = val
+		}
+	}
+
 	if val, ok = p["contact_email"].(string); !ok {
 		supplier.ContactEmail.Valid = false
 	} else {
-		supplier.ContactEmail.Valid = true
-		supplier.ContactEmail.String = val
+		if len(val) == 0 {
+			supplier.ContactName.Valid = false
+		} else {
+			supplier.ContactEmail.Valid = true
+			supplier.ContactEmail.String = val
+		}
+	}
+
+	if val, ok = p["contact_phone"].(string); !ok {
+		supplier.ContactPhone.Valid = false
+	} else {
+		if len(val) == 0 {
+			supplier.ContactName.Valid = false
+		} else {
+			supplier.ContactPhone.Valid = true
+			supplier.ContactPhone.String = val
+		}
 	}
 
 	if len(errorResponse) > 0 {
