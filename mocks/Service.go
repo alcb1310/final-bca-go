@@ -67,9 +67,9 @@ func (_c *Service_CreateProject_Call) RunAndReturn(run func(types.Project) error
 	return _c
 }
 
-// CreateSupplier provides a mock function with given fields: s
-func (_m *Service) CreateSupplier(s types.Supplier) error {
-	ret := _m.Called(s)
+// CreateSupplier provides a mock function with given fields: sup
+func (_m *Service) CreateSupplier(sup types.Supplier) error {
+	ret := _m.Called(sup)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateSupplier")
@@ -77,7 +77,7 @@ func (_m *Service) CreateSupplier(s types.Supplier) error {
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(types.Supplier) error); ok {
-		r0 = rf(s)
+		r0 = rf(sup)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -91,12 +91,12 @@ type Service_CreateSupplier_Call struct {
 }
 
 // CreateSupplier is a helper method to define mock.On call
-//   - s types.Supplier
-func (_e *Service_Expecter) CreateSupplier(s interface{}) *Service_CreateSupplier_Call {
-	return &Service_CreateSupplier_Call{Call: _e.mock.On("CreateSupplier", s)}
+//   - sup types.Supplier
+func (_e *Service_Expecter) CreateSupplier(sup interface{}) *Service_CreateSupplier_Call {
+	return &Service_CreateSupplier_Call{Call: _e.mock.On("CreateSupplier", sup)}
 }
 
-func (_c *Service_CreateSupplier_Call) Run(run func(s types.Supplier)) *Service_CreateSupplier_Call {
+func (_c *Service_CreateSupplier_Call) Run(run func(sup types.Supplier)) *Service_CreateSupplier_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(types.Supplier))
 	})
@@ -426,6 +426,52 @@ func (_c *Service_UpdateProject_Call) Return(_a0 error) *Service_UpdateProject_C
 }
 
 func (_c *Service_UpdateProject_Call) RunAndReturn(run func(types.Project) error) *Service_UpdateProject_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateSupplier provides a mock function with given fields: sup
+func (_m *Service) UpdateSupplier(sup types.Supplier) error {
+	ret := _m.Called(sup)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateSupplier")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Supplier) error); ok {
+		r0 = rf(sup)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_UpdateSupplier_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateSupplier'
+type Service_UpdateSupplier_Call struct {
+	*mock.Call
+}
+
+// UpdateSupplier is a helper method to define mock.On call
+//   - sup types.Supplier
+func (_e *Service_Expecter) UpdateSupplier(sup interface{}) *Service_UpdateSupplier_Call {
+	return &Service_UpdateSupplier_Call{Call: _e.mock.On("UpdateSupplier", sup)}
+}
+
+func (_c *Service_UpdateSupplier_Call) Run(run func(sup types.Supplier)) *Service_UpdateSupplier_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Supplier))
+	})
+	return _c
+}
+
+func (_c *Service_UpdateSupplier_Call) Return(_a0 error) *Service_UpdateSupplier_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_UpdateSupplier_Call) RunAndReturn(run func(types.Supplier) error) *Service_UpdateSupplier_Call {
 	_c.Call.Return(run)
 	return _c
 }
