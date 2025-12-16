@@ -49,6 +49,7 @@ func (rf *Router) GenerateRoutes() {
 			r.Route("/suppliers", func(r chi.Router) {
 				r.Get("/", rf.GetSuppliers)
 				r.Post("/", rf.CreateSupplier)
+				r.Put("/{id}", rf.UpdateSupplier)
 			})
 		})
 	})
