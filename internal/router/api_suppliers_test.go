@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
 	"github.com/stretchr/testify/assert"
 )
@@ -41,6 +42,53 @@ func TestApiCreateSupplier(t *testing.T) {
 				"name":        "El nombre es obligatorio",
 				"supplier_id": "El RUC es obligatorio",
 			},
+		},
+		{
+			name: "should pass a name",
+			form: map[string]any{
+				"name": "",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"name":        "El nombre es obligatorio",
+				"supplier_id": "El RUC es obligatorio",
+			},
+		},
+		{
+			name: "should pass a name",
+			form: map[string]any{
+				"name": "Test Supplier",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"supplier_id": "El RUC es obligatorio",
+			},
+		},
+		{
+			name: "should pass a name",
+			form: map[string]any{
+				"name":        "Test Supplier",
+				"supplier_id": "",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"supplier_id": "El RUC es obligatorio",
+			},
+		},
+		{
+			name: "should pass a name",
+			form: map[string]any{
+				"name":        "Test Supplier",
+				"supplier_id": "1234567890",
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"message": "Proveedor creado correctamente",
+			},
+			createSupplier: db.EXPECT().CreateSupplier(types.Supplier{
+				Name:       "Test Supplier",
+				SupplierId: "1234567890",
+			}).Return(nil),
 		},
 	}
 
