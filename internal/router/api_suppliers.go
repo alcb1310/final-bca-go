@@ -170,6 +170,17 @@ func (rf *Router) UpdateSupplier(w http.ResponseWriter, r *http.Request) {
 		supplier.ContactPhone.String = valStr
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "suppler": supplier})
+	if err := rf.DB.UpdateSupplier(supplier); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "El projecto ya existe"})
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
