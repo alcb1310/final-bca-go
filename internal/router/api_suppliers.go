@@ -1,6 +1,7 @@
 package router
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -119,6 +120,56 @@ func (rf *Router) UpdateSupplier(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	supplier, err := rf.DB.GetSupplier(parsedId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proveedor no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Error al buscar el proveedor", "err": err})
+		return
+	}
+
+	p := make(map[string]any)
+	errorResponse := make(map[string]any)
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	valStr, ok := p["name"].(string)
+	if ok {
+		supplier.Name = valStr
+	}
+
+	valStr, ok = p["supplier_id"].(string)
+	if ok {
+		supplier.SupplierId = valStr
+	}
+
+	valStr, ok = p["contact_name"].(string)
+	if ok {
+		supplier.ContactName.Valid = true
+		supplier.ContactName.String = valStr
+	}
+
+	valStr, ok = p["contact_email"].(string)
+	if ok {
+		supplier.ContactEmail.Valid = true
+		supplier.ContactEmail.String = valStr
+	}
+
+	valStr, ok = p["contact_phone"].(string)
+	if ok {
+		supplier.ContactPhone.Valid = true
+		supplier.ContactPhone.String = valStr
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "id": parsedId})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "suppler": supplier})
 }

@@ -97,7 +97,6 @@ func (rf *Router) UpdateProject(w http.ResponseWriter, r *http.Request) {
 
 	project, err := rf.DB.GetProject(parsedId)
 	if err != nil {
-
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)
 			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto no encontrado"})
