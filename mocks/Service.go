@@ -271,6 +271,62 @@ func (_c *Service_GetProjects_Call) RunAndReturn(run func() ([]types.Project, er
 	return _c
 }
 
+// GetSupplier provides a mock function with given fields: id
+func (_m *Service) GetSupplier(id uuid.UUID) (types.Supplier, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSupplier")
+	}
+
+	var r0 types.Supplier
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (types.Supplier, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) types.Supplier); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(types.Supplier)
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetSupplier_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSupplier'
+type Service_GetSupplier_Call struct {
+	*mock.Call
+}
+
+// GetSupplier is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) GetSupplier(id interface{}) *Service_GetSupplier_Call {
+	return &Service_GetSupplier_Call{Call: _e.mock.On("GetSupplier", id)}
+}
+
+func (_c *Service_GetSupplier_Call) Run(run func(id uuid.UUID)) *Service_GetSupplier_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetSupplier_Call) Return(_a0 types.Supplier, _a1 error) *Service_GetSupplier_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetSupplier_Call) RunAndReturn(run func(uuid.UUID) (types.Supplier, error)) *Service_GetSupplier_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetSuppliers provides a mock function with no fields
 func (_m *Service) GetSuppliers() ([]types.Supplier, error) {
 	ret := _m.Called()
