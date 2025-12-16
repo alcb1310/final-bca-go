@@ -29,10 +29,10 @@ func (s *service) GetSuppliers() ([]types.Supplier, error) {
 	return suppliers, nil
 }
 
-func (s *service) CreateSupplier(su types.Supplier) error {
+func (s *service) CreateSupplier(sup types.Supplier) error {
 	var err error
 	sql := "insert into supplier (name, supplier_id, contact_name, contact_phone, contact_email) values ($1, $2, $3, $4, $5)"
-	if _, err = s.db.Exec(sql, su.Name, su.SupplierId, su.ContactName, su.ContactPhone, su.ContactEmail); err != nil {
+	if _, err = s.db.Exec(sql, sup.Name, sup.SupplierId, sup.ContactName, sup.ContactPhone, sup.ContactEmail); err != nil {
 		slog.Error("CreateSupplier: Error creating supplier", "err", err)
 	}
 	return err
@@ -45,4 +45,15 @@ func (s *service) GetSupplier(id uuid.UUID) (types.Supplier, error) {
 	err := s.db.QueryRow(sql, id).Scan(&sup.Id, &sup.Name, &sup.SupplierId, &sup.ContactName, &sup.ContactPhone, &sup.ContactEmail)
 
 	return sup, err
+}
+
+func (s *service) UpdateSupplier(sup types.Supplier) error {
+	var err error
+
+	sql := "update supplier set name = $1, supplier_id = $2, contact_name = $3, contact_phone = $4, contact_email = $5 where id = $6"
+	if _, err = s.db.Exec(sql, sup.Name, sup.SupplierId, sup.ContactName, sup.ContactPhone, sup.ContactEmail, sup.Id); err != nil {
+		slog.Error("UpdateSupplier: Error updating supplier", "err", err)
+	}
+
+	return err
 }
