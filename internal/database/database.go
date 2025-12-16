@@ -21,6 +21,7 @@ type Service interface {
 
 	// file: supplier.go
 	GetSuppliers() ([]types.Supplier, error)
+	CreateSupplier(s types.Supplier) error
 }
 
 type service struct {
