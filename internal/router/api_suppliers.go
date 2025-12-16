@@ -105,5 +105,5 @@ func (rf *Router) CreateSupplier(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto creado correctamente"})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proveedor creado correctamente"})
 }
