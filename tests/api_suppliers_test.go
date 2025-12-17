@@ -106,14 +106,14 @@ func TestApiSuppliers(t *testing.T) {
 		for _, v := range r {
 			assert.Equal(t, "Proveedor 1", v.(map[string]any)["name"])
 			assert.Equal(t, "1234567890", v.(map[string]any)["supplier_id"])
+
 			name := v.(map[string]any)["contact_name"]
-			fmt.Println(name)
 			assert.Equal(t, false, name.(map[string]any)["Valid"])
+
 			email := v.(map[string]any)["contact_email"]
-			fmt.Println(email)
 			assert.Equal(t, false, email.(map[string]any)["Valid"])
+
 			phone := v.(map[string]any)["contact_phone"]
-			fmt.Println(phone)
 			assert.Equal(t, false, phone.(map[string]any)["Valid"])
 		}
 	})
@@ -136,7 +136,7 @@ func TestApiSuppliers(t *testing.T) {
 		assert.Equal(t, http.StatusConflict, res.Code)
 	})
 
-	t.Run("should return not exist when non existent project", func(t *testing.T) {
+	t.Run("should return not exist when non existent supplier", func(t *testing.T) {
 		form := map[string]any{
 			"name":        "Proveedor 1",
 			"supplier_id": "1234567890",
@@ -160,5 +160,67 @@ func TestApiSuppliers(t *testing.T) {
 		assert.NoError(t, err)
 
 		assert.Equal(t, "Proveedor no encontrado", mapBody["message"])
+	})
+
+	t.Run("should update a supplier", func(t *testing.T) {
+		req, err := http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		id := r[0].(map[string]any)["id"].(string)
+
+		form := map[string]any{
+			"name":          "Proveedor 1 Edited",
+			"supplier_id":   "123456789001",
+			"contact_name":  "Andres",
+			"contact_phone": "1234567",
+			"contact_email": "Yk6bM@example.com",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("%s/%s", testUrl, id), strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusNoContent, res.Code)
+
+		req, err = http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		for _, v := range r {
+			assert.Equal(t, "Proveedor 1 Edited", v.(map[string]any)["name"])
+			assert.Equal(t, "123456789001", v.(map[string]any)["supplier_id"])
+
+			name := v.(map[string]any)["contact_name"]
+			assert.Equal(t, true, name.(map[string]any)["Valid"])
+			assert.Equal(t, "Andres", name.(map[string]any)["String"])
+
+			email := v.(map[string]any)["contact_email"]
+			assert.Equal(t, true, email.(map[string]any)["Valid"])
+			assert.Equal(t, "Yk6bM@example.com", email.(map[string]any)["String"])
+
+			phone := v.(map[string]any)["contact_phone"]
+			assert.Equal(t, true, phone.(map[string]any)["Valid"])
+			assert.Equal(t, "1234567", phone.(map[string]any)["String"])
+		}
 	})
 }
