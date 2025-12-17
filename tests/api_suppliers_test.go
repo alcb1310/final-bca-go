@@ -3,6 +3,8 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -61,5 +63,57 @@ func TestApiSuppliers(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, 0, len(r))
 		assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
+	})
+
+	t.Run("should be able to create a new supplier", func(t *testing.T) {
+		form := map[string]any{
+			"name":        "Proveedor 1",
+			"supplier_id": "1234567890",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodPost, testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusCreated, res.Code)
+
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "Proveedor creado correctamente", mapBody["message"])
+
+		req, err = http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		for _, v := range r {
+			assert.Equal(t, "Proveedor 1", v.(map[string]any)["name"])
+			assert.Equal(t, "1234567890", v.(map[string]any)["supplier_id"])
+			name := v.(map[string]any)["contact_name"]
+			fmt.Println(name)
+			assert.Equal(t, false, name.(map[string]any)["Valid"])
+			email := v.(map[string]any)["contact_email"]
+			fmt.Println(email)
+			assert.Equal(t, false, email.(map[string]any)["Valid"])
+			phone := v.(map[string]any)["contact_phone"]
+			fmt.Println(phone)
+			assert.Equal(t, false, phone.(map[string]any)["Valid"])
+		}
 	})
 }
