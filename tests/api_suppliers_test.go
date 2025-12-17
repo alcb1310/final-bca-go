@@ -116,4 +116,22 @@ func TestApiSuppliers(t *testing.T) {
 			assert.Equal(t, false, phone.(map[string]any)["Valid"])
 		}
 	})
+
+	t.Run("should be able to create a new supplier", func(t *testing.T) {
+		form := map[string]any{
+			"name":        "Proveedor 1",
+			"supplier_id": "1234567890",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodPost, testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusConflict, res.Code)
+	})
 }
