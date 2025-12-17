@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -133,5 +134,31 @@ func TestApiSuppliers(t *testing.T) {
 		s.Router.ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusConflict, res.Code)
+	})
+
+	t.Run("should return not exist when non existent project", func(t *testing.T) {
+		form := map[string]any{
+			"name":        "Proveedor 1",
+			"supplier_id": "1234567890",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+		id := uuid.New()
+
+		req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/%s", testUrl, id), strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusNotFound, res.Code)
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "Proveedor no encontrado", mapBody["message"])
 	})
 }
