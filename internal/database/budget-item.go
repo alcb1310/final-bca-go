@@ -9,7 +9,7 @@ import (
 func (s *service) GetBudgetItems() ([]types.BudgetItem, error) {
 	bi := []types.BudgetItem{}
 
-	sql := "select id, code, name, level, accumulate, parent_id, parent_code, parent_name from budget_items sort by code"
+	sql := "select id, code, name, level, accumulate, parent_id, parent_code, parent_name from vw_budget_item order by code"
 	rows, err := s.db.Query(sql)
 	if err != nil {
 		slog.Error("Error getting budget items", "err", err)
