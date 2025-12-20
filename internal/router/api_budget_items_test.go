@@ -19,10 +19,11 @@ func TestApiCreateBudgetItem(t *testing.T) {
 	s.GenerateRoutes()
 	testURL := "/api/v2/budget-items"
 	testData := []struct {
-		name   string
-		form   map[string]any
-		status int
-		body   map[string]any
+		name       string
+		form       map[string]any
+		status     int
+		body       map[string]any
+		budgetItem *mocks.Service_CreateBudgetItem_Call
 	}{
 		{
 			name:   "should pass a form",
@@ -62,6 +63,19 @@ func TestApiCreateBudgetItem(t *testing.T) {
 			status: http.StatusBadRequest,
 			body: map[string]any{
 				"accumulate": "Debe indicar si acumula o no",
+			},
+		},
+		{
+			name: "should pass valid parent_id",
+			form: map[string]any{
+				"code":       "123",
+				"name":       "Test item",
+				"accumulate": true,
+				"parent_id":  "invalid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"parent_id": "Id inválido",
 			},
 		},
 	}
