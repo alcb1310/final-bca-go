@@ -23,3 +23,9 @@ type CreateBudgetItem struct {
 	Accumulate bool          `json:"accumulate"`
 	ParentId   uuid.NullUUID `json:"parentId"`
 }
+
+type UpdateBudgetItem struct {
+	Id   uuid.UUID `json:"id"`
+	Code string    `json:"code"`
+	Name string    `json:"name"`
+}
