@@ -22,3 +22,16 @@ create table if not exists supplier (
     unique (supplier_id),
     unique (name)
 );
+
+create table if not exists budget_item(
+    id uuid primary key default gen_random_uuid(),
+    code text not null,
+    name text not null,
+    level smallint not null default 1,
+    accumulate boolean not null default true,
+    parent_id uuid references budget_item(id) on delete restrict,
+    created_at timestamp default now(),
+
+    unique (code),
+    unique (name)
+);
