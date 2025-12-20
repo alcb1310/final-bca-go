@@ -26,6 +26,7 @@ type Service interface {
 	UpdateSupplier(sup types.Supplier) error
 
 	// file: budget-item.go
+	CreateBudgetItem(bi types.CreateBudgetItem) error
 	GetBudgetItems() ([]types.BudgetItem, error)
 }
 
