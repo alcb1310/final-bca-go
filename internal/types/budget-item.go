@@ -16,3 +16,10 @@ type BudgetItem struct {
 	ParentCode sql.NullString `json:"parentCode"`
 	ParentName sql.NullString `json:"parentName"`
 }
+
+type CreateBudgetItem struct {
+	Code       string        `json:"code"`
+	Name       string        `json:"name"`
+	Accumulate bool          `json:"accumulate"`
+	ParentId   uuid.NullUUID `json:"parentId"`
+}
