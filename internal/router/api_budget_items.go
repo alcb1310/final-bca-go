@@ -21,3 +21,7 @@ func (rf *Router) GetBudgetItems(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(bi)
 }
+
+func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
