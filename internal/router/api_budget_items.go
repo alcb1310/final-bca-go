@@ -2,10 +2,12 @@ package router
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (rf *Router) GetBudgetItems(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +28,7 @@ func (rf *Router) GetBudgetItems(w http.ResponseWriter, r *http.Request) {
 func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
 	errorResponse := make(map[string]any)
 	p := make(map[string]any)
-	var project types.CreateBudgetItem
+	var budgetItem types.CreateBudgetItem
 	var err error
 	var ok bool
 
@@ -41,19 +43,19 @@ func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		errorResponse["message"] = "Cuerpo de la solicitud no válido"
 	}
 
-	if project.Code, ok = p["code"].(string); !ok {
+	if budgetItem.Code, ok = p["code"].(string); !ok {
 		errorResponse["code"] = "El código es obligatorio"
-	} else if len(project.Code) == 0 {
+	} else if len(budgetItem.Code) == 0 {
 		errorResponse["code"] = "El códigio es obligatorio"
 	}
 
-	if project.Name, ok = p["name"].(string); !ok {
+	if budgetItem.Name, ok = p["name"].(string); !ok {
 		errorResponse["name"] = "El nombre es obligatorio"
-	} else if len(project.Name) == 0 {
+	} else if len(budgetItem.Name) == 0 {
 		errorResponse["name"] = "El nombre es obligatorio"
 	}
 
-	if project.Accumulate, ok = p["accumulate"].(bool); !ok {
+	if budgetItem.Accumulate, ok = p["accumulate"].(bool); !ok {
 		errorResponse["accumulate"] = "Debe indicar si acumula o no"
 	}
 
@@ -62,11 +64,11 @@ func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errorResponse["parent_id"] = "Id inválido"
 		} else {
-			project.ParentId.UUID = uuidVal
-			project.ParentId.Valid = true
+			budgetItem.ParentId.UUID = uuidVal
+			budgetItem.ParentId.Valid = true
 		}
 	} else {
-		project.ParentId.Valid = false
+		budgetItem.ParentId.Valid = false
 	}
 
 	if len(errorResponse) > 0 {
@@ -75,6 +77,19 @@ func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := rf.DB.CreateBudgetItem(budgetItem); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "La partida ya existe"})
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		errorResponse["message"] = err.Error()
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(project)
+	_ = json.NewEncoder(w).Encode(budgetItem)
 }
