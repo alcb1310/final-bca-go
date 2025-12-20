@@ -120,9 +120,10 @@ func (rf *Router) UpdateBudgetItem(w http.ResponseWriter, r *http.Request) {
 
 	errorResponse := make(map[string]any)
 	p := make(map[string]any)
-	var budgetItem types.CreateBudgetItem
-	var ok, boolVal bool
+	var budgetItem types.UpdateBudgetItem
+	var ok bool
 	var val string
+	budgetItem.Id = parsedId
 
 	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
 		errorResponse["message"] = "Cuerpo de la solicitud no válido"
@@ -132,19 +133,28 @@ func (rf *Router) UpdateBudgetItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if val, ok = p["code"].(string); ok {
-		if len(budgetItem.Code) != 0 {
+		if len(val) != 0 {
 			budgetItem.Code = val
 		}
 	}
 
-	if val, ok = p["name"].(string); !ok {
+	if val, ok = p["name"].(string); ok {
 		if len(val) != 0 {
 			budgetItem.Name = val
 		}
 	}
 
-	if boolVal, ok = p["accumulate"].(bool); ok {
-		budgetItem.Accumulate = boolVal
+	if err := rf.DB.UpdateBudgetItem(budgetItem); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "La partida ya existe"})
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		errorResponse["message"] = err.Error()
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
