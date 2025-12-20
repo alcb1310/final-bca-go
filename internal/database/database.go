@@ -24,6 +24,9 @@ type Service interface {
 	GetSuppliers() ([]types.Supplier, error)
 	GetSupplier(id uuid.UUID) (types.Supplier, error)
 	UpdateSupplier(sup types.Supplier) error
+
+	// file: budget-item.go
+	GetBudgetItems() ([]types.BudgetItem, error)
 }
 
 type service struct {
