@@ -159,6 +159,62 @@ func (_c *Service_CreateSupplier_Call) RunAndReturn(run func(types.Supplier) err
 	return _c
 }
 
+// GetBudgetItem provides a mock function with given fields: id
+func (_m *Service) GetBudgetItem(id uuid.UUID) (types.BudgetItem, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBudgetItem")
+	}
+
+	var r0 types.BudgetItem
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (types.BudgetItem, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) types.BudgetItem); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(types.BudgetItem)
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetBudgetItem_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBudgetItem'
+type Service_GetBudgetItem_Call struct {
+	*mock.Call
+}
+
+// GetBudgetItem is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) GetBudgetItem(id interface{}) *Service_GetBudgetItem_Call {
+	return &Service_GetBudgetItem_Call{Call: _e.mock.On("GetBudgetItem", id)}
+}
+
+func (_c *Service_GetBudgetItem_Call) Run(run func(id uuid.UUID)) *Service_GetBudgetItem_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetBudgetItem_Call) Return(_a0 types.BudgetItem, _a1 error) *Service_GetBudgetItem_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetBudgetItem_Call) RunAndReturn(run func(uuid.UUID) (types.BudgetItem, error)) *Service_GetBudgetItem_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetBudgetItems provides a mock function with no fields
 func (_m *Service) GetBudgetItems() ([]types.BudgetItem, error) {
 	ret := _m.Called()
