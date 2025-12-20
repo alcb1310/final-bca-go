@@ -31,6 +31,7 @@ func (s *service) GetBudgetItems() ([]types.BudgetItem, error) {
 
 func (s *service) CreateBudgetItem(bi types.CreateBudgetItem) error {
 	var level uint8 = 1
+	var err error
 	if bi.ParentId.Valid {
 		sql := "select level from budget_item where id = $1"
 		err := s.db.QueryRow(sql, bi.ParentId.UUID).Scan(&level)
@@ -42,7 +43,11 @@ func (s *service) CreateBudgetItem(bi types.CreateBudgetItem) error {
 	}
 
 	sql := "insert into budget_item(code, name, level, accumulate, parent_id) values ($1, $2, $3, $4, $5)"
-	_, err := s.db.Exec(sql, bi.Code, bi.Name, level, bi.Accumulate, bi.ParentId.UUID)
+	if bi.ParentId.Valid {
+		_, err = s.db.Exec(sql, bi.Code, bi.Name, level, bi.Accumulate, bi.ParentId.UUID)
+	} else {
+		_, err = s.db.Exec(sql, bi.Code, bi.Name, level, bi.Accumulate, nil)
+	}
 
 	return err
 }
