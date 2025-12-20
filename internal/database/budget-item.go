@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/google/uuid"
 )
 
 func (s *service) GetBudgetItems() ([]types.BudgetItem, error) {
@@ -50,4 +51,15 @@ func (s *service) CreateBudgetItem(bi types.CreateBudgetItem) error {
 	}
 
 	return err
+}
+
+func (s *service) GetBudgetItem(id uuid.UUID) (types.BudgetItem, error) {
+	bi := types.BudgetItem{}
+	sql := "select id, code, name, level, accumulate, parent_id, parent_code, parent_name from vw_budget_item where id = $1"
+	err := s.db.QueryRow(sql, id).Scan(&bi.Id, &bi.Code, &bi.Name, &bi.Level, &bi.Accumulate, &bi.ParentId, &bi.ParentCode, &bi.ParentName)
+	if err != nil {
+		slog.Error("GetBudgetItem: Error scanning budget item", "err", err)
+	}
+
+	return bi, err
 }

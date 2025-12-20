@@ -28,6 +28,7 @@ type Service interface {
 	// file: budget-item.go
 	CreateBudgetItem(bi types.CreateBudgetItem) error
 	GetBudgetItems() ([]types.BudgetItem, error)
+	GetBudgetItem(id uuid.UUID) (types.BudgetItem, error)
 }
 
 type service struct {
