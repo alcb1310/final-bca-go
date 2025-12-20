@@ -63,3 +63,9 @@ func (s *service) GetBudgetItem(id uuid.UUID) (types.BudgetItem, error) {
 
 	return bi, err
 }
+
+func (s *service) UpdateBudgetItem(bi types.UpdateBudgetItem) error {
+	sql := "update budget_item set code = $1, name = $2 where id = $3"
+	_, err := s.db.Exec(sql, bi.Code, bi.Name, bi.Id)
+	return err
+}
