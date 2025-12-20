@@ -29,6 +29,7 @@ type Service interface {
 	CreateBudgetItem(bi types.CreateBudgetItem) error
 	GetBudgetItems() ([]types.BudgetItem, error)
 	GetBudgetItem(id uuid.UUID) (types.BudgetItem, error)
+	UpdateBudgetItem(bi types.UpdateBudgetItem) error
 }
 
 type service struct {
