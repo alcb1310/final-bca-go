@@ -9,7 +9,9 @@ import (
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -78,15 +80,33 @@ func TestApiCreateBudgetItem(t *testing.T) {
 				"parent_id": "Id inválido",
 			},
 		},
+		{
+			name: "should create budget item",
+			form: map[string]any{
+				"code":       "123",
+				"name":       "Test item",
+				"accumulate": true,
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"message": "Partida creada correctamente",
+			},
+			budgetItem: db.EXPECT().CreateBudgetItem(types.CreateBudgetItem{
+				Code:       "123",
+				Name:       "Test item",
+				Accumulate: true,
+				ParentId:   uuid.NullUUID{UUID: uuid.UUID{}, Valid: false},
+			}).Return(nil),
+		},
 	}
 
 	for _, tt := range testData {
 		t.Run(tt.name, func(t *testing.T) {
 			var read io.Reader = nil
 
-			// if tt.createProject != nil {
-			// 	tt.createProject.Times(1)
-			// }
+			if tt.budgetItem != nil {
+				tt.budgetItem.Times(1)
+			}
 
 			if tt.form != nil {
 				j, err := json.Marshal(tt.form)

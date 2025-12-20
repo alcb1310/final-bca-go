@@ -90,6 +90,6 @@ func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(budgetItem)
+	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Partida creada correctamente"})
 }
