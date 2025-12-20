@@ -118,6 +118,35 @@ func (rf *Router) UpdateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	errorResponse := make(map[string]any)
+	p := make(map[string]any)
+	var budgetItem types.CreateBudgetItem
+	var ok, boolVal bool
+	var val string
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if val, ok = p["code"].(string); ok {
+		if len(budgetItem.Code) != 0 {
+			budgetItem.Code = val
+		}
+	}
+
+	if val, ok = p["name"].(string); !ok {
+		if len(val) != 0 {
+			budgetItem.Name = val
+		}
+	}
+
+	if boolVal, ok = p["accumulate"].(bool); ok {
+		budgetItem.Accumulate = boolVal
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "budget_item": bi})
 }
