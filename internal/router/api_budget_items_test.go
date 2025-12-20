@@ -53,6 +53,17 @@ func TestApiCreateBudgetItem(t *testing.T) {
 				"accumulate": "Debe indicar si acumula o no",
 			},
 		},
+		{
+			name: "only pass code and name",
+			form: map[string]any{
+				"code": "123",
+				"name": "Test item",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"accumulate": "Debe indicar si acumula o no",
+			},
+		},
 	}
 
 	for _, tt := range testData {
@@ -82,6 +93,8 @@ func TestApiCreateBudgetItem(t *testing.T) {
 			mapBody := make(map[string]any)
 			err = json.Unmarshal(body, &mapBody)
 			assert.NoError(t, err)
+
+			assert.Equal(t, len(tt.body), len(mapBody))
 
 			for k, v := range tt.body {
 				assert.Equal(t, v, mapBody[k])
