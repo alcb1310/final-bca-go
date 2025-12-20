@@ -543,6 +543,52 @@ func (_c *Service_GetSuppliers_Call) RunAndReturn(run func() ([]types.Supplier, 
 	return _c
 }
 
+// UpdateBudgetItem provides a mock function with given fields: bi
+func (_m *Service) UpdateBudgetItem(bi types.UpdateBudgetItem) error {
+	ret := _m.Called(bi)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateBudgetItem")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.UpdateBudgetItem) error); ok {
+		r0 = rf(bi)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_UpdateBudgetItem_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateBudgetItem'
+type Service_UpdateBudgetItem_Call struct {
+	*mock.Call
+}
+
+// UpdateBudgetItem is a helper method to define mock.On call
+//   - bi types.UpdateBudgetItem
+func (_e *Service_Expecter) UpdateBudgetItem(bi interface{}) *Service_UpdateBudgetItem_Call {
+	return &Service_UpdateBudgetItem_Call{Call: _e.mock.On("UpdateBudgetItem", bi)}
+}
+
+func (_c *Service_UpdateBudgetItem_Call) Run(run func(bi types.UpdateBudgetItem)) *Service_UpdateBudgetItem_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.UpdateBudgetItem))
+	})
+	return _c
+}
+
+func (_c *Service_UpdateBudgetItem_Call) Return(_a0 error) *Service_UpdateBudgetItem_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_UpdateBudgetItem_Call) RunAndReturn(run func(types.UpdateBudgetItem) error) *Service_UpdateBudgetItem_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateProject provides a mock function with given fields: p
 func (_m *Service) UpdateProject(p types.Project) error {
 	ret := _m.Called(p)
