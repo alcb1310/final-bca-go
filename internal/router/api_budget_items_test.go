@@ -32,6 +32,16 @@ func TestApiCreateBudgetItem(t *testing.T) {
 				"message": "Falta el cuerpo de la solicitud",
 			},
 		},
+		{
+			name:   "should pass a body",
+			form:   map[string]any{},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"name":       "El nombre es obligatorio",
+				"code":       "El código es obligatorio",
+				"accumulate": "Debe indicar si acumula o no",
+			},
+		},
 	}
 
 	for _, tt := range testData {
