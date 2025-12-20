@@ -50,6 +50,6 @@ select
     b.accumulate,
     p.id as parent_id,
     p.code as parent_code,
-    p.name as parent_name,
+    p.name as parent_name
 from budget_item b
 left join budget_item p on b.parent_id = p.id;
