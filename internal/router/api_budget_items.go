@@ -1,6 +1,7 @@
 package router
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -104,6 +105,19 @@ func (rf *Router) UpdateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	bi, err := rf.DB.GetBudgetItem(parsedId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Partida no encontrada"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Error al buscar la partida", "err": err})
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "id": parsedId})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "budget_item": bi})
 }
