@@ -42,6 +42,17 @@ func TestApiCreateBudgetItem(t *testing.T) {
 				"accumulate": "Debe indicar si acumula o no",
 			},
 		},
+		{
+			name: "only pass code",
+			form: map[string]any{
+				"code": "123",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"name":       "El nombre es obligatorio",
+				"accumulate": "Debe indicar si acumula o no",
+			},
+		},
 	}
 
 	for _, tt := range testData {
