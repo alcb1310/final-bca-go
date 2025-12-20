@@ -28,3 +28,21 @@ func (s *service) GetBudgetItems() ([]types.BudgetItem, error) {
 
 	return bi, nil
 }
+
+func (s *service) CreateBudgetItem(bi types.CreateBudgetItem) error {
+	var level uint8 = 1
+	if bi.ParentId.Valid {
+		sql := "select level from budget_item where id = $1"
+		err := s.db.QueryRow(sql, bi.ParentId.UUID).Scan(&level)
+		if err != nil {
+			slog.Error("CreateBudgetItem: Error scanning budget item", "err", err)
+			return err
+		}
+		level++
+	}
+
+	sql := "insert into budget_item(code, name, level, accumulate, parent_id) values ($1, $2, $3, $4, $5)"
+	_, err := s.db.Exec(sql, bi.Code, bi.Name, level, bi.Accumulate, bi.ParentId.UUID)
+
+	return err
+}
