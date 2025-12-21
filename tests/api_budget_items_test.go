@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -64,5 +65,52 @@ func TestApiBudgetItems(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, 0, len(r))
 		assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
+	})
+
+	t.Run("should be able to create a budget item", func(t *testing.T) {
+		form := map[string]any{
+			"code":       "100",
+			"name":       "Prueba",
+			"accumulate": true,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("POST", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusCreated, res.Code)
+
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "Partida creada correctamente", mapBody["message"])
+
+		req, err = http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+		for _, v := range r {
+			assert.Equal(t, "100", v.(map[string]any)["code"])
+			assert.Equal(t, "Prueba", v.(map[string]any)["name"])
+			assert.Equal(t, true, v.(map[string]any)["accumulate"])
+			level := int(v.(map[string]any)["level"].(float64))
+			assert.Equal(t, 1, level)
+			parent := v.(map[string]any)["parentId"]
+			assert.Nil(t, parent)
+		}
 	})
 }
