@@ -113,4 +113,23 @@ func TestApiBudgetItems(t *testing.T) {
 			assert.Nil(t, parent)
 		}
 	})
+
+	t.Run("should show conflict error", func(t *testing.T) {
+		form := map[string]any{
+			"code":       "100",
+			"name":       "Prueba",
+			"accumulate": true,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("POST", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusConflict, res.Code)
+	})
 }
