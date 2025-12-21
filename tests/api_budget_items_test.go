@@ -159,4 +159,53 @@ func TestApiBudgetItems(t *testing.T) {
 
 		assert.Equal(t, "Partida no encontrada", mapBody["message"])
 	})
+
+	t.Run("should be able to update a budget item", func(t *testing.T) {
+		req, err := http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		id := r[0].(map[string]any)["id"].(string)
+		form := map[string]any{
+			"code": "101",
+			"name": "Update",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("%s/%s", testUrl, id), strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusNoContent, res.Code)
+
+		req, err = http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+		for _, v := range r {
+			assert.Equal(t, "101", v.(map[string]any)["code"])
+			assert.Equal(t, "Update", v.(map[string]any)["name"])
+			assert.Equal(t, true, v.(map[string]any)["accumulate"])
+			level := int(v.(map[string]any)["level"].(float64))
+			assert.Equal(t, 1, level)
+			parent := v.(map[string]any)["parentId"]
+			assert.Nil(t, parent)
+		}
+	})
 }
