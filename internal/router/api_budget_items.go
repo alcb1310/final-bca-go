@@ -123,7 +123,7 @@ func (rf *Router) UpdateBudgetItem(w http.ResponseWriter, r *http.Request) {
 	var budgetItem types.UpdateBudgetItem
 	var ok bool
 	var val string
-	budgetItem.Id = parsedId
+	budgetItem.Id = bi.Id
 
 	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
 		errorResponse["message"] = "Cuerpo de la solicitud no válido"
@@ -157,6 +157,5 @@ func (rf *Router) UpdateBudgetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "budget_item": bi})
+	w.WriteHeader(http.StatusNoContent)
 }
