@@ -73,7 +73,7 @@ func (s *service) UpdateBudgetItem(bi types.UpdateBudgetItem) error {
 func (s *service) GetBudgetItemsByAccumulate(accum bool) ([]types.BudgetItem, error) {
 	bi := []types.BudgetItem{}
 
-	sql := "select id, code, name, level, accumulate, parent_id, parent_code, parent_name from vw_budget_item where accumulate = $1 order by code"
+	sql := "select id, code, name, level, accumulate, parent_id, parent_code, parent_name from vw_budget_item where accumulate = $1 order by name"
 	rows, err := s.db.Query(sql, accum)
 	if err != nil {
 		slog.Error("Error getting budget items", "err", err)
