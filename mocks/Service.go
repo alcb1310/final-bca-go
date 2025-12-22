@@ -272,6 +272,64 @@ func (_c *Service_GetBudgetItems_Call) RunAndReturn(run func() ([]types.BudgetIt
 	return _c
 }
 
+// GetBudgetItemsByAccumulate provides a mock function with given fields: accum
+func (_m *Service) GetBudgetItemsByAccumulate(accum bool) ([]types.BudgetItem, error) {
+	ret := _m.Called(accum)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBudgetItemsByAccumulate")
+	}
+
+	var r0 []types.BudgetItem
+	var r1 error
+	if rf, ok := ret.Get(0).(func(bool) ([]types.BudgetItem, error)); ok {
+		return rf(accum)
+	}
+	if rf, ok := ret.Get(0).(func(bool) []types.BudgetItem); ok {
+		r0 = rf(accum)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]types.BudgetItem)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(bool) error); ok {
+		r1 = rf(accum)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetBudgetItemsByAccumulate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetBudgetItemsByAccumulate'
+type Service_GetBudgetItemsByAccumulate_Call struct {
+	*mock.Call
+}
+
+// GetBudgetItemsByAccumulate is a helper method to define mock.On call
+//   - accum bool
+func (_e *Service_Expecter) GetBudgetItemsByAccumulate(accum interface{}) *Service_GetBudgetItemsByAccumulate_Call {
+	return &Service_GetBudgetItemsByAccumulate_Call{Call: _e.mock.On("GetBudgetItemsByAccumulate", accum)}
+}
+
+func (_c *Service_GetBudgetItemsByAccumulate_Call) Run(run func(accum bool)) *Service_GetBudgetItemsByAccumulate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(bool))
+	})
+	return _c
+}
+
+func (_c *Service_GetBudgetItemsByAccumulate_Call) Return(_a0 []types.BudgetItem, _a1 error) *Service_GetBudgetItemsByAccumulate_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetBudgetItemsByAccumulate_Call) RunAndReturn(run func(bool) ([]types.BudgetItem, error)) *Service_GetBudgetItemsByAccumulate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetHealth provides a mock function with no fields
 func (_m *Service) GetHealth() bool {
 	ret := _m.Called()
