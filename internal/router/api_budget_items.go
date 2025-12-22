@@ -21,8 +21,16 @@ func (rf *Router) GetBudgetItems(w http.ResponseWriter, r *http.Request) {
 	if accum != "" {
 		accumulate := accum == "true"
 
+		bi, err = rf.DB.GetBudgetItemsByAccumulate(accumulate)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			res := map[string]any{"message": err.Error()}
+			_ = json.NewEncoder(w).Encode(res)
+			return
+		}
+
 		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Budget Items", "accumulate": accumulate})
+		_ = json.NewEncoder(w).Encode(bi)
 
 		return
 	}
