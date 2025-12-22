@@ -28,6 +28,7 @@ type Service interface {
 	// file: budget-item.go
 	CreateBudgetItem(bi types.CreateBudgetItem) error
 	GetBudgetItems() ([]types.BudgetItem, error)
+	GetBudgetItemsByAccumulate(accum bool) ([]types.BudgetItem, error)
 	GetBudgetItem(id uuid.UUID) (types.BudgetItem, error)
 	UpdateBudgetItem(bi types.UpdateBudgetItem) error
 }
