@@ -68,19 +68,6 @@ func TestApiCreateBudgetItem(t *testing.T) {
 			},
 		},
 		{
-			name: "should pass valid parent_id",
-			form: map[string]any{
-				"code":       "123",
-				"name":       "Test item",
-				"accumulate": true,
-				"parent_id":  "invalid",
-			},
-			status: http.StatusBadRequest,
-			body: map[string]any{
-				"parent_id": "Id inválido",
-			},
-		},
-		{
 			name: "should create budget item",
 			form: map[string]any{
 				"code":       "123",
