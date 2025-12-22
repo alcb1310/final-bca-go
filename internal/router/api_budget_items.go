@@ -16,6 +16,17 @@ func (rf *Router) GetBudgetItems(w http.ResponseWriter, r *http.Request) {
 	var bi []types.BudgetItem
 	var err error
 
+	queryParams := r.URL.Query()
+	accum := queryParams.Get("accum")
+	if accum != "" {
+		accumulate := accum == "true"
+
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Budget Items", "accumulate": accumulate})
+
+		return
+	}
+
 	if bi, err = rf.DB.GetBudgetItems(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		res := map[string]any{"message": err.Error()}
