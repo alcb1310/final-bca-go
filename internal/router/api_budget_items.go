@@ -83,7 +83,7 @@ func (rf *Router) CreateBudgetItem(w http.ResponseWriter, r *http.Request) {
 	if val, ok := p["parent_id"].(string); ok {
 		uuidVal, err := uuid.Parse(val)
 		if err != nil {
-			errorResponse["parent_id"] = "Id inválido"
+			budgetItem.ParentId.Valid = false
 		} else {
 			budgetItem.ParentId.UUID = uuidVal
 			budgetItem.ParentId.Valid = true
