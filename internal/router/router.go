@@ -60,6 +60,7 @@ func (rf *Router) GenerateRoutes() {
 
 			r.Route("/categories", func(r chi.Router) {
 				r.Get("/", rf.GetCategories)
+				r.Post("/", rf.CreateCategory)
 			})
 		})
 	})
