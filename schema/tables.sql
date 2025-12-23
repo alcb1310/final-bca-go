@@ -36,6 +36,14 @@ create table if not exists budget_item(
     unique (name)
 );
 
+create table if not exists category(
+    id uuid primary key default gen_random_uuid(),
+    name text not null,
+    created_at timestamp default now(),
+
+    unique (name)
+);
+
 
 ----------------------------------------
 --                VIEWS               --
