@@ -1,6 +1,8 @@
 package types
 
+import "github.com/google/uuid"
+
 type Category struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+	Id   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
 }
