@@ -5,7 +5,7 @@ import "github.com/alcb1310/final-bca-go/internal/types"
 func (s *service) GetCategories() ([]types.Category, error) {
 	categories := []types.Category{}
 
-	sql := "select id, name from categories order by name"
+	sql := "select id, name from category order by name"
 	rows, err := s.db.Query(sql)
 	if err != nil {
 		return nil, err
