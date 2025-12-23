@@ -31,6 +31,9 @@ type Service interface {
 	GetBudgetItemsByAccumulate(accum bool) ([]types.BudgetItem, error)
 	GetBudgetItem(id uuid.UUID) (types.BudgetItem, error)
 	UpdateBudgetItem(bi types.UpdateBudgetItem) error
+
+	// file: categories.go
+	GetCategories() ([]types.Category, error)
 }
 
 type service struct {
