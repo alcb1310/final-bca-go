@@ -330,6 +330,63 @@ func (_c *Service_GetBudgetItemsByAccumulate_Call) RunAndReturn(run func(bool) (
 	return _c
 }
 
+// GetCategories provides a mock function with no fields
+func (_m *Service) GetCategories() ([]types.Category, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCategories")
+	}
+
+	var r0 []types.Category
+	var r1 error
+	if rf, ok := ret.Get(0).(func() ([]types.Category, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() []types.Category); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]types.Category)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetCategories_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCategories'
+type Service_GetCategories_Call struct {
+	*mock.Call
+}
+
+// GetCategories is a helper method to define mock.On call
+func (_e *Service_Expecter) GetCategories() *Service_GetCategories_Call {
+	return &Service_GetCategories_Call{Call: _e.mock.On("GetCategories")}
+}
+
+func (_c *Service_GetCategories_Call) Run(run func()) *Service_GetCategories_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *Service_GetCategories_Call) Return(_a0 []types.Category, _a1 error) *Service_GetCategories_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetCategories_Call) RunAndReturn(run func() ([]types.Category, error)) *Service_GetCategories_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetHealth provides a mock function with no fields
 func (_m *Service) GetHealth() bool {
 	ret := _m.Called()
