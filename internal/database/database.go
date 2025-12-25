@@ -36,6 +36,7 @@ type Service interface {
 	CreateCategory(cat types.Category) error
 	GetCategories() ([]types.Category, error)
 	GetCategory(id uuid.UUID) (types.Category, error)
+	UpdateCategory(cat types.Category) error
 }
 
 type service struct {

@@ -39,3 +39,9 @@ func (s *service) GetCategory(id uuid.UUID) (types.Category, error) {
 	err := s.db.QueryRow(sql, id).Scan(&category.Id, &category.Name)
 	return category, err
 }
+
+func (s *service) UpdateCategory(cat types.Category) error {
+	sql := "update category set name = $1 where id = $2"
+	_, err := s.db.Exec(sql, cat.Name, cat.Id)
+	return err
+}
