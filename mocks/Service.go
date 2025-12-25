@@ -67,6 +67,52 @@ func (_c *Service_CreateBudgetItem_Call) RunAndReturn(run func(types.CreateBudge
 	return _c
 }
 
+// CreateCategory provides a mock function with given fields: cat
+func (_m *Service) CreateCategory(cat types.Category) error {
+	ret := _m.Called(cat)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateCategory")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Category) error); ok {
+		r0 = rf(cat)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_CreateCategory_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateCategory'
+type Service_CreateCategory_Call struct {
+	*mock.Call
+}
+
+// CreateCategory is a helper method to define mock.On call
+//   - cat types.Category
+func (_e *Service_Expecter) CreateCategory(cat interface{}) *Service_CreateCategory_Call {
+	return &Service_CreateCategory_Call{Call: _e.mock.On("CreateCategory", cat)}
+}
+
+func (_c *Service_CreateCategory_Call) Run(run func(cat types.Category)) *Service_CreateCategory_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Category))
+	})
+	return _c
+}
+
+func (_c *Service_CreateCategory_Call) Return(_a0 error) *Service_CreateCategory_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_CreateCategory_Call) RunAndReturn(run func(types.Category) error) *Service_CreateCategory_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateProject provides a mock function with given fields: p
 func (_m *Service) CreateProject(p types.Project) error {
 	ret := _m.Called(p)
