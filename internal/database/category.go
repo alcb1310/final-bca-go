@@ -22,3 +22,9 @@ func (s *service) GetCategories() ([]types.Category, error) {
 
 	return categories, nil
 }
+
+func (s *service) CreateCategory(cat types.Category) error {
+	sql := "insert into category (name) values ($1)"
+	_, err := s.db.Exec(sql, cat.Name)
+	return err
+}

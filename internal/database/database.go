@@ -33,6 +33,7 @@ type Service interface {
 	UpdateBudgetItem(bi types.UpdateBudgetItem) error
 
 	// file: categories.go
+	CreateCategory(cat types.Category) error
 	GetCategories() ([]types.Category, error)
 }
 
