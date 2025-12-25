@@ -35,6 +35,7 @@ type Service interface {
 	// file: categories.go
 	CreateCategory(cat types.Category) error
 	GetCategories() ([]types.Category, error)
+	GetCategory(id uuid.UUID) (types.Category, error)
 }
 
 type service struct {
