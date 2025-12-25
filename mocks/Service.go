@@ -806,6 +806,52 @@ func (_c *Service_UpdateBudgetItem_Call) RunAndReturn(run func(types.UpdateBudge
 	return _c
 }
 
+// UpdateCategory provides a mock function with given fields: cat
+func (_m *Service) UpdateCategory(cat types.Category) error {
+	ret := _m.Called(cat)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateCategory")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Category) error); ok {
+		r0 = rf(cat)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_UpdateCategory_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateCategory'
+type Service_UpdateCategory_Call struct {
+	*mock.Call
+}
+
+// UpdateCategory is a helper method to define mock.On call
+//   - cat types.Category
+func (_e *Service_Expecter) UpdateCategory(cat interface{}) *Service_UpdateCategory_Call {
+	return &Service_UpdateCategory_Call{Call: _e.mock.On("UpdateCategory", cat)}
+}
+
+func (_c *Service_UpdateCategory_Call) Run(run func(cat types.Category)) *Service_UpdateCategory_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Category))
+	})
+	return _c
+}
+
+func (_c *Service_UpdateCategory_Call) Return(_a0 error) *Service_UpdateCategory_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_UpdateCategory_Call) RunAndReturn(run func(types.Category) error) *Service_UpdateCategory_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateProject provides a mock function with given fields: p
 func (_m *Service) UpdateProject(p types.Project) error {
 	ret := _m.Called(p)
