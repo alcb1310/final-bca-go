@@ -1,6 +1,7 @@
 package router
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -81,6 +82,19 @@ func (rf *Router) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	category, err := rf.DB.GetCategory(parsedId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Categoría no encontrada"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Error al buscar la categoría", "err": err})
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "id": parsedId})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "category": category})
 }
