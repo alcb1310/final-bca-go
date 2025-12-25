@@ -95,6 +95,30 @@ func (rf *Router) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	p := make(map[string]any)
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Cuerpo de la solicitud no válido"})
+		return
+	}
+	valStr, ok := p["name"].(string)
+	if ok {
+		category.Name = valStr
+	}
+
+	if err := rf.DB.UpdateCategory(category); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "La categoría ya existe"})
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "category": category})
 }
