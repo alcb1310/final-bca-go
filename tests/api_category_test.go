@@ -2,14 +2,21 @@ package tests
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
+
 func TestApiCategoryTest(t *testing.T) {
 	ctx := context.Background()
 	testUrl := "/api/v2/categories"
@@ -44,4 +51,18 @@ func TestApiCategoryTest(t *testing.T) {
 		return
 	}
 	s.GenerateRoutes()
+
+	t.Run("should have no categories", func(t *testing.T) {
+		req, err := http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 0, len(r))
+		assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
+	})
 }
