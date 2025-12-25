@@ -43,9 +43,9 @@ func (rf *Router) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if category.Name, ok = p["name"].(string); !ok {
-		errorResponse["code"] = "El nombre es obligatorio"
+		errorResponse["name"] = "El nombre es obligatorio"
 	} else if len(category.Name) == 0 {
-		errorResponse["code"] = "El nombre es obligatorio"
+		errorResponse["name"] = "El nombre es obligatorio"
 	}
 
 	if len(errorResponse) > 0 {
