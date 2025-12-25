@@ -69,3 +69,7 @@ func (rf *Router) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Categoría creada"})
 }
+
+func (rf *Router) UpdateCategory(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
