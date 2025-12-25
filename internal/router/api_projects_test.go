@@ -93,8 +93,9 @@ func TestApiCreateProject(t *testing.T) {
 			body: map[string]any{
 				"net_area": "El área neta es obligatorio",
 			},
-		}, {
-			name: "should crate a project",
+		},
+		{
+			name: "should create a project",
 			form: map[string]any{
 				"name":       "test",
 				"is_active":  true,
