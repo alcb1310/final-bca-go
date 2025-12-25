@@ -433,6 +433,62 @@ func (_c *Service_GetCategories_Call) RunAndReturn(run func() ([]types.Category,
 	return _c
 }
 
+// GetCategory provides a mock function with given fields: id
+func (_m *Service) GetCategory(id uuid.UUID) (types.Category, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetCategory")
+	}
+
+	var r0 types.Category
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (types.Category, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) types.Category); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(types.Category)
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetCategory_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCategory'
+type Service_GetCategory_Call struct {
+	*mock.Call
+}
+
+// GetCategory is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) GetCategory(id interface{}) *Service_GetCategory_Call {
+	return &Service_GetCategory_Call{Call: _e.mock.On("GetCategory", id)}
+}
+
+func (_c *Service_GetCategory_Call) Run(run func(id uuid.UUID)) *Service_GetCategory_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetCategory_Call) Return(_a0 types.Category, _a1 error) *Service_GetCategory_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetCategory_Call) RunAndReturn(run func(uuid.UUID) (types.Category, error)) *Service_GetCategory_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetHealth provides a mock function with no fields
 func (_m *Service) GetHealth() bool {
 	ret := _m.Called()
