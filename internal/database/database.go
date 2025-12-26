@@ -37,6 +37,9 @@ type Service interface {
 	GetCategories() ([]types.Category, error)
 	GetCategory(id uuid.UUID) (types.Category, error)
 	UpdateCategory(cat types.Category) error
+
+	// file: materials.go
+	GetMaterials() ([]types.Materials, error)
 }
 
 type service struct {
