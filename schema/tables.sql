@@ -74,3 +74,14 @@ select
     p.name as parent_name
 from budget_item b
 left join budget_item p on b.parent_id = p.id;
+
+create or replace view vw_materials as
+select
+    m.id,
+    m.code,
+    m.name,
+    m.unit,
+    c.id as category_id,
+    c.name as category_name
+from material m
+left join category c on m.category_id = c.id;
