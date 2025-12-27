@@ -580,6 +580,62 @@ func (_c *Service_GetHealth_Call) RunAndReturn(run func() bool) *Service_GetHeal
 	return _c
 }
 
+// GetMaterial provides a mock function with given fields: id
+func (_m *Service) GetMaterial(id uuid.UUID) (types.Materials, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetMaterial")
+	}
+
+	var r0 types.Materials
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) (types.Materials, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) types.Materials); ok {
+		r0 = rf(id)
+	} else {
+		r0 = ret.Get(0).(types.Materials)
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetMaterial_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetMaterial'
+type Service_GetMaterial_Call struct {
+	*mock.Call
+}
+
+// GetMaterial is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) GetMaterial(id interface{}) *Service_GetMaterial_Call {
+	return &Service_GetMaterial_Call{Call: _e.mock.On("GetMaterial", id)}
+}
+
+func (_c *Service_GetMaterial_Call) Run(run func(id uuid.UUID)) *Service_GetMaterial_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetMaterial_Call) Return(_a0 types.Materials, _a1 error) *Service_GetMaterial_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetMaterial_Call) RunAndReturn(run func(uuid.UUID) (types.Materials, error)) *Service_GetMaterial_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetMaterials provides a mock function with no fields
 func (_m *Service) GetMaterials() ([]types.Materials, error) {
 	ret := _m.Called()
