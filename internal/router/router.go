@@ -67,6 +67,7 @@ func (rf *Router) GenerateRoutes() {
 			r.Route("/materials", func(r chi.Router) {
 				r.Get("/", rf.GetMaterials)
 				r.Post("/", rf.CreateMaterial)
+				r.Put("/{id}", rf.UpdateMaterial)
 			})
 		})
 	})

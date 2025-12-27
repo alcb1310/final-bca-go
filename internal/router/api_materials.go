@@ -91,3 +91,7 @@ func (rf *Router) CreateMaterial(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Material creado"})
 }
+
+func (rf *Router) UpdateMaterial(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
