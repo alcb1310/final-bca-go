@@ -45,3 +45,9 @@ func (s *service) UpdateMaterial(mat types.Materials) error {
 	_, err := s.db.Exec(sql, mat.Code, mat.Name, mat.Unit, mat.Category.Id, mat.Id)
 	return err
 }
+
+func (s *service) DeleteMaterial(id uuid.UUID) error {
+	sql := "delete from material where id = $1"
+	_, err := s.db.Exec(sql, id)
+	return err
+}
