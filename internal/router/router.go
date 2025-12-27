@@ -68,6 +68,7 @@ func (rf *Router) GenerateRoutes() {
 				r.Get("/", rf.GetMaterials)
 				r.Post("/", rf.CreateMaterial)
 				r.Put("/{id}", rf.UpdateMaterial)
+				r.Delete("/{id}", rf.DeleteMaterial)
 			})
 		})
 	})
