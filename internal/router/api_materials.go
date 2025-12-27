@@ -102,9 +102,50 @@ func (rf *Router) UpdateMaterial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	material, err := rf.DB.GetMaterial(parsedId)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	errorResponse := make(map[string]any)
+	p := make(map[string]any)
+	var ok bool
+	var val string
+
+	if r.Body == http.NoBody || r.Body == nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		errorResponse["message"] = "Falta el cuerpo de la solicitud"
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+	}
+
+	if val, ok = p["name"].(string); ok {
+		if len(val) > 0 {
+			material.Name = val
+		}
+	}
+
+	if val, ok = p["code"].(string); ok {
+		if len(val) > 0 {
+			material.Code = val
+		}
+	}
+
+	if val, ok = p["unit"].(string); ok {
+		if len(val) > 0 {
+			material.Unit = val
+		}
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"message":  "Update material",
-		"parsedId": parsedId,
+		"material": material,
 	})
 }
