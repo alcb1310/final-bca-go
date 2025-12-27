@@ -22,3 +22,9 @@ func (s *service) GetMaterials() ([]types.Materials, error) {
 
 	return materials, nil
 }
+
+func (s *service) CreateMaterial(mat types.Materials) error {
+	sql := "insert into material (code, name, unit, category_id) values ($1, $2, $3, $4)"
+	_, err := s.db.Exec(sql, mat.Code, mat.Name, mat.Unit, mat.Category.Id)
+	return err
+}

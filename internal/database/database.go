@@ -39,6 +39,7 @@ type Service interface {
 	UpdateCategory(cat types.Category) error
 
 	// file: materials.go
+	CreateMaterial(mat types.Materials) error
 	GetMaterials() ([]types.Materials, error)
 }
 
