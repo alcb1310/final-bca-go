@@ -15,3 +15,7 @@ func (rf *Router) GetMaterials(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(materials)
 }
+
+func (rf *Router) CreateMaterial(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
