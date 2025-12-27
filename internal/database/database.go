@@ -43,6 +43,7 @@ type Service interface {
 	GetMaterials() ([]types.Materials, error)
 	GetMaterial(id uuid.UUID) (types.Materials, error)
 	UpdateMaterial(mat types.Materials) error
+	DeleteMaterial(id uuid.UUID) error
 }
 
 type service struct {
