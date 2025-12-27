@@ -39,3 +39,9 @@ func (s *service) GetMaterial(id uuid.UUID) (types.Materials, error) {
 	err := s.db.QueryRow(sql, id).Scan(&material.Id, &material.Code, &material.Name, &material.Unit, &material.Category.Id, &material.Category.Name)
 	return material, err
 }
+
+func (s *service) UpdateMaterial(mat types.Materials) error {
+	sql := "update material set code = $1, name = $2, unit = $3, category_id = $4 where id = $5"
+	_, err := s.db.Exec(sql, mat.Code, mat.Name, mat.Unit, mat.Category.Id, mat.Id)
+	return err
+}
