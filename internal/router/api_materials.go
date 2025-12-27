@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -93,5 +94,11 @@ func (rf *Router) CreateMaterial(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rf *Router) UpdateMaterial(w http.ResponseWriter, r *http.Request) {
+	pId := chi.URLParam(r, "id")
+
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"message": "Update material",
+		"pId":     pId,
+	})
 }
