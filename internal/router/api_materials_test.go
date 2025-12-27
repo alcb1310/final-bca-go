@@ -56,6 +56,18 @@ func TestCreateMaterial(t *testing.T) {
 				"category_id": "La categoría es obligatoria",
 			},
 		},
+		{
+			name: "should pass a unit",
+			form: map[string]any{
+				"name": "Prueba",
+				"code": "prb",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"unit":        "La unidad es obligatoria",
+				"category_id": "La categoría es obligatoria",
+			},
+		},
 	}
 
 	for _, tt := range testData {
