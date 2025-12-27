@@ -41,6 +41,7 @@ type Service interface {
 	// file: materials.go
 	CreateMaterial(mat types.Materials) error
 	GetMaterials() ([]types.Materials, error)
+	GetMaterial(id uuid.UUID) (types.Materials, error)
 }
 
 type service struct {
