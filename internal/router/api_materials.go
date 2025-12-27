@@ -95,10 +95,16 @@ func (rf *Router) CreateMaterial(w http.ResponseWriter, r *http.Request) {
 
 func (rf *Router) UpdateMaterial(w http.ResponseWriter, r *http.Request) {
 	pId := chi.URLParam(r, "id")
+	parsedId, err := uuid.Parse(pId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
+		return
+	}
 
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{
-		"message": "Update material",
-		"pId":     pId,
+		"message":  "Update material",
+		"parsedId": parsedId,
 	})
 }
