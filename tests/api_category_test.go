@@ -22,7 +22,6 @@ import (
 func TestApiCategoryTest(t *testing.T) {
 	ctx := context.Background()
 	testUrl := "/api/v2/categories"
-	fmt.Println(testUrl)
 	path := filepath.Join("..", "schema", "tables.sql")
 
 	pgContainer, err := postgres.Run(ctx,

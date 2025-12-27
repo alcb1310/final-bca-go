@@ -22,7 +22,6 @@ import (
 func TestApiBudgetItems(t *testing.T) {
 	ctx := context.Background()
 	testUrl := "/api/v2/budget-items"
-	fmt.Println(testUrl)
 	path := filepath.Join("..", "schema", "tables.sql")
 
 	pgContainer, err := postgres.Run(ctx,
