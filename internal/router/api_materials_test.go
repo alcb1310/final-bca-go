@@ -9,7 +9,9 @@ import (
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,6 +20,7 @@ func TestCreateMaterial(t *testing.T) {
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
 	testURL := "/api/v2/materials"
+	catId, _ := uuid.NewUUID()
 	testData := []struct {
 		name           string
 		form           map[string]any
@@ -92,6 +95,27 @@ func TestCreateMaterial(t *testing.T) {
 			body: map[string]any{
 				"category_id": "La categoría es inválida",
 			},
+		},
+		{
+			name: "should create a material",
+			form: map[string]any{
+				"name":        "Prueba",
+				"code":        "prb",
+				"unit":        "u",
+				"category_id": catId,
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"message": "Material creado",
+			},
+			createMaterial: db.EXPECT().CreateMaterial(types.Materials{
+				Name: "Prueba",
+				Code: "prb",
+				Unit: "u",
+				Category: types.Category{
+					Id: catId,
+				},
+			}).Return(nil),
 		},
 	}
 
