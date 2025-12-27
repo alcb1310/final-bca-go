@@ -33,6 +33,17 @@ func TestCreateMaterial(t *testing.T) {
 				"message": "Falta el cuerpo de la solicitud",
 			},
 		},
+		{
+			name:   "should pass a name",
+			form:   map[string]any{},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"name":        "El nombre es obligatorio",
+				"code":        "El código es obligatorio",
+				"unit":        "La unidad es obligatoria",
+				"category_id": "La categoría es obligatoria",
+			},
+		},
 	}
 
 	for _, tt := range testData {
@@ -62,6 +73,8 @@ func TestCreateMaterial(t *testing.T) {
 			mapBody := make(map[string]any)
 			err = json.Unmarshal(body, &mapBody)
 			assert.NoError(t, err)
+
+			assert.Equal(t, len(tt.body), len(mapBody))
 
 			for k, v := range tt.body {
 				assert.Equal(t, v, mapBody[k])
