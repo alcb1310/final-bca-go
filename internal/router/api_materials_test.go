@@ -80,6 +80,19 @@ func TestCreateMaterial(t *testing.T) {
 				"category_id": "La categoría es obligatoria",
 			},
 		},
+		{
+			name: "should pass a valid category",
+			form: map[string]any{
+				"name":        "Prueba",
+				"code":        "prb",
+				"unit":        "u",
+				"category_id": "invalido",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"category_id": "La categoría es inválida",
+			},
+		},
 	}
 
 	for _, tt := range testData {
