@@ -3,7 +3,6 @@ package tests
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -20,12 +19,13 @@ import (
 func TestApiMaterialsTest(t *testing.T) {
 	ctx := context.Background()
 	testUrl := "/api/v2/materials"
-	fmt.Println(testUrl)
-	path := filepath.Join("..", "schema", "tables.sql")
 
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:18-alpine",
-		postgres.WithInitScripts(path),
+		postgres.WithOrderedInitScripts(
+			filepath.Join("..", "schema", "tables.sql"),
+			filepath.Join("scripts", "seed_categories.sql"),
+		),
 		postgres.WithDatabase("testbca"),
 		postgres.WithUsername("postgres"),
 		postgres.WithPassword("postgres"),
