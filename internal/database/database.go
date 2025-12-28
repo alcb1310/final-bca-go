@@ -44,6 +44,9 @@ type Service interface {
 	GetMaterial(id uuid.UUID) (types.Materials, error)
 	UpdateMaterial(mat types.Materials) error
 	DeleteMaterial(id uuid.UUID) error
+
+	// file: items.go
+	GetItems() ([]types.Items, error)
 }
 
 type service struct {
