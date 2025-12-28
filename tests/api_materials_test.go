@@ -113,4 +113,24 @@ func TestApiMaterialsTest(t *testing.T) {
 			assert.Equal(t, "prueba", cat["name"])
 		}
 	})
+
+	t.Run("should show conflict error", func(t *testing.T) {
+		form := map[string]any{
+			"name":        "Prueba",
+			"code":        "PRU",
+			"unit":        "Unidad",
+			"category_id": "325a7622-53dd-4ccf-b109-4f98b8daac55",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("POST", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusConflict, res.Code)
+	})
 }
