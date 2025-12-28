@@ -70,6 +70,10 @@ func (rf *Router) GenerateRoutes() {
 				r.Put("/{id}", rf.UpdateMaterial)
 				r.Delete("/{id}", rf.DeleteMaterial)
 			})
+
+			r.Route("/items", func(r chi.Router) {
+				r.Get("/", rf.GetItems)
+			})
 		})
 	})
 }
