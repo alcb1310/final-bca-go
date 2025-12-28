@@ -57,6 +57,18 @@ create table if not exists material(
     unique (code)
 );
 
+create table if not exists item(
+    id uuid primary key default gen_random_uuid(),
+    code text not null,
+    name text not null,
+    unit text not null,
+
+    category_id uuid references category(id) on delete restrict,
+    created_at timestamp default now(),
+
+    unique (name),
+    unique (code)
+);
 
 ----------------------------------------
 --                VIEWS               --
