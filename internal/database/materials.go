@@ -8,7 +8,7 @@ import (
 func (s *service) GetMaterials() ([]types.Materials, error) {
 	materials := []types.Materials{}
 
-	sql := "select id, code, name, unit, category_id, category_name from vw_materials"
+	sql := "select id, code, name, unit, category_id, category_name from vw_materials order by name"
 	rows, err := s.db.Query(sql)
 	if err != nil {
 		return nil, err
