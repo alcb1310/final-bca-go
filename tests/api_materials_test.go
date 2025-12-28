@@ -163,6 +163,25 @@ func TestApiMaterialsTest(t *testing.T) {
 		assert.Equal(t, "Material no encontrado", mapBody["message"])
 	})
 
+	t.Run("should return not exist when non existent material", func(t *testing.T) {
+		id := uuid.New()
+
+		req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/%s", testUrl, id), nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusNotFound, res.Code)
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "Material no encontrado", mapBody["message"])
+	})
+
 	t.Run("item specific tests", func(t *testing.T) {
 		req, err := http.NewRequest("GET", testUrl, nil)
 		assert.NoError(t, err)
