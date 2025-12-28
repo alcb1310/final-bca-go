@@ -125,7 +125,6 @@ func TestApiCategoryTest(t *testing.T) {
 
 	t.Run("should return not exist when non existent category", func(t *testing.T) {
 		form := map[string]any{
-			"code": "100",
 			"name": "Prueba",
 		}
 
