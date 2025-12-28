@@ -232,5 +232,25 @@ func TestApiMaterialsTest(t *testing.T) {
 				assert.Equal(t, "prueba", cat["name"])
 			}
 		})
+
+		t.Run("should be able to delete a material", func(t *testing.T) {
+			req, err = http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/%s", testUrl, id), nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusNoContent, res.Code)
+
+			req, err = http.NewRequest("GET", testUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			err = json.Unmarshal(res.Body.Bytes(), &r)
+			assert.NoError(t, err)
+			assert.Equal(t, 0, len(r))
+		})
 	})
 }
