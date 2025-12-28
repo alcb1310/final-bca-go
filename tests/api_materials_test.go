@@ -162,4 +162,56 @@ func TestApiMaterialsTest(t *testing.T) {
 
 		assert.Equal(t, "Material no encontrado", mapBody["message"])
 	})
+
+	t.Run("item specific tests", func(t *testing.T) {
+		req, err := http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+
+		id := r[0].(map[string]any)["id"].(string)
+
+		t.Run("should be able to update a category", func(t *testing.T) {
+			form := map[string]any{
+				"code": "100",
+				"name": "Test",
+				"unit": "u",
+			}
+
+			j, err := json.Marshal(form)
+			assert.NoError(t, err)
+
+			req, err = http.NewRequest(http.MethodPut, fmt.Sprintf("%s/%s", testUrl, id), strings.NewReader(string(j)))
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusNoContent, res.Code)
+
+			req, err = http.NewRequest("GET", testUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			err = json.Unmarshal(res.Body.Bytes(), &r)
+			assert.NoError(t, err)
+			assert.Equal(t, 1, len(r))
+			for _, v := range r {
+				assert.Equal(t, "Test", v.(map[string]any)["name"])
+				assert.Equal(t, "100", v.(map[string]any)["code"])
+				assert.Equal(t, "u", v.(map[string]any)["unit"])
+				cat := v.(map[string]any)["category"].(map[string]any)
+				assert.Equal(t, "325a7622-53dd-4ccf-b109-4f98b8daac55", cat["id"])
+				assert.Equal(t, "prueba", cat["name"])
+			}
+		})
+	})
 }
