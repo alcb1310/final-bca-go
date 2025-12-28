@@ -177,6 +177,12 @@ func (rf *Router) DeleteMaterial(w http.ResponseWriter, r *http.Request) {
 
 	_, err = rf.DB.GetMaterial(parsedId)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Material no encontrado"})
+			return
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(err)
 		return
