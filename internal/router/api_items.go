@@ -135,6 +135,18 @@ func (rf *Router) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		item.Unit = val
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "item": item})
+	if err = rf.DB.UpdateItem(item); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) && e.Code == "23505" {
+			w.WriteHeader(http.StatusConflict)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "El rubro ya existe"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
