@@ -108,5 +108,31 @@ func TestApiItemsTest(t *testing.T) {
 			assert.Equal(t, "Unidad", v.(map[string]any)["unit"])
 		}
 	})
-}
 
+	t.Run("should show conflict error", func(t *testing.T) {
+		form := map[string]any{
+			"name": "Prueba",
+			"code": "PRU",
+			"unit": "Unidad",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("POST", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusConflict, res.Code)
+
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "El rubro ya existe", mapBody["message"])
+	})
+}
