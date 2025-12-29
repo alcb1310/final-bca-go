@@ -34,6 +34,16 @@ func TestCreateItem(t *testing.T) {
 				"message": "Falta el cuerpo de la solicitud",
 			},
 		},
+		{
+			name:   "should pass a name",
+			form:   map[string]any{},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"name": "El nombre es obligatorio",
+				"code": "El código es obligatorio",
+				"unit": "La unidad es obligatoria",
+			},
+		},
 	}
 
 	for _, tt := range testData {
