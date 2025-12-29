@@ -11,6 +11,7 @@ import (
 	"github.com/alcb1310/final-bca-go/internal/router"
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -75,9 +76,12 @@ func TestCreateItem(t *testing.T) {
 			},
 			status: http.StatusCreated,
 			body: map[string]any{
-				"message": "Item creado",
+				"name": "Prueba",
+				"code": "prb",
+				"unit": "m2",
+				"id":   uuid.Nil.String(),
 			},
-			createItem: db.EXPECT().CreateItem(types.Items{
+			createItem: db.EXPECT().CreateItem(&types.Items{
 				Name: "Prueba",
 				Code: "prb",
 				Unit: "m2",
