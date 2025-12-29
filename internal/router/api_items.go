@@ -98,7 +98,7 @@ func (rf *Router) UpdateItem(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)
-			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Item no encontrado"})
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Rubro no encontrado"})
 			return
 		}
 
