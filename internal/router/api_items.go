@@ -72,7 +72,7 @@ func (rf *Router) CreateItem(w http.ResponseWriter, r *http.Request) {
 		var e *pgconn.PgError
 		if errors.As(err, &e) && e.Code == "23505" {
 			w.WriteHeader(http.StatusConflict)
-			_ = json.NewEncoder(w).Encode(map[string]any{"message": "El item ya existe"})
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "El rubro ya existe"})
 			return
 		}
 
