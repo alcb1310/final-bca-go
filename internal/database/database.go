@@ -48,6 +48,7 @@ type Service interface {
 	// file: items.go
 	CreateItem(item types.Items) error
 	GetItems() ([]types.Items, error)
+	GetItem(id uuid.UUID) (types.Items, error)
 }
 
 type service struct {
