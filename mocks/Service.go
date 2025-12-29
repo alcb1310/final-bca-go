@@ -1216,6 +1216,52 @@ func (_c *Service_UpdateCategory_Call) RunAndReturn(run func(types.Category) err
 	return _c
 }
 
+// UpdateItem provides a mock function with given fields: item
+func (_m *Service) UpdateItem(item types.Items) error {
+	ret := _m.Called(item)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateItem")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Items) error); ok {
+		r0 = rf(item)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_UpdateItem_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateItem'
+type Service_UpdateItem_Call struct {
+	*mock.Call
+}
+
+// UpdateItem is a helper method to define mock.On call
+//   - item types.Items
+func (_e *Service_Expecter) UpdateItem(item interface{}) *Service_UpdateItem_Call {
+	return &Service_UpdateItem_Call{Call: _e.mock.On("UpdateItem", item)}
+}
+
+func (_c *Service_UpdateItem_Call) Run(run func(item types.Items)) *Service_UpdateItem_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Items))
+	})
+	return _c
+}
+
+func (_c *Service_UpdateItem_Call) Return(_a0 error) *Service_UpdateItem_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_UpdateItem_Call) RunAndReturn(run func(types.Items) error) *Service_UpdateItem_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateMaterial provides a mock function with given fields: mat
 func (_m *Service) UpdateMaterial(mat types.Materials) error {
 	ret := _m.Called(mat)
