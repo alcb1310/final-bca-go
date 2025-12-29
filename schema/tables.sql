@@ -63,14 +63,11 @@ create table if not exists item(
     name text not null,
     unit text not null,
 
-    category_id uuid references category(id) on delete restrict,
     created_at timestamp default now(),
 
     unique (name),
     unique (code)
 );
-
-alter table item drop column category_id;
 
 ----------------------------------------
 --                VIEWS               --
