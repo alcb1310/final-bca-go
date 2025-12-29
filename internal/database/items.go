@@ -38,3 +38,9 @@ func (s *service) GetItem(id uuid.UUID) (types.Items, error) {
 	err := s.db.QueryRow(sql, id).Scan(&item.Id, &item.Code, &item.Name, &item.Unit)
 	return item, err
 }
+
+func (s *service) UpdateItem(item types.Items) error {
+	sql := "update item set code = $1, name = $2, unit = $3 where id = $4"
+	_, err := s.db.Exec(sql, item.Code, item.Name, item.Unit, item.Id)
+	return err
+}
