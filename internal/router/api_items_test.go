@@ -44,6 +44,17 @@ func TestCreateItem(t *testing.T) {
 				"unit": "La unidad es obligatoria",
 			},
 		},
+		{
+			name: "should pass a code",
+			form: map[string]any{
+				"name": "Prueba",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"code": "El código es obligatorio",
+				"unit": "La unidad es obligatoria",
+			},
+		},
 	}
 
 	for _, tt := range testData {
