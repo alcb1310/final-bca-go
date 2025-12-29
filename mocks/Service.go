@@ -113,6 +113,52 @@ func (_c *Service_CreateCategory_Call) RunAndReturn(run func(types.Category) err
 	return _c
 }
 
+// CreateItem provides a mock function with given fields: item
+func (_m *Service) CreateItem(item types.Items) error {
+	ret := _m.Called(item)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateItem")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.Items) error); ok {
+		r0 = rf(item)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_CreateItem_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateItem'
+type Service_CreateItem_Call struct {
+	*mock.Call
+}
+
+// CreateItem is a helper method to define mock.On call
+//   - item types.Items
+func (_e *Service_Expecter) CreateItem(item interface{}) *Service_CreateItem_Call {
+	return &Service_CreateItem_Call{Call: _e.mock.On("CreateItem", item)}
+}
+
+func (_c *Service_CreateItem_Call) Run(run func(item types.Items)) *Service_CreateItem_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.Items))
+	})
+	return _c
+}
+
+func (_c *Service_CreateItem_Call) Return(_a0 error) *Service_CreateItem_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_CreateItem_Call) RunAndReturn(run func(types.Items) error) *Service_CreateItem_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateMaterial provides a mock function with given fields: mat
 func (_m *Service) CreateMaterial(mat types.Materials) error {
 	ret := _m.Called(mat)
