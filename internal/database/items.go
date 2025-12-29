@@ -1,6 +1,9 @@
 package database
 
-import "github.com/alcb1310/final-bca-go/internal/types"
+import (
+	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/google/uuid"
+)
 
 func (s *service) GetItems() ([]types.Items, error) {
 	items := []types.Items{}
@@ -27,4 +30,11 @@ func (s *service) CreateItem(item types.Items) error {
 	sql := "insert into item (code, name, unit) values ($1, $2, $3)"
 	_, err := s.db.Exec(sql, item.Code, item.Name, item.Unit)
 	return err
+}
+
+func (s *service) GetItem(id uuid.UUID) (types.Items, error) {
+	item := types.Items{}
+	sql := "select id, code, name, unit from item where id = $1"
+	err := s.db.QueryRow(sql, id).Scan(&item.Id, &item.Code, &item.Name, &item.Unit)
+	return item, err
 }
