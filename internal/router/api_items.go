@@ -107,6 +107,34 @@ func (rf *Router) UpdateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var val string
+	var ok bool
+	errorResponse := make(map[string]any)
+	p := make(map[string]any)
+
+	if r.Body == http.NoBody || r.Body == nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		errorResponse["message"] = "Falta el cuerpo de la solicitud"
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+	}
+
+	if val, ok = p["code"].(string); ok && len(val) > 0 {
+		item.Code = val
+	}
+
+	if val, ok = p["name"].(string); ok && len(val) > 0 {
+		item.Name = val
+	}
+
+	if val, ok = p["unit"].(string); ok && len(val) > 0 {
+		item.Unit = val
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "item": item})
 }
