@@ -66,6 +66,23 @@ func TestCreateItem(t *testing.T) {
 				"unit": "La unidad es obligatoria",
 			},
 		},
+		{
+			name: "should create an item",
+			form: map[string]any{
+				"name": "Prueba",
+				"code": "prb",
+				"unit": "m2",
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"message": "Item creado",
+			},
+			createItem: db.EXPECT().CreateItem(types.Items{
+				Name: "Prueba",
+				Code: "prb",
+				Unit: "m2",
+			}).Return(nil),
+		},
 	}
 
 	for _, tt := range testData {
