@@ -68,7 +68,7 @@ func (rf *Router) CreateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = rf.DB.CreateItem(item); err != nil {
+	if err = rf.DB.CreateItem(&item); err != nil {
 		var e *pgconn.PgError
 		if errors.As(err, &e) && e.Code == "23505" {
 			w.WriteHeader(http.StatusConflict)
@@ -82,7 +82,7 @@ func (rf *Router) CreateItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Rubro creado"})
+	_ = json.NewEncoder(w).Encode(item)
 }
 
 func (rf *Router) UpdateItem(w http.ResponseWriter, r *http.Request) {

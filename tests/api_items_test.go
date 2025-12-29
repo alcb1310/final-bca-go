@@ -92,7 +92,15 @@ func TestApiItemsTest(t *testing.T) {
 		err = json.Unmarshal(body, &mapBody)
 		assert.NoError(t, err)
 
-		assert.Equal(t, "Rubro creado", mapBody["message"])
+		t.Log(mapBody)
+		assert.Equal(t, "Prueba", mapBody["name"])
+		assert.Equal(t, "PRU", mapBody["code"])
+		assert.Equal(t, "Unidad", mapBody["unit"])
+		id := mapBody["id"].(string)
+		assert.NotEmpty(t, id)
+
+		_, err = uuid.Parse(id)
+		assert.NoError(t, err)
 
 		req, err = http.NewRequest("GET", testUrl, nil)
 		assert.NoError(t, err)
@@ -212,4 +220,3 @@ func TestApiItemsTest(t *testing.T) {
 		}
 	})
 }
-
