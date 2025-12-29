@@ -46,7 +46,7 @@ type Service interface {
 	DeleteMaterial(id uuid.UUID) error
 
 	// file: items.go
-	CreateItem(item types.Items) error
+	CreateItem(item *types.Items) error
 	GetItems() ([]types.Items, error)
 	GetItem(id uuid.UUID) (types.Items, error)
 	UpdateItem(item types.Items) error

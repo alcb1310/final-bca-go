@@ -26,9 +26,9 @@ func (s *service) GetItems() ([]types.Items, error) {
 	return items, nil
 }
 
-func (s *service) CreateItem(item types.Items) error {
-	sql := "insert into item (code, name, unit) values ($1, $2, $3)"
-	_, err := s.db.Exec(sql, item.Code, item.Name, item.Unit)
+func (s *service) CreateItem(item *types.Items) error {
+	sql := "insert into item (code, name, unit) values ($1, $2, $3) returning id"
+	err := s.db.QueryRow(sql, item.Code, item.Name, item.Unit).Scan(&item.Id)
 	return err
 }
 
