@@ -81,3 +81,7 @@ func (rf *Router) CreateItem(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Item creado"})
 }
+
+func (rf *Router) UpdateItem(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}

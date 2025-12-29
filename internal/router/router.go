@@ -74,6 +74,10 @@ func (rf *Router) GenerateRoutes() {
 			r.Route("/items", func(r chi.Router) {
 				r.Get("/", rf.GetItems)
 				r.Post("/", rf.CreateItem)
+
+				r.Route("/{id}", func(r chi.Router) {
+					r.Put("/", rf.UpdateItem)
+				})
 			})
 		})
 	})
