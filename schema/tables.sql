@@ -70,6 +70,8 @@ create table if not exists item(
     unique (code)
 );
 
+alter table item drop column category_id;
+
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
