@@ -88,7 +88,7 @@ func (rf *Router) CreateItemMaterial(w http.ResponseWriter, r *http.Request) {
 	itemMaterial.ItemId = parsedId
 
 	if val, ok := p["material_id"].(string); !ok {
-		errorResponse["material_id"] = "El id del material es obligatorio"
+		errorResponse["material_id"] = "El material es obligatorio"
 	} else {
 		itemMaterial.MaterialId, err = uuid.Parse(val)
 		if err != nil {

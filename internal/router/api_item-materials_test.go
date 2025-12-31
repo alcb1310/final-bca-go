@@ -45,6 +45,16 @@ func TestCreateItemMaterial(t *testing.T) {
 			},
 			getItem: itemExpect,
 		},
+		{
+			name:   "should pass a material_id",
+			form:   map[string]any{},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"material_id": "El material es obligatorio",
+				"quantity":    "La cantidad es obligatoria",
+			},
+			getItem: itemExpect,
+		},
 	}
 
 	for _, tt := range testData {
