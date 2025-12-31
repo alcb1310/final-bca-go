@@ -69,6 +69,15 @@ create table if not exists item(
     unique (code)
 );
 
+create table if not exists item_material(
+    item_id uuid references item(id) on delete restrict,
+    material_id uuid references material(id) on delete restrict,
+    quantity numeric not null default 0,
+    created_at timestamp default now(),
+
+    primary key (item_id, material_id)
+);
+
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
