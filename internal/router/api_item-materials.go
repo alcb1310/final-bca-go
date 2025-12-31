@@ -3,11 +3,14 @@ package router
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (rf *Router) GetItemMaterials(w http.ResponseWriter, r *http.Request) {
@@ -100,6 +103,31 @@ func (rf *Router) CreateItemMaterial(w http.ResponseWriter, r *http.Request) {
 	if len(errorResponse) > 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err := rf.DB.CreateItemMaterial(itemMaterial); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) {
+			switch e.Code {
+			case "23503":
+				w.WriteHeader(http.StatusNotFound)
+				_ = json.NewEncoder(w).Encode(map[string]any{"message": "Material no encontrado"})
+
+			case "23505":
+				w.WriteHeader(http.StatusConflict)
+				_ = json.NewEncoder(w).Encode(map[string]any{"message": "Material ya asociado al rubro"})
+
+			default:
+				slog.Error("Error al crear el rubro", "error", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				_ = json.NewEncoder(w).Encode(err)
+			}
+			return
+
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
 		return
 	}
 
