@@ -105,3 +105,18 @@ select
     c.name as category_name
 from material m
 left join category c on m.category_id = c.id;
+
+create or replace view vw_item_materials as
+select
+    m.id as material_id,
+    m.code as material_code,
+    m.name as material_name,
+    m.unit as material_unit,
+    i.id as item_id,
+    i.code as item_code,
+    i.name as item_name,
+    i.unit as item_unit,
+    im.quantity
+from item_material im
+left join material m on im.material_id = m.id
+left join item i on im.item_id = i.id;
