@@ -91,6 +91,18 @@ func TestCreateItemMaterial(t *testing.T) {
 			},
 			getItem: itemExpect,
 		},
+		{
+			name: "should pass a numeric quantity",
+			form: map[string]any{
+				"material_id": materialId.String(),
+				"quantity":    "invalid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"quantity": "La cantidad es obligatoria",
+			},
+			getItem: itemExpect,
+		},
 	}
 
 	for _, tt := range testData {
