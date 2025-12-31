@@ -43,3 +43,7 @@ func (rf *Router) GetItemMaterials(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(itemMaterials)
 }
+
+func (rf *Router) CreateItemMaterials(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
