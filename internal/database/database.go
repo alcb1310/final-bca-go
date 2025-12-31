@@ -50,6 +50,9 @@ type Service interface {
 	GetItems() ([]types.Items, error)
 	GetItem(id uuid.UUID) (types.Items, error)
 	UpdateItem(item types.Items) error
+
+	// file item-materials.go
+	GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResponse, error)
 }
 
 type service struct {
