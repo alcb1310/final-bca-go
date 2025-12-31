@@ -28,6 +28,7 @@ func TestCreateItemMaterial(t *testing.T) {
 		Code: "test",
 		Unit: "test",
 	}, nil)
+	materialId := uuid.New()
 
 	testData := []struct {
 		name    string
@@ -76,6 +77,17 @@ func TestCreateItemMaterial(t *testing.T) {
 			body: map[string]any{
 				"material_id": "El material es invalido",
 				"quantity":    "La cantidad es obligatoria",
+			},
+			getItem: itemExpect,
+		},
+		{
+			name: "should pass a quantity",
+			form: map[string]any{
+				"material_id": materialId.String(),
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"quantity": "La cantidad es obligatoria",
 			},
 			getItem: itemExpect,
 		},
