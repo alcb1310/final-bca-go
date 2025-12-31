@@ -134,3 +134,7 @@ func (rf *Router) CreateItemMaterial(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(itemMaterial)
 }
+
+func (rf *Router) UpdateItemMaterial(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
