@@ -6,9 +6,9 @@ import (
 )
 
 func (s *service) GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResponse, error) {
-	var im []types.ItemMaterialsResponse
+	im := []types.ItemMaterialsResponse{}
 
-	sql := "select material_id, material_code, material_name, material_unit, item_id, item_code, item_name, item_unit from vw_item_material where item_id = $1"
+	sql := "select material_id, material_code, material_name, material_unit, item_id, item_code, item_name, item_unit from vw_item_materials where item_id = $1"
 
 	rows, err := s.db.Query(sql, rubroId)
 	if err != nil {

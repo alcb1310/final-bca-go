@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
@@ -18,7 +19,7 @@ func (rf *Router) GetItemMaterials(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := rf.DB.GetItem(parsedId)
+	_, err = rf.DB.GetItem(parsedId)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)
@@ -31,6 +32,14 @@ func (rf *Router) GetItemMaterials(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	itemMaterials := []types.ItemMaterialsResponse{}
+	itemMaterials, err = rf.DB.GetItemMaterials(parsedId)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(item)
+	_ = json.NewEncoder(w).Encode(itemMaterials)
 }
