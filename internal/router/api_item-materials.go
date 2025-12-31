@@ -65,5 +65,44 @@ func (rf *Router) CreateItemMaterial(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode(err)
 		return
 	}
+
+	errorResponse := make(map[string]any)
+	p := make(map[string]any)
+	var itemMaterial types.ItemMaterialCreate
+	var ok bool
+
+	if r.Body == http.NoBody || r.Body == nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		errorResponse["message"] = "Falta el cuerpo de la solicitud"
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+	}
+
+	itemMaterial.ItemId = parsedId
+
+	if val, ok := p["material_id"].(string); !ok {
+		errorResponse["material_id"] = "El id del material es obligatorio"
+	} else {
+		itemMaterial.MaterialId, err = uuid.Parse(val)
+		if err != nil {
+			errorResponse["material_id"] = "El id del material es invalido"
+		}
+	}
+
+	if itemMaterial.Quantity, ok = p["quantity"].(float64); !ok {
+		errorResponse["quantity"] = "La cantidad es obligatoria"
+	}
+
+	if len(errorResponse) > 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(itemMaterial)
 }
