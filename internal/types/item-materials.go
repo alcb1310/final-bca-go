@@ -13,3 +13,9 @@ type ItemMaterialsResponse struct {
 	MaterialUnit string    `json:"material_unit"`
 	Quantity     float64   `json:"quantity"`
 }
+
+type ItemMaterialCreate struct {
+	ItemId     uuid.UUID `json:"item_id"`
+	MaterialId uuid.UUID `json:"material_id"`
+	Quantity   float64   `json:"quantity"`
+}
