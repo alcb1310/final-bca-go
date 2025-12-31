@@ -52,6 +52,7 @@ type Service interface {
 	UpdateItem(item types.Items) error
 
 	// file item-materials.go
+	CreateItemMaterial(im types.ItemMaterialCreate) error
 	GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResponse, error)
 }
 
