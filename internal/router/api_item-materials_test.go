@@ -31,11 +31,12 @@ func TestCreateItemMaterial(t *testing.T) {
 	materialId := uuid.New()
 
 	testData := []struct {
-		name    string
-		form    map[string]any
-		status  int
-		body    map[string]any
-		getItem *mocks.Service_GetItem_Call
+		name               string
+		form               map[string]any
+		status             int
+		body               map[string]any
+		getItem            *mocks.Service_GetItem_Call
+		createItemMaterial *mocks.Service_CreateItemMaterial_Call
 	}{
 		{
 			name:   "should pass a form",
@@ -103,6 +104,25 @@ func TestCreateItemMaterial(t *testing.T) {
 			},
 			getItem: itemExpect,
 		},
+		{
+			name: "should create a new item material",
+			form: map[string]any{
+				"material_id": materialId.String(),
+				"quantity":    45.32,
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"item_id":     rubroId.String(),
+				"material_id": materialId.String(),
+				"quantity":    45.32,
+			},
+			getItem: itemExpect,
+			createItemMaterial: db.EXPECT().CreateItemMaterial(types.ItemMaterialCreate{
+				ItemId:     rubroId,
+				MaterialId: materialId,
+				Quantity:   45.32,
+			}).Return(nil),
+		},
 	}
 
 	for _, tt := range testData {
@@ -111,6 +131,10 @@ func TestCreateItemMaterial(t *testing.T) {
 
 			if tt.getItem != nil {
 				tt.getItem.Times(1)
+			}
+
+			if tt.createItemMaterial != nil {
+				tt.createItemMaterial.Times(1)
 			}
 
 			if tt.form != nil {
