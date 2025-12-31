@@ -92,7 +92,7 @@ func (rf *Router) CreateItemMaterial(w http.ResponseWriter, r *http.Request) {
 	} else {
 		itemMaterial.MaterialId, err = uuid.Parse(val)
 		if err != nil {
-			errorResponse["material_id"] = "El id del material es invalido"
+			errorResponse["material_id"] = "El material es invalido"
 		}
 	}
 
