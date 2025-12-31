@@ -728,6 +728,64 @@ func (_c *Service_GetItem_Call) RunAndReturn(run func(uuid.UUID) (types.Items, e
 	return _c
 }
 
+// GetItemMaterials provides a mock function with given fields: rubroId
+func (_m *Service) GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResponse, error) {
+	ret := _m.Called(rubroId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetItemMaterials")
+	}
+
+	var r0 []types.ItemMaterialsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) ([]types.ItemMaterialsResponse, error)); ok {
+		return rf(rubroId)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) []types.ItemMaterialsResponse); ok {
+		r0 = rf(rubroId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]types.ItemMaterialsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(rubroId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetItemMaterials_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetItemMaterials'
+type Service_GetItemMaterials_Call struct {
+	*mock.Call
+}
+
+// GetItemMaterials is a helper method to define mock.On call
+//   - rubroId uuid.UUID
+func (_e *Service_Expecter) GetItemMaterials(rubroId interface{}) *Service_GetItemMaterials_Call {
+	return &Service_GetItemMaterials_Call{Call: _e.mock.On("GetItemMaterials", rubroId)}
+}
+
+func (_c *Service_GetItemMaterials_Call) Run(run func(rubroId uuid.UUID)) *Service_GetItemMaterials_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetItemMaterials_Call) Return(_a0 []types.ItemMaterialsResponse, _a1 error) *Service_GetItemMaterials_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetItemMaterials_Call) RunAndReturn(run func(uuid.UUID) ([]types.ItemMaterialsResponse, error)) *Service_GetItemMaterials_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetItems provides a mock function with no fields
 func (_m *Service) GetItems() ([]types.Items, error) {
 	ret := _m.Called()
