@@ -26,3 +26,9 @@ func (s *service) GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResp
 
 	return im, nil
 }
+
+func (s *service) CreateItemMaterial(im types.ItemMaterialCreate) error {
+	sql := "insert into item_material (material_id, item_id) values ($1, $2)"
+	_, err := s.db.Exec(sql, im.MaterialId, im.ItemId)
+	return err
+}
