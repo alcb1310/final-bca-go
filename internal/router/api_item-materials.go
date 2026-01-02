@@ -204,6 +204,21 @@ func (rf *Router) UpdateItemMaterial(w http.ResponseWriter, r *http.Request) {
 		itemMaterial.Quantity = val
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "item-material": itemMaterial})
+	if err = rf.DB.UpdateItemMaterial(itemMaterial); err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			switch pgErr.Code {
+			case "23505":
+				w.WriteHeader(http.StatusConflict)
+				_ = json.NewEncoder(w).Encode(map[string]any{"message": "Material ya asociado al rubro"})
+				return
+			}
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
