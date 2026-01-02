@@ -28,8 +28,8 @@ func (s *service) GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResp
 }
 
 func (s *service) CreateItemMaterial(im types.ItemMaterialCreate) error {
-	sql := "insert into item_material (material_id, item_id) values ($1, $2)"
-	_, err := s.db.Exec(sql, im.MaterialId, im.ItemId)
+	sql := "insert into item_material (material_id, item_id, quantity) values ($1, $2, $3)"
+	_, err := s.db.Exec(sql, im.MaterialId, im.ItemId, im.Quantity)
 	return err
 }
 
