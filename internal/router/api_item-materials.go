@@ -165,6 +165,19 @@ func (rf *Router) UpdateItemMaterial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	material, err := rf.DB.GetMaterial(materialId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Material no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "material_id": materialId})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "item-material": material})
 }
