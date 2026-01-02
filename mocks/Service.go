@@ -343,6 +343,53 @@ func (_c *Service_CreateSupplier_Call) RunAndReturn(run func(types.Supplier) err
 	return _c
 }
 
+// DeleteItemMaterial provides a mock function with given fields: rubroId, materialId
+func (_m *Service) DeleteItemMaterial(rubroId uuid.UUID, materialId uuid.UUID) error {
+	ret := _m.Called(rubroId, materialId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteItemMaterial")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID, uuid.UUID) error); ok {
+		r0 = rf(rubroId, materialId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_DeleteItemMaterial_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteItemMaterial'
+type Service_DeleteItemMaterial_Call struct {
+	*mock.Call
+}
+
+// DeleteItemMaterial is a helper method to define mock.On call
+//   - rubroId uuid.UUID
+//   - materialId uuid.UUID
+func (_e *Service_Expecter) DeleteItemMaterial(rubroId interface{}, materialId interface{}) *Service_DeleteItemMaterial_Call {
+	return &Service_DeleteItemMaterial_Call{Call: _e.mock.On("DeleteItemMaterial", rubroId, materialId)}
+}
+
+func (_c *Service_DeleteItemMaterial_Call) Run(run func(rubroId uuid.UUID, materialId uuid.UUID)) *Service_DeleteItemMaterial_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_DeleteItemMaterial_Call) Return(_a0 error) *Service_DeleteItemMaterial_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_DeleteItemMaterial_Call) RunAndReturn(run func(uuid.UUID, uuid.UUID) error) *Service_DeleteItemMaterial_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteMaterial provides a mock function with given fields: id
 func (_m *Service) DeleteMaterial(id uuid.UUID) error {
 	ret := _m.Called(id)
