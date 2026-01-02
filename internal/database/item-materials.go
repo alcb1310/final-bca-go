@@ -38,3 +38,9 @@ func (s *service) UpdateItemMaterial(im types.ItemMaterialCreate) error {
 	_, err := s.db.Exec(sql, im.Quantity, im.MaterialId, im.ItemId)
 	return err
 }
+
+func (s *service) DeleteItemMaterial(materialId uuid.UUID, itemId uuid.UUID) error {
+	sql := "delete from item_material where material_id = $1 and item_id = $2"
+	_, err := s.db.Exec(sql, materialId, itemId)
+	return err
+}

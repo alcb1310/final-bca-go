@@ -55,6 +55,7 @@ type Service interface {
 	CreateItemMaterial(im types.ItemMaterialCreate) error
 	GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResponse, error)
 	UpdateItemMaterial(im types.ItemMaterialCreate) error
+	DeleteItemMaterial(rubroId, materialId uuid.UUID) error
 }
 
 type service struct {
