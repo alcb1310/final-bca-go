@@ -165,7 +165,7 @@ func (rf *Router) UpdateItemMaterial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	material, err := rf.DB.GetMaterial(materialId)
+	_, err = rf.DB.GetMaterial(materialId)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)
@@ -178,6 +178,32 @@ func (rf *Router) UpdateItemMaterial(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var val float64
+	var ok bool
+	p := make(map[string]any)
+	var itemMaterial types.ItemMaterialCreate
+	errorResponse := make(map[string]any)
+
+	if r.Body == http.NoBody || r.Body == nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		errorResponse["message"] = "Falta el cuerpo de la solicitud"
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	itemMaterial.ItemId = parsedId
+	itemMaterial.MaterialId = materialId
+
+	if val, ok = p["quantity"].(float64); ok {
+		itemMaterial.Quantity = val
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "item-material": material})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "item-material": itemMaterial})
 }
