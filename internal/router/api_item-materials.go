@@ -222,3 +222,7 @@ func (rf *Router) UpdateItemMaterial(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (rf *Router) DeleteItemMaterial(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
