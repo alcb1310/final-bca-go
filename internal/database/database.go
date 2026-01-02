@@ -54,6 +54,7 @@ type Service interface {
 	// file item-materials.go
 	CreateItemMaterial(im types.ItemMaterialCreate) error
 	GetItemMaterials(rubroId uuid.UUID) ([]types.ItemMaterialsResponse, error)
+	UpdateItemMaterial(im types.ItemMaterialCreate) error
 }
 
 type service struct {
