@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -68,5 +69,55 @@ func TestApiItemMaterialsTest(t *testing.T) {
 		assert.Equal(t, 0, len(r))
 		assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
 	})
-}
 
+	t.Run("should be able to create a rubro material", func(t *testing.T) {
+		form := map[string]any{
+			"material_id": "b3fba400-acad-40a6-9ca3-17871151bc0f",
+			"quantity":    32.5,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("POST", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusCreated, res.Code)
+
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		t.Log(mapBody)
+		assert.Equal(t, "b3fba400-acad-40a6-9ca3-17871151bc0f", mapBody["material_id"])
+		assert.Equal(t, "2d257121-43e8-4b00-947d-b05fa54b36ac", mapBody["item_id"])
+		assert.Equal(t, 32.5, mapBody["quantity"])
+
+		req, err = http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res = httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(r))
+		for _, v := range r {
+			assert.Equal(t, "b3fba400-acad-40a6-9ca3-17871151bc0f", v.(map[string]any)["material_id"])
+			assert.Equal(t, "prueba material", v.(map[string]any)["material_name"])
+			assert.Equal(t, "pm123", v.(map[string]any)["material_code"])
+			assert.Equal(t, "pri", v.(map[string]any)["material_unit"])
+			assert.Equal(t, "2d257121-43e8-4b00-947d-b05fa54b36ac", v.(map[string]any)["item_id"])
+			assert.Equal(t, "prueba item", v.(map[string]any)["item_name"])
+			assert.Equal(t, "pr123", v.(map[string]any)["item_code"])
+			assert.Equal(t, "pri", v.(map[string]any)["item_unit"])
+			assert.Equal(t, 32.5, v.(map[string]any)["quantity"])
+		}
+	})
+}
