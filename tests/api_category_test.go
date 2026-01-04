@@ -38,6 +38,10 @@ func TestApiCategoryTest(t *testing.T) {
 
 	assert.NoError(t, err)
 	if err != nil {
+		if pgContainer != nil {
+			err := pgContainer.Terminate(ctx)
+			assert.NoError(t, err)
+		}
 		return
 	}
 
