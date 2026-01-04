@@ -328,5 +328,32 @@ func TestApiItemMaterialsTest(t *testing.T) {
 
 			assert.Equal(t, "Material no encontrado", mapBody["message"])
 		})
+
+		t.Run("should delete material on DELETE", func(t *testing.T) {
+			prevUrl := "/api/v2/items/2d257121-43e8-4b00-947d-b05fa54b36ac/materials"
+			materialUUID := "b3fba400-acad-40a6-9ca3-17871151bc0f"
+			testUrl := fmt.Sprintf("%s/%s", prevUrl, materialUUID)
+			t.Log(testUrl)
+
+			req, err := http.NewRequest("DELETE", testUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusNoContent, res.Code)
+
+			req, err = http.NewRequest("GET", prevUrl, nil)
+			assert.NoError(t, err)
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusOK, res.Code)
+			var r []any
+			err = json.Unmarshal(res.Body.Bytes(), &r)
+			assert.NoError(t, err)
+			assert.Equal(t, 0, len(r))
+			assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
+		})
 	})
 }
