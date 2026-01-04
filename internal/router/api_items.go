@@ -173,6 +173,17 @@ func (rf *Router) GetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	itemMaterials, err := rf.DB.GetItemMaterials(parsedId)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	responseMap := make(map[string]any)
+	responseMap["item"] = item
+	responseMap["itemMaterials"] = itemMaterials
+
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(item)
+	_ = json.NewEncoder(w).Encode(responseMap)
 }
