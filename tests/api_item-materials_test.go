@@ -237,6 +237,48 @@ func TestApiItemMaterialsTest(t *testing.T) {
 
 			assert.Equal(t, "Material no encontrado", mapBody["message"])
 		})
+
+		t.Run("should update material on PUT", func(t *testing.T) {
+			prevUrl := "/api/v2/items/2d257121-43e8-4b00-947d-b05fa54b36ac/materials"
+			materialUUID := "b3fba400-acad-40a6-9ca3-17871151bc0f"
+			testUrl = fmt.Sprintf("%s/%s", prevUrl, materialUUID)
+			form := map[string]any{
+				"quantity": 35.2,
+			}
+
+			j, err := json.Marshal(form)
+			assert.NoError(t, err)
+
+			req, err := http.NewRequest("PUT", testUrl, strings.NewReader(string(j)))
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusNoContent, res.Code)
+
+			req, err = http.NewRequest("GET", prevUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			var r []any
+			err = json.Unmarshal(res.Body.Bytes(), &r)
+			assert.NoError(t, err)
+			assert.Equal(t, 1, len(r))
+			for _, v := range r {
+				assert.Equal(t, "b3fba400-acad-40a6-9ca3-17871151bc0f", v.(map[string]any)["material_id"])
+				assert.Equal(t, "prueba material", v.(map[string]any)["material_name"])
+				assert.Equal(t, "pm123", v.(map[string]any)["material_code"])
+				assert.Equal(t, "pri", v.(map[string]any)["material_unit"])
+				assert.Equal(t, "2d257121-43e8-4b00-947d-b05fa54b36ac", v.(map[string]any)["item_id"])
+				assert.Equal(t, "prueba item", v.(map[string]any)["item_name"])
+				assert.Equal(t, "pr123", v.(map[string]any)["item_code"])
+				assert.Equal(t, "pri", v.(map[string]any)["item_unit"])
+				assert.Equal(t, 35.2, v.(map[string]any)["quantity"])
+			}
+		})
 	})
 
 	t.Run("DELETE methods", func(t *testing.T) {
