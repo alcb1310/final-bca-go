@@ -238,4 +238,31 @@ func TestApiItemMaterialsTest(t *testing.T) {
 
 		assert.Equal(t, "Rubro no encontrado", mapBody["message"])
 	})
+
+	t.Run("should not find material on PUT", func(t *testing.T) {
+		invalidUUID := uuid.New()
+		testUrl = fmt.Sprintf("%s/%s", testUrl, invalidUUID.String())
+		form := map[string]any{
+			"quantity": 32.5,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("PUT", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusNotFound, res.Code)
+
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "Material no encontrado", mapBody["message"])
+	})
 }
