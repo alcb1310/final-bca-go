@@ -254,6 +254,7 @@ func (rf *Router) DeleteItemMaterial(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = rf.DB.GetMaterial(materialId)
+	slog.Info("DeleteItemMaterial", "err", err)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)

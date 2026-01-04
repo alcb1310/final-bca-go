@@ -181,88 +181,110 @@ func TestApiItemMaterialsTest(t *testing.T) {
 		assert.Equal(t, "Material ya asociado al rubro", mapBody["message"])
 	})
 
-	t.Run("should not find rubro on PUT", func(t *testing.T) {
-		invalidUUID := uuid.New()
-		materialID := "b3fba400-acad-40a6-9ca3-17871151bc0f"
-		testUrl := fmt.Sprintf("/api/v2/items/%s/materials/%s", invalidUUID.String(), materialID)
-		form := map[string]any{
-			"material_id": "b3fba400-acad-40a6-9ca3-17871151bc0f",
-			"quantity":    32.5,
-		}
+	t.Run("PUT methods", func(t *testing.T) {
+		t.Run("should not find rubro on PUT", func(t *testing.T) {
+			invalidUUID := uuid.New()
+			materialID := "b3fba400-acad-40a6-9ca3-17871151bc0f"
+			testUrl := fmt.Sprintf("/api/v2/items/%s/materials/%s", invalidUUID.String(), materialID)
+			form := map[string]any{
+				"material_id": "b3fba400-acad-40a6-9ca3-17871151bc0f",
+				"quantity":    32.5,
+			}
 
-		j, err := json.Marshal(form)
-		assert.NoError(t, err)
+			j, err := json.Marshal(form)
+			assert.NoError(t, err)
 
-		req, err := http.NewRequest("PUT", testUrl, strings.NewReader(string(j)))
-		assert.NoError(t, err)
-		req.Header.Set("Content-Type", "application/json")
-		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+			req, err := http.NewRequest("PUT", testUrl, strings.NewReader(string(j)))
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
 
-		assert.Equal(t, http.StatusNotFound, res.Code)
+			assert.Equal(t, http.StatusNotFound, res.Code)
 
-		body, err := io.ReadAll(res.Body)
-		assert.NoError(t, err)
-		mapBody := make(map[string]any)
-		err = json.Unmarshal(body, &mapBody)
-		assert.NoError(t, err)
+			body, err := io.ReadAll(res.Body)
+			assert.NoError(t, err)
+			mapBody := make(map[string]any)
+			err = json.Unmarshal(body, &mapBody)
+			assert.NoError(t, err)
 
-		assert.Equal(t, "Rubro no encontrado", mapBody["message"])
+			assert.Equal(t, "Rubro no encontrado", mapBody["message"])
+		})
+
+		t.Run("should not find material on PUT", func(t *testing.T) {
+			invalidUUID := uuid.New()
+			testUrl = fmt.Sprintf("%s/%s", testUrl, invalidUUID.String())
+			form := map[string]any{
+				"quantity": 32.5,
+			}
+
+			j, err := json.Marshal(form)
+			assert.NoError(t, err)
+
+			req, err := http.NewRequest("PUT", testUrl, strings.NewReader(string(j)))
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusNotFound, res.Code)
+
+			body, err := io.ReadAll(res.Body)
+			assert.NoError(t, err)
+			mapBody := make(map[string]any)
+			err = json.Unmarshal(body, &mapBody)
+			assert.NoError(t, err)
+
+			assert.Equal(t, "Material no encontrado", mapBody["message"])
+		})
 	})
 
-	t.Run("should not find rubro on DELETE", func(t *testing.T) {
-		invalidUUID := uuid.New()
-		materialID := "b3fba400-acad-40a6-9ca3-17871151bc0f"
-		testUrl := fmt.Sprintf("/api/v2/items/%s/materials/%s", invalidUUID.String(), materialID)
-		form := map[string]any{
-			"material_id": "b3fba400-acad-40a6-9ca3-17871151bc0f",
-			"quantity":    32.5,
-		}
+	t.Run("DELETE methods", func(t *testing.T) {
+		t.Run("should not find rubro on DELETE", func(t *testing.T) {
+			invalidUUID := uuid.New()
+			materialID := "b3fba400-acad-40a6-9ca3-17871151bc0f"
+			testUrl := fmt.Sprintf("/api/v2/items/%s/materials/%s", invalidUUID.String(), materialID)
 
-		j, err := json.Marshal(form)
-		assert.NoError(t, err)
+			req, err := http.NewRequest("DELETE", testUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
 
-		req, err := http.NewRequest("DELETE", testUrl, strings.NewReader(string(j)))
-		assert.NoError(t, err)
-		req.Header.Set("Content-Type", "application/json")
-		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+			assert.Equal(t, http.StatusNotFound, res.Code)
 
-		assert.Equal(t, http.StatusNotFound, res.Code)
+			body, err := io.ReadAll(res.Body)
+			assert.NoError(t, err)
+			mapBody := make(map[string]any)
+			err = json.Unmarshal(body, &mapBody)
+			assert.NoError(t, err)
 
-		body, err := io.ReadAll(res.Body)
-		assert.NoError(t, err)
-		mapBody := make(map[string]any)
-		err = json.Unmarshal(body, &mapBody)
-		assert.NoError(t, err)
+			assert.Equal(t, "Rubro no encontrado", mapBody["message"])
+		})
 
-		assert.Equal(t, "Rubro no encontrado", mapBody["message"])
-	})
+		t.Run("should not find material on DELETE", func(t *testing.T) {
+			testUrl := "/api/v2/items/2d257121-43e8-4b00-947d-b05fa54b36ac/materials"
+			t.Log(testUrl)
+			invalidUUID := uuid.New()
+			testUrl = fmt.Sprintf("%s/%s", testUrl, invalidUUID.String())
+			t.Log(testUrl)
 
-	t.Run("should not find material on PUT", func(t *testing.T) {
-		invalidUUID := uuid.New()
-		testUrl = fmt.Sprintf("%s/%s", testUrl, invalidUUID.String())
-		form := map[string]any{
-			"quantity": 32.5,
-		}
+			req, err := http.NewRequest("DELETE", testUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
 
-		j, err := json.Marshal(form)
-		assert.NoError(t, err)
+			assert.Equal(t, http.StatusNotFound, res.Code)
 
-		req, err := http.NewRequest("PUT", testUrl, strings.NewReader(string(j)))
-		assert.NoError(t, err)
-		req.Header.Set("Content-Type", "application/json")
-		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+			body, err := io.ReadAll(res.Body)
+			assert.NoError(t, err)
+			mapBody := make(map[string]any)
+			err = json.Unmarshal(body, &mapBody)
+			t.Log(mapBody)
+			assert.NoError(t, err)
 
-		assert.Equal(t, http.StatusNotFound, res.Code)
-
-		body, err := io.ReadAll(res.Body)
-		assert.NoError(t, err)
-		mapBody := make(map[string]any)
-		err = json.Unmarshal(body, &mapBody)
-		assert.NoError(t, err)
-
-		assert.Equal(t, "Material no encontrado", mapBody["message"])
+			assert.Equal(t, "Material no encontrado", mapBody["message"])
+		})
 	})
 }
