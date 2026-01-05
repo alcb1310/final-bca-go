@@ -78,6 +78,28 @@ create table if not exists item_material(
     primary key (item_id, material_id)
 );
 
+create table if not exists budget(
+    project_id uuid references project(id) on delete restrict,
+    budget_item_id uuid references budget_item(id) on delete restrict,
+
+    initial_quantity numeric,
+    initial_cost numeric,
+    initial_total numeric not null,
+
+    spent_quantity numeric,
+    spent_total numeric not null,
+
+    remaining_quantity numeric,
+    remaining_cost numeric,
+    remaining_total numeric not null,
+
+    updated_buget numeric not null,
+
+    created_at timestamp default now(),
+
+    primary key (project_id, budget_item_id)
+);
+
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
