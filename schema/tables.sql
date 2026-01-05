@@ -142,3 +142,25 @@ select
 from item_material im
 left join material m on im.material_id = m.id
 left join item i on im.item_id = i.id;
+
+create or replace view vw_budget as
+select
+    bi.id as budget_item_id,
+    bi.code as budget_item_code,
+    bi.name as budget_item_name,
+    bi.level as budget_item_level,
+    bi.accumulate as budget_item_accumulate,
+    p.id as project_id,
+    p.name as project_name,
+    b.initial_quantity,
+    b.initial_cost,
+    b.initial_total,
+    b.spent_quantity,
+    b.spent_total,
+    b.remaining_quantity,
+    b.remaining_cost,
+    b.remaining_total,
+    b.updated_buget
+from budget b
+left join project p on b.project_id = p.id
+left join budget_item bi on b.budget_item_id = bi.id;
