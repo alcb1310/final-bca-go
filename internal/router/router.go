@@ -87,6 +87,10 @@ func (rf *Router) GenerateRoutes() {
 					})
 				})
 			})
+
+			r.Route("/budgets", func(r chi.Router) {
+				r.Get("/", rf.GetBudgets)
+			})
 		})
 	})
 }
