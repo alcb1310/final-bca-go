@@ -58,6 +58,7 @@ type Service interface {
 	DeleteItemMaterial(rubroId, materialId uuid.UUID) error
 
 	// file budget.go
+	CreateBudget(budget types.CreateBudget) error
 	GetBudgets() ([]types.Budget, error)
 }
 
