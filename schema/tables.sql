@@ -100,8 +100,6 @@ create table if not exists budget(
     primary key (project_id, budget_item_id)
 );
 
-alter table budget rename column updated_buget to updated_budget;
-
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
@@ -144,8 +142,6 @@ select
 from item_material im
 left join material m on im.material_id = m.id
 left join item i on im.item_id = i.id;
-
-drop view vw_budget;
 
 create or replace view vw_budget as
 select
