@@ -1,6 +1,11 @@
 package database
 
-import "github.com/alcb1310/final-bca-go/internal/types"
+import (
+	"log/slog"
+
+	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/alcb1310/final-bca-go/internal/utils"
+)
 
 func (s *service) GetBudgets() ([]types.Budget, error) {
 	budgets := []types.Budget{}
@@ -41,4 +46,21 @@ func (s *service) GetBudgets() ([]types.Budget, error) {
 	}
 
 	return budgets, nil
+}
+
+func (s *service) CreateBudget(b types.CreateBudget) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		slog.Error("Error creating transaction", "err", err)
+		return err
+	}
+	defer func() { _ = tx.Commit() }()
+
+	if err := utils.SaveBudget(b, tx); err != nil {
+		_ = tx.Rollback()
+		slog.Error("Error saving budget", "err", err)
+		return err
+	}
+
+	return nil
 }
