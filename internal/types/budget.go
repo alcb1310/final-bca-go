@@ -26,3 +26,17 @@ type CreateBudget struct {
 	Quantity     float64   `json:"quantity"`
 	Cost         float64   `json:"cost"`
 }
+
+type SaveBudget struct {
+	ProjectId         uuid.UUID
+	BudgetItemId      uuid.UUID
+	InitialQuantity   sql.NullFloat64
+	InitialCost       sql.NullFloat64
+	InitialTotal      float64
+	SpentQuantity     sql.NullFloat64
+	SpentTotal        float64
+	RemainingQuantity sql.NullFloat64
+	RemainingCost     sql.NullFloat64
+	RemainingTotal    float64
+	UpdatedBudget     float64
+}
