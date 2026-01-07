@@ -12,7 +12,7 @@ func (s *service) GetBudgets() ([]types.Budget, error) {
 			initial_quantity, initial_cost, initial_total,
 			spent_quantity, spent_total,
 			remaining_quantity, remaining_cost, remaining_total,
-			updated_buget
+			updated_budget
 		from vw_budget
 		order by project_name, budget_item_code
 	`
@@ -27,7 +27,7 @@ func (s *service) GetBudgets() ([]types.Budget, error) {
 		b := types.Budget{}
 
 		if err := rows.Scan(
-			&b.BudgetItem.Id, &b.BudgetItem.Code, b.BudgetItem.Name, &b.BudgetItem.Level, &b.BudgetItem.Accumulate,
+			&b.BudgetItem.Id, &b.BudgetItem.Code, &b.BudgetItem.Name, &b.BudgetItem.Level, &b.BudgetItem.Accumulate,
 			&b.Project.Id, &b.Project.Name,
 			&b.InitialQuantity, &b.InitialCost, &b.InitialTotal,
 			&b.SpentQuantity, &b.SpentTotal,
