@@ -56,7 +56,7 @@ func (s *service) CreateBudget(b types.CreateBudget) error {
 	}
 	defer func() { _ = tx.Commit() }()
 
-	if err := utils.SaveBudget(b, tx); err != nil {
+	if err := utils.SaveBudget(&b, tx); err != nil {
 		_ = tx.Rollback()
 		slog.Error("Error saving budget", "err", err)
 		return err
