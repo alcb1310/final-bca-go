@@ -21,6 +21,52 @@ func (_m *Service) EXPECT() *Service_Expecter {
 	return &Service_Expecter{mock: &_m.Mock}
 }
 
+// CreateBudget provides a mock function with given fields: budget
+func (_m *Service) CreateBudget(budget types.CreateBudget) error {
+	ret := _m.Called(budget)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateBudget")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.CreateBudget) error); ok {
+		r0 = rf(budget)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_CreateBudget_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateBudget'
+type Service_CreateBudget_Call struct {
+	*mock.Call
+}
+
+// CreateBudget is a helper method to define mock.On call
+//   - budget types.CreateBudget
+func (_e *Service_Expecter) CreateBudget(budget interface{}) *Service_CreateBudget_Call {
+	return &Service_CreateBudget_Call{Call: _e.mock.On("CreateBudget", budget)}
+}
+
+func (_c *Service_CreateBudget_Call) Run(run func(budget types.CreateBudget)) *Service_CreateBudget_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.CreateBudget))
+	})
+	return _c
+}
+
+func (_c *Service_CreateBudget_Call) Return(_a0 error) *Service_CreateBudget_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_CreateBudget_Call) RunAndReturn(run func(types.CreateBudget) error) *Service_CreateBudget_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateBudgetItem provides a mock function with given fields: bi
 func (_m *Service) CreateBudgetItem(bi types.CreateBudgetItem) error {
 	ret := _m.Called(bi)
