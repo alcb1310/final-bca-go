@@ -2,6 +2,8 @@ package types
 
 import (
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 type Budget struct {
@@ -16,4 +18,11 @@ type Budget struct {
 	RemainingCost     sql.NullFloat64 `json:"remaining_cost"`
 	RemainingTotal    float64         `json:"remaining_total"`
 	UpdatedBudget     float64         `json:"updated_budget"`
+}
+
+type CreateBudget struct {
+	ProjectId    uuid.UUID `json:"project_id"`
+	BudgetItemId uuid.UUID `json:"budget_item_id"`
+	Quantity     float64   `json:"quantity"`
+	Cost         float64   `json:"cost"`
 }
