@@ -93,12 +93,14 @@ create table if not exists budget(
     remaining_cost numeric,
     remaining_total numeric not null,
 
-    updated_buget numeric not null,
+    updated_budget numeric not null,
 
     created_at timestamp default now(),
 
     primary key (project_id, budget_item_id)
 );
+
+alter table budget rename column updated_buget to updated_budget;
 
 ----------------------------------------
 --                VIEWS               --
@@ -143,6 +145,8 @@ from item_material im
 left join material m on im.material_id = m.id
 left join item i on im.item_id = i.id;
 
+drop view vw_budget;
+
 create or replace view vw_budget as
 select
     bi.id as budget_item_id,
@@ -160,7 +164,7 @@ select
     b.remaining_quantity,
     b.remaining_cost,
     b.remaining_total,
-    b.updated_buget
+    b.updated_budget
 from budget b
 left join project p on b.project_id = p.id
 left join budget_item bi on b.budget_item_id = bi.id;
