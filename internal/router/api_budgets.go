@@ -59,6 +59,22 @@ func (rf *Router) CreateBudget(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if val, ok = p["budget_item_id"].(string); !ok {
+		errorResponse["budget_item_id"] = "La partida es obligatoria"
+	} else {
+		budget.BudgetItemId, err = uuid.Parse(val)
+		if err != nil {
+			errorResponse["budget_item_id"] = "El código de la partida es inválido"
+		} else {
+			if _, err = rf.DB.GetBudgetItem(budget.BudgetItemId); err != nil {
+				errorResponse["budget_item_id"] = "La partida no existe"
+				w.WriteHeader(http.StatusNotFound)
+				_ = json.NewEncoder(w).Encode(errorResponse)
+				return
+			}
+		}
+	}
+
 	if len(errorResponse) > 0 {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		_ = json.NewEncoder(w).Encode(errorResponse)
