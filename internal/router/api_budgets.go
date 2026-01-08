@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/google/uuid"
 )
 
 func (rf *Router) GetBudgets(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +29,8 @@ func (rf *Router) CreateBudget(w http.ResponseWriter, r *http.Request) {
 	p := make(map[string]any)
 	var budget types.CreateBudget
 	var err error
-	// var ok bool
+	var val string
+	var ok bool
 
 	if r.Body == http.NoBody || r.Body == nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
@@ -40,6 +42,29 @@ func (rf *Router) CreateBudget(w http.ResponseWriter, r *http.Request) {
 	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
 		errorResponse["message"] = "Cuerpo de la solicitud no válido"
 	}
+
+	if val, ok = p["project_id"].(string); !ok {
+		errorResponse["project_id"] = "El proyecto es obligatorio"
+	} else {
+		budget.ProjectId, err = uuid.Parse(val)
+		if err != nil {
+			errorResponse["project_id"] = "El código del proyecto es inválido"
+		} else {
+			if _, err = rf.DB.GetProject(budget.ProjectId); err != nil {
+				errorResponse["project_id"] = "El proyecto no existe"
+				w.WriteHeader(http.StatusNotFound)
+				_ = json.NewEncoder(w).Encode(errorResponse)
+				return
+			}
+		}
+	}
+
+	if len(errorResponse) > 0 {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "budget": budget})
 }
