@@ -29,6 +29,7 @@ func TestApiCreateBudget(t *testing.T) {
 		body       map[string]any
 		project    *mocks.Service_GetProject_Call
 		budgetItem *mocks.Service_GetBudgetItem_Call
+		create     *mocks.Service_CreateBudget_Call
 	}{
 		{
 			name:   "should pass a form",
@@ -174,6 +175,27 @@ func TestApiCreateBudget(t *testing.T) {
 				"cost": "El costo es obligatorio",
 			},
 		},
+		{
+			name: "should create a budget",
+			form: map[string]any{
+				"project_id":     projectId.String(),
+				"budget_item_id": budgetItemId.String(),
+				"quantity":       125.10,
+				"cost":           100.5,
+			},
+			status:     http.StatusCreated,
+			project:    db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			budgetItem: db.EXPECT().GetBudgetItem(budgetItemId).Return(types.BudgetItem{}, nil),
+			create: db.EXPECT().CreateBudget(types.CreateBudget{
+				ProjectId:    projectId,
+				BudgetItemId: budgetItemId,
+				Quantity:     125.10,
+				Cost:         100.50,
+			}).Return(nil),
+			body: map[string]any{
+				"message": "Presupuesto creado",
+			},
+		},
 	}
 
 	for _, tt := range testData {
@@ -185,6 +207,9 @@ func TestApiCreateBudget(t *testing.T) {
 			}
 			if tt.project != nil {
 				tt.project.Times(1)
+			}
+			if tt.create != nil {
+				tt.create.Times(1)
 			}
 
 			if tt.form != nil {
