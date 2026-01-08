@@ -130,6 +130,21 @@ func TestApiCreateBudget(t *testing.T) {
 				"cost":     "El costo es obligatorio",
 			},
 		},
+		{
+			name: "should pass a valid quantity",
+			form: map[string]any{
+				"project_id":     projectId.String(),
+				"budget_item_id": budgetItemId.String(),
+				"quantity":       "invalid",
+			},
+			status:     http.StatusBadRequest,
+			project:    db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			budgetItem: db.EXPECT().GetBudgetItem(budgetItemId).Return(types.BudgetItem{}, nil),
+			body: map[string]any{
+				"quantity": "La cantidad es obligatoria",
+				"cost":     "El costo es obligatorio",
+			},
+		},
 	}
 
 	for _, tt := range testData {
