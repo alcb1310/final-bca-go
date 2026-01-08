@@ -110,3 +110,7 @@ func (rf *Router) CreateBudget(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Presupuesto creado"})
 }
+
+func (rf *Router) UpdateBudget(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
