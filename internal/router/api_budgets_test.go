@@ -17,6 +17,7 @@ import (
 
 func TestApiCreateBudget(t *testing.T) {
 	projectId := uuid.New()
+	budgetItemId := uuid.New()
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
@@ -105,7 +106,7 @@ func TestApiCreateBudget(t *testing.T) {
 			name: "should pass a valid budget item id",
 			form: map[string]any{
 				"project_id":     projectId.String(),
-				"budget_item_id": "",
+				"budget_item_id": "invalid",
 			},
 			status:  http.StatusBadRequest,
 			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
@@ -113,6 +114,20 @@ func TestApiCreateBudget(t *testing.T) {
 				"budget_item_id": "El código de la partida es inválido",
 				"quantity":       "La cantidad es obligatoria",
 				"cost":           "El costo es obligatorio",
+			},
+		},
+		{
+			name: "should pass a quantity",
+			form: map[string]any{
+				"project_id":     projectId.String(),
+				"budget_item_id": budgetItemId.String(),
+			},
+			status:     http.StatusBadRequest,
+			project:    db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			budgetItem: db.EXPECT().GetBudgetItem(budgetItemId).Return(types.BudgetItem{}, nil),
+			body: map[string]any{
+				"quantity": "La cantidad es obligatoria",
+				"cost":     "El costo es obligatorio",
 			},
 		},
 	}
