@@ -58,6 +58,19 @@ func TestApiCreateBudget(t *testing.T) {
 				"cost":           "El costo es obligatorio",
 			},
 		},
+		{
+			name: "should pass a valid project id",
+			form: map[string]any{
+				"project_id": "invaldid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"project_id":     "El código del proyecto es inválido",
+				"budget_item_id": "La partida es obligatoria",
+				"quantity":       "La cantidad es obligatoria",
+				"cost":           "El costo es obligatorio",
+			},
+		},
 	}
 
 	for _, tt := range testData {
