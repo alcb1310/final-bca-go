@@ -75,6 +75,14 @@ func (rf *Router) CreateBudget(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if budget.Quantity, ok = p["quantity"].(float64); !ok {
+		errorResponse["quantity"] = "La cantidad es obligatoria"
+	}
+
+	if budget.Cost, ok = p["cost"].(float64); !ok {
+		errorResponse["cost"] = "El costo es obligatorio"
+	}
+
 	if len(errorResponse) > 0 {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		_ = json.NewEncoder(w).Encode(errorResponse)
