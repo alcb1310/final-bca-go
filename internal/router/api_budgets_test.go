@@ -9,11 +9,14 @@ import (
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestApiCreateBudget(t *testing.T) {
+	projectId := uuid.New()
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
@@ -66,6 +69,19 @@ func TestApiCreateBudget(t *testing.T) {
 			status: http.StatusBadRequest,
 			body: map[string]any{
 				"project_id":     "El código del proyecto es inválido",
+				"budget_item_id": "La partida es obligatoria",
+				"quantity":       "La cantidad es obligatoria",
+				"cost":           "El costo es obligatorio",
+			},
+		},
+		{
+			name: "should pass a budget item id",
+			form: map[string]any{
+				"project_id": projectId.String(),
+			},
+			status:  http.StatusBadRequest,
+			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			body: map[string]any{
 				"budget_item_id": "La partida es obligatoria",
 				"quantity":       "La cantidad es obligatoria",
 				"cost":           "El costo es obligatorio",
