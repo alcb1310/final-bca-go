@@ -133,5 +133,24 @@ func (rf *Router) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	pId = chi.URLParam(r, "budgetItemId")
+	budgetItemId, err := uuid.Parse(pId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Budget Item Id inválido"})
+		return
+	}
+	if _, err = rf.DB.GetBudgetItem(budgetItemId); err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Partida no encontrada"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 }
