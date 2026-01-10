@@ -60,6 +60,7 @@ type Service interface {
 	// file budget.go
 	CreateBudget(budget types.CreateBudget) error
 	GetBudgets() ([]types.Budget, error)
+	UpdateBudget(budget types.CreateBudget, oldBudget types.SaveBudget) error
 }
 
 type service struct {

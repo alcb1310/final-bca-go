@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"log/slog"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
@@ -62,5 +63,47 @@ func (s *service) CreateBudget(b types.CreateBudget) error {
 		return err
 	}
 
+	return nil
+}
+
+func (s *service) UpdateBudget(b types.CreateBudget, oldBudget types.SaveBudget) error {
+	total := b.Quantity * b.Cost
+	updated := total - oldBudget.UpdatedBudget
+	diff := total - oldBudget.RemainingTotal
+
+	q := sql.NullFloat64{Float64: b.Quantity, Valid: true}
+	c := sql.NullFloat64{Float64: b.Cost, Valid: true}
+
+	toUpdate := types.SaveBudget{
+		ProjectId:         oldBudget.ProjectId,
+		BudgetItemId:      oldBudget.BudgetItemId,
+		InitialQuantity:   oldBudget.InitialQuantity,
+		InitialCost:       oldBudget.InitialCost,
+		InitialTotal:      oldBudget.InitialTotal,
+		SpentQuantity:     oldBudget.SpentQuantity,
+		SpentTotal:        oldBudget.SpentTotal,
+		RemainingQuantity: q,
+		RemainingCost:     c,
+		RemainingTotal:    total,
+		UpdatedBudget:     updated + oldBudget.SpentTotal,
+	}
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		slog.Error("Error creating transaction", "err", err)
+		return err
+	}
+	defer func() { _ = tx.Commit() }()
+
+	if err := s.runUpdateBudget(&toUpdate, tx, diff); err != nil {
+		_ = tx.Rollback()
+		slog.Error("Error updating budget", "err", err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *service) runUpdateBudget(budgets *types.SaveBudget, tx *sql.Tx, diff float64) error {
 	return nil
 }
