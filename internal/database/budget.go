@@ -6,6 +6,7 @@ import (
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/internal/utils"
+	"github.com/google/uuid"
 )
 
 func (s *service) GetBudgets() ([]types.Budget, error) {
@@ -105,5 +106,41 @@ func (s *service) UpdateBudget(b types.CreateBudget, oldBudget types.SaveBudget)
 }
 
 func (s *service) runUpdateBudget(budgets *types.SaveBudget, tx *sql.Tx, diff float64) error {
-	return nil
+	nullUUID := uuid.UUID{}
+	bi, err := s.GetBudgetItem(budgets.BudgetItemId)
+	if err != nil {
+		return err
+	}
+	if err == sql.ErrNoRows {
+		return nil
+	}
+
+	if bi.Accumulate {
+		query := `
+			UPDATE budget
+			SET remaining_total = budget.remaining_total + $1,
+			updated_budget = budget.updated_budget + $1
+			WHERE project_id = $2 AND budget_item_id = $3
+		`
+		_, err = tx.Exec(query, diff, budgets.ProjectId, budgets.BudgetItemId)
+	} else {
+		query := `
+			UPDATE budget
+			SET remaining_quantity = $1, remaining_cost = $2, remaining_total = $3,
+			updated_budget = $4
+			WHERE project_id = $5 AND budget_item_id = $6
+		`
+		_, err = tx.Exec(query, budgets.RemainingQuantity, budgets.RemainingCost, budgets.RemainingTotal,
+			budgets.UpdatedBudget, budgets.ProjectId, budgets.BudgetItemId)
+	}
+
+	if err != nil {
+		return err
+	}
+	if bi.ParentId == nullUUID {
+		return nil
+	}
+	budgets.BudgetItemId = bi.ParentId
+
+	return s.runUpdateBudget(budgets, tx, diff)
 }
