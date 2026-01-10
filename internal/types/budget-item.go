@@ -12,7 +12,7 @@ type BudgetItem struct {
 	Name       string         `json:"name"`
 	Level      uint8          `json:"level"`
 	Accumulate bool           `json:"accumulate"`
-	ParentId   uuid.NullUUID  `json:"parentId"`
+	ParentId   uuid.UUID      `json:"parentId"`
 	ParentCode sql.NullString `json:"parentCode"`
 	ParentName sql.NullString `json:"parentName"`
 }
