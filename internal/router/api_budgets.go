@@ -1,12 +1,14 @@
 package router
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"log/slog"
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 )
@@ -112,5 +114,24 @@ func (rf *Router) CreateBudget(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rf *Router) UpdateBudget(w http.ResponseWriter, r *http.Request) {
+	pId := chi.URLParam(r, "projectId")
+	projectId, err := uuid.Parse(pId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Project Id inválido"})
+		return
+	}
+	if _, err = rf.DB.GetProject(projectId); err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 }
