@@ -221,4 +221,28 @@ func TestApiBudget(t *testing.T) {
 
 		}
 	})
+
+	t.Run("it should create a conflict", func(t *testing.T) {
+		form := map[string]any{
+			"project_id":     "2118e27d-1ae5-4554-b0ba-2503917a31aa",
+			"budget_item_id": "b4b2e4e4-f22d-402e-9ab5-1d59347cbfcb",
+			"quantity":       10,
+			"cost":           10,
+		}
+		j, _ := json.Marshal(form)
+		req, err := http.NewRequest(http.MethodPost, testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Add("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+		assert.Equal(t, http.StatusConflict, res.Code)
+
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+		assert.Equal(t, "Ya existe un presupuesto con ese proyecto y partida", mapBody["message"])
+	})
+
 }
