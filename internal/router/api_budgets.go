@@ -152,5 +152,19 @@ func (rf *Router) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	b, err := rf.DB.GetBudget(projectId, budgetItemId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Presupuesto no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(b)
 }
