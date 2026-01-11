@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -78,7 +79,6 @@ func TestApiBudget(t *testing.T) {
 
 	ctx := context.Background()
 	testUrl := "/api/v2/budgets"
-	t.Log(testUrl)
 
 	pgContainer, err := postgres.Run(ctx,
 		"postgres:18-alpine",
@@ -245,4 +245,76 @@ func TestApiBudget(t *testing.T) {
 		assert.Equal(t, "Ya existe un presupuesto con ese proyecto y partida", mapBody["message"])
 	})
 
+	t.Run("single budget", func(t *testing.T) {
+		budgetId := uuid.MustParse("9abc2426-a92b-46ef-b074-ddbc8ee2df1a")
+		projectId := uuid.MustParse("2118e27d-1ae5-4554-b0ba-2503917a31aa")
+		testURL := fmt.Sprintf("%s/%s/%s", testUrl, projectId.String(), budgetId.String())
+
+		t.Run("it should update a budget", func(t *testing.T) {
+			result["200.1"] = types.SaveBudget{
+				ProjectId:         uuid.MustParse("2118e27d-1ae5-4554-b0ba-2503917a31aa"),
+				BudgetItemId:      uuid.MustParse("9abc2426-a92b-46ef-b074-ddbc8ee2df1a"),
+				InitialQuantity:   sql.NullFloat64{Float64: 20, Valid: true},
+				InitialCost:       sql.NullFloat64{Float64: 2.5, Valid: true},
+				InitialTotal:      50,
+				SpentQuantity:     sql.NullFloat64{Float64: 0, Valid: true},
+				SpentTotal:        0,
+				RemainingQuantity: sql.NullFloat64{Float64: 40, Valid: true},
+				RemainingCost:     sql.NullFloat64{Float64: 5, Valid: true},
+				RemainingTotal:    200,
+				UpdatedBudget:     200,
+			}
+			result["200"] = types.SaveBudget{
+				ProjectId:         uuid.MustParse("2118e27d-1ae5-4554-b0ba-2503917a31aa"),
+				BudgetItemId:      uuid.MustParse("420f8bb3-bc8e-4564-be99-75cd7c1a6ff8"),
+				InitialQuantity:   sql.NullFloat64{Float64: 0, Valid: false},
+				InitialCost:       sql.NullFloat64{Float64: 0, Valid: false},
+				InitialTotal:      50,
+				SpentQuantity:     sql.NullFloat64{Float64: 0, Valid: false},
+				SpentTotal:        0,
+				RemainingQuantity: sql.NullFloat64{Float64: 0, Valid: false},
+				RemainingCost:     sql.NullFloat64{Float64: 0, Valid: false},
+				RemainingTotal:    200,
+				UpdatedBudget:     200,
+			}
+			form := map[string]any{
+				"project_id":     "2118e27d-1ae5-4554-b0ba-2503917a31aa",
+				"budget_item_id": "9abc2426-a92b-46ef-b074-ddbc8ee2df1a",
+				"quantity":       40,
+				"cost":           5,
+			}
+			j, _ := json.Marshal(form)
+			req, err := http.NewRequest(http.MethodPut, testURL, strings.NewReader(string(j)))
+			assert.NoError(t, err)
+			req.Header.Add("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+			assert.Equal(t, http.StatusNoContent, res.Code)
+
+			req, err = http.NewRequest("GET", testUrl, nil)
+			assert.NoError(t, err)
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusOK, res.Code)
+			var budgets []types.Budget
+			err = json.Unmarshal(res.Body.Bytes(), &budgets)
+			assert.NoError(t, err)
+			assert.Equal(t, 4, len(budgets))
+
+			for _, budget := range budgets {
+				assert.Equal(t, result[budget.BudgetItem.Code].ProjectId, budget.Project.Id)
+				assert.Equal(t, result[budget.BudgetItem.Code].BudgetItemId, budget.BudgetItem.Id)
+				assert.Equal(t, result[budget.BudgetItem.Code].InitialQuantity, budget.InitialQuantity)
+				assert.Equal(t, result[budget.BudgetItem.Code].InitialCost, budget.InitialCost)
+				assert.Equal(t, result[budget.BudgetItem.Code].InitialTotal, budget.InitialTotal)
+				assert.Equal(t, result[budget.BudgetItem.Code].SpentQuantity, budget.SpentQuantity)
+				assert.Equal(t, result[budget.BudgetItem.Code].SpentTotal, budget.SpentTotal)
+				assert.Equal(t, result[budget.BudgetItem.Code].RemainingQuantity, budget.RemainingQuantity)
+				assert.Equal(t, result[budget.BudgetItem.Code].RemainingCost, budget.RemainingCost)
+				assert.Equal(t, result[budget.BudgetItem.Code].RemainingTotal, budget.RemainingTotal)
+				assert.Equal(t, result[budget.BudgetItem.Code].UpdatedBudget, budget.UpdatedBudget)
+			}
+		})
+	})
 }

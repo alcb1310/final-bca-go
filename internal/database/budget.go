@@ -88,7 +88,6 @@ func (s *service) CreateBudget(b types.CreateBudget) error {
 
 func (s *service) UpdateBudget(b types.CreateBudget, oldBudget types.SaveBudget) error {
 	total := b.Quantity * b.Cost
-	updated := total - oldBudget.UpdatedBudget
 	diff := total - oldBudget.RemainingTotal
 
 	q := sql.NullFloat64{Float64: b.Quantity, Valid: true}
@@ -105,7 +104,7 @@ func (s *service) UpdateBudget(b types.CreateBudget, oldBudget types.SaveBudget)
 		RemainingQuantity: q,
 		RemainingCost:     c,
 		RemainingTotal:    total,
-		UpdatedBudget:     updated + oldBudget.SpentTotal,
+		UpdatedBudget:     total + oldBudget.SpentTotal,
 	}
 
 	tx, err := s.db.Begin()

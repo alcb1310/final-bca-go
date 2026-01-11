@@ -212,6 +212,6 @@ func (rf *Router) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	w.WriteHeader(http.StatusNoContent)
 	_ = json.NewEncoder(w).Encode(budget)
 }
