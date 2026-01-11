@@ -60,6 +60,7 @@ type Service interface {
 	// file budget.go
 	CreateBudget(budget types.CreateBudget) error
 	GetBudgets() ([]types.Budget, error)
+	GetBudget(projectId uuid.UUID, Id uuid.UUID) (types.SaveBudget, error)
 	UpdateBudget(budget types.CreateBudget, oldBudget types.SaveBudget) error
 }
 

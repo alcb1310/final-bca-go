@@ -50,6 +50,25 @@ func (s *service) GetBudgets() ([]types.Budget, error) {
 	return budgets, nil
 }
 
+func (s *service) GetBudget(projectId uuid.UUID, budgetItemId uuid.UUID) (types.SaveBudget, error) {
+	var b types.SaveBudget
+	query := `
+		select project_id, budget_item_id, initial_quantity, initial_cost, initial_total,
+		spent_quantity, spent_total, remaining_quantity, remaining_cost, remaining_total,
+		updated_budget
+		from budget
+		where project_id = $1 and budget_item_id = $2
+	`
+
+	err := s.db.QueryRow(query, projectId, budgetItemId).Scan(
+		&b.ProjectId, &b.BudgetItemId, &b.InitialQuantity, &b.InitialCost, &b.InitialTotal,
+		&b.SpentQuantity, &b.SpentTotal, &b.RemainingQuantity, &b.RemainingCost, &b.RemainingTotal,
+		&b.UpdatedBudget,
+	)
+
+	return b, err
+}
+
 func (s *service) CreateBudget(b types.CreateBudget) error {
 	tx, err := s.db.Begin()
 	if err != nil {
