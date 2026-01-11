@@ -114,7 +114,7 @@ func TestApiBudgetItems(t *testing.T) {
 			level := int(v.(map[string]any)["level"].(float64))
 			assert.Equal(t, 1, level)
 			parent := v.(map[string]any)["parentId"]
-			assert.Nil(t, parent)
+			assert.Equal(t, uuid.Nil.String(), parent)
 		}
 	})
 
@@ -208,7 +208,7 @@ func TestApiBudgetItems(t *testing.T) {
 			level := int(v.(map[string]any)["level"].(float64))
 			assert.Equal(t, 1, level)
 			parent := v.(map[string]any)["parentId"]
-			assert.Nil(t, parent)
+			assert.Equal(t, uuid.Nil.String(), parent)
 		}
 	})
 }
