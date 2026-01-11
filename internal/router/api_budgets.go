@@ -197,6 +197,21 @@ func (rf *Router) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 		budget.Cost = val
 	}
 
+	if err = rf.DB.UpdateBudget(budget, b); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) {
+			switch e.Code {
+			case "23505":
+				w.WriteHeader(http.StatusConflict)
+				_ = json.NewEncoder(w).Encode(map[string]any{"message": "Ya existe un presupuesto con ese proyecto y partida"})
+				return
+			}
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(budget)
 }
