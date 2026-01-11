@@ -21,6 +21,8 @@ func TestApiBudget(t *testing.T) {
 		"postgres:18-alpine",
 		postgres.WithOrderedInitScripts(
 			filepath.Join("..", "schema", "tables.sql"),
+			filepath.Join("scripts", "seed_projects.sql"),
+			filepath.Join("scripts", "seed_budget-items.sql"),
 		),
 		postgres.WithDatabase("testbca"),
 		postgres.WithUsername("postgres"),
