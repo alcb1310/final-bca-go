@@ -100,6 +100,19 @@ create table if not exists budget(
     primary key (project_id, budget_item_id)
 );
 
+create table if not exists invoice(
+    id uuid primary key default gen_random_uuid(),
+    project_id uuid references project(id) on delete restrict,
+    supplier_id uuid references supplier(id) on delete restrict,
+    invoice_number text not null,
+    invoice_date date not null,
+    invoice_total numeric not null,
+    is_balanced boolean not null default false,
+    created_at timestamp default now(),
+
+    unique (supplier_id, project_id, invoice_number)
+);
+
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
