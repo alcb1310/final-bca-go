@@ -20,3 +20,7 @@ func (rf *Router) GetInvoices(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(invoices)
 }
+
+func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
