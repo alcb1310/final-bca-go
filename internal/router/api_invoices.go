@@ -3,6 +3,7 @@ package router
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/google/uuid"
@@ -76,6 +77,15 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		errorResponse["invoice_number"] = "El numero de factura es obligatorio"
 	}
 
+	if val, ok = p["invoice_date"].(string); !ok {
+		errorResponse["invoice_date"] = "La fecha de la factura es obligatoria"
+	} else {
+		invoice.InvoiceDate, err = time.ParseInLocation("2006-01-02", val, time.Local)
+		if err != nil {
+			errorResponse["invoice_date"] = "La fecha de la factura es inválida"
+		}
+	}
+
 	if len(errorResponse) > 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(errorResponse)
@@ -83,4 +93,5 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(invoice)
 }
