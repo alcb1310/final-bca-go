@@ -54,3 +54,9 @@ func (s *service) GetInvoices() ([]types.InvoiceResponse, error) {
 
 	return invoices, nil
 }
+
+func (s *service) CreateInvoice(inv types.InvoiceCreate) error {
+	q := "INSERT INTO invoice (supplier_id, project_id, invoice_number, invoice_date, invoice_total, is_balanced) VALUES ($1, $2, $3, $4, $5, $6)"
+	_, err := s.db.Exec(q, inv.SupplierId, inv.ProjectId, inv.InvoiceNumber, inv.InvoiceDate, inv.InvoiceTotal, inv.IsBalanced)
+	return err
+}
