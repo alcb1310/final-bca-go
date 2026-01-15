@@ -159,6 +159,52 @@ func (_c *Service_CreateCategory_Call) RunAndReturn(run func(types.Category) err
 	return _c
 }
 
+// CreateInvoice provides a mock function with given fields: inv
+func (_m *Service) CreateInvoice(inv types.InvoiceCreate) error {
+	ret := _m.Called(inv)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateInvoice")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.InvoiceCreate) error); ok {
+		r0 = rf(inv)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_CreateInvoice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateInvoice'
+type Service_CreateInvoice_Call struct {
+	*mock.Call
+}
+
+// CreateInvoice is a helper method to define mock.On call
+//   - inv types.InvoiceCreate
+func (_e *Service_Expecter) CreateInvoice(inv interface{}) *Service_CreateInvoice_Call {
+	return &Service_CreateInvoice_Call{Call: _e.mock.On("CreateInvoice", inv)}
+}
+
+func (_c *Service_CreateInvoice_Call) Run(run func(inv types.InvoiceCreate)) *Service_CreateInvoice_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.InvoiceCreate))
+	})
+	return _c
+}
+
+func (_c *Service_CreateInvoice_Call) Return(_a0 error) *Service_CreateInvoice_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_CreateInvoice_Call) RunAndReturn(run func(types.InvoiceCreate) error) *Service_CreateInvoice_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CreateItem provides a mock function with given fields: item
 func (_m *Service) CreateItem(item *types.Items) error {
 	ret := _m.Called(item)
