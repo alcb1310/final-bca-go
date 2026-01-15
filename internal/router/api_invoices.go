@@ -26,7 +26,10 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	errorResponse := make(map[string]any)
 	p := make(map[string]any)
 	var err error
-	invoice := types.InvoiceCreate{}
+	invoice := types.InvoiceCreate{
+		IsBalanced:   false,
+		InvoiceTotal: 0,
+	}
 	var val string
 	var ok bool
 
@@ -50,6 +53,19 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		} else {
 			if _, err = rf.DB.GetProject(invoice.ProjectId); err != nil {
 				errorResponse["project_id"] = "El proyecto no existe"
+			}
+		}
+	}
+
+	if val, ok = p["supplier_id"].(string); !ok {
+		errorResponse["supplier_id"] = "El proveedor es obligatorio"
+	} else {
+		invoice.SupplierId, err = uuid.Parse(val)
+		if err != nil {
+			errorResponse["supplier_id"] = "El código del proveedor es inválido"
+		} else {
+			if _, err = rf.DB.GetSupplier(invoice.SupplierId); err != nil {
+				errorResponse["supplier_id"] = "El proveedor no existe"
 			}
 		}
 	}
