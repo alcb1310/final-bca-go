@@ -70,6 +70,12 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if invoice.InvoiceNumber, ok = p["invoice_number"].(string); !ok {
+		errorResponse["invoice_number"] = "El numero de factura es obligatorio"
+	} else if len(invoice.InvoiceNumber) == 0 {
+		errorResponse["invoice_number"] = "El numero de factura es obligatorio"
+	}
+
 	if len(errorResponse) > 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(errorResponse)
