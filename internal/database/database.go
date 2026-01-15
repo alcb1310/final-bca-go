@@ -64,6 +64,7 @@ type Service interface {
 	UpdateBudget(budget types.CreateBudget, oldBudget types.SaveBudget) error
 
 	// file invoice.go
+	CreateInvoice(inv types.InvoiceCreate) error
 	GetInvoices() ([]types.InvoiceResponse, error)
 }
 
