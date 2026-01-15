@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/google/uuid"
 )
 
 func (rf *Router) GetInvoices(w http.ResponseWriter, r *http.Request) {
@@ -25,6 +26,9 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	errorResponse := make(map[string]any)
 	p := make(map[string]any)
 	var err error
+	invoice := types.InvoiceCreate{}
+	var val string
+	var ok bool
 
 	if r.Body == http.NoBody || r.Body == nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
@@ -35,6 +39,19 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
 		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+	}
+
+	if val, ok = p["project_id"].(string); !ok {
+		errorResponse["project_id"] = "El proyecto es obligatorio"
+	} else {
+		invoice.ProjectId, err = uuid.Parse(val)
+		if err != nil {
+			errorResponse["project_id"] = "El código del proyecto es inválido"
+		} else {
+			if _, err = rf.DB.GetProject(invoice.ProjectId); err != nil {
+				errorResponse["project_id"] = "El proyecto no existe"
+			}
+		}
 	}
 
 	if len(errorResponse) > 0 {
