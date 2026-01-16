@@ -97,6 +97,10 @@ func (rf *Router) GenerateRoutes() {
 			r.Route("/invoices", func(r chi.Router) {
 				r.Get("/", rf.GetInvoices)
 				r.Post("/", rf.CreateInvoice)
+
+				r.Route("/{projectId}", func(r chi.Router) {
+					r.Delete("/", rf.DeleteInvoice)
+				})
 			})
 		})
 	})

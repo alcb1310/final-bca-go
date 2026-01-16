@@ -113,3 +113,7 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Factura creada"})
 }
+
+func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
