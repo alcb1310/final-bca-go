@@ -103,3 +103,9 @@ func (s *service) CreateInvoice(inv types.InvoiceCreate) error {
 	_, err := s.db.Exec(q, inv.SupplierId, inv.ProjectId, inv.InvoiceNumber, inv.InvoiceDate)
 	return err
 }
+
+func (s *service) DeleteInvoice(id uuid.UUID) error {
+	sql := "delete from invoice where id = $1"
+	_, err := s.db.Exec(sql, id)
+	return err
+}

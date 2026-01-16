@@ -67,6 +67,7 @@ type Service interface {
 	CreateInvoice(inv types.InvoiceCreate) error
 	GetInvoices() ([]types.InvoiceResponse, error)
 	GetInvoice(id uuid.UUID) (types.InvoiceResponse, error)
+	DeleteInvoice(id uuid.UUID) error
 }
 
 type service struct {
