@@ -17,6 +17,7 @@ import (
 
 func TestApiInvoices(t *testing.T) {
 	projectId := uuid.New()
+	supplierId := uuid.New()
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
@@ -115,6 +116,20 @@ func TestApiInvoices(t *testing.T) {
 				"invoice_date":   "La fecha de la factura es obligatoria",
 			},
 			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+		},
+		{
+			name: "should pass an invoice number",
+			form: map[string]any{
+				"project_id":  projectId.String(),
+				"supplier_id": supplierId.String(),
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"invoice_number": "El numero de factura es obligatorio",
+				"invoice_date":   "La fecha de la factura es obligatoria",
+			},
+			project:  db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			supplier: db.EXPECT().GetSupplier(supplierId).Return(types.Supplier{}, nil),
 		},
 	}
 
