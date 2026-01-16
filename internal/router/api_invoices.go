@@ -150,6 +150,9 @@ func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "projectId": parsedId})
 }
