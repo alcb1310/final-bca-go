@@ -1,6 +1,9 @@
 package database
 
-import "github.com/alcb1310/final-bca-go/internal/types"
+import (
+	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/google/uuid"
+)
 
 func (s *service) GetInvoices() ([]types.InvoiceResponse, error) {
 	invoices := []types.InvoiceResponse{}
@@ -53,6 +56,46 @@ func (s *service) GetInvoices() ([]types.InvoiceResponse, error) {
 	}
 
 	return invoices, nil
+}
+
+func (s *service) GetInvoice(id uuid.UUID) (types.InvoiceResponse, error) {
+	inv := types.InvoiceResponse{}
+	sql := `
+		SELECT
+			id,
+			supplier_id,
+			supplier_number,
+			supplier_name,
+			contact_name,
+			contact_email,
+			contact_phone,
+			project_id,
+			project_name,
+			is_active,
+			invoice_number,
+			invoice_date,
+			invoice_total,
+			is_balanced
+		FROM vw_invoice
+		WHERE id = $1
+	`
+	err := s.db.QueryRow(sql, id).Scan(
+		&inv.Id,
+		&inv.Supplier.Id,
+		&inv.Supplier.SupplierId,
+		&inv.Supplier.Name,
+		&inv.Supplier.ContactName,
+		&inv.Supplier.ContactEmail,
+		&inv.Supplier.ContactPhone,
+		&inv.Project.Id,
+		&inv.Project.Name,
+		&inv.Project.IsActive,
+		&inv.InvoiceNumber,
+		&inv.InvoiceDate,
+		&inv.InvoiceTotal,
+		&inv.IsBalanced,
+	)
+	return inv, err
 }
 
 func (s *service) CreateInvoice(inv types.InvoiceCreate) error {
