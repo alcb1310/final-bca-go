@@ -2,11 +2,14 @@ package router
 
 import (
 	"encoding/json"
+	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (rf *Router) GetInvoices(w http.ResponseWriter, r *http.Request) {
@@ -89,6 +92,21 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	if len(errorResponse) > 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err = rf.DB.CreateInvoice(invoice); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) {
+			if e.Code == "23505" {
+				w.WriteHeader(http.StatusConflict)
+				_ = json.NewEncoder(w).Encode(err)
+				return
+			}
+		}
+		slog.Error("CreateInvoice:", "err", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
 		return
 	}
 
