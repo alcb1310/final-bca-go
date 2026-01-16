@@ -119,13 +119,14 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 	pId := chi.URLParam(r, "projectId")
 	parsedId, err := uuid.Parse(pId)
+	inv := types.InvoiceResponse{}
 	if err != nil {
 		w.WriteHeader(http.StatusNotAcceptable)
 		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
 		return
 	}
 
-	if _, err = rr.DB.GetInvoice(parsedId); err != nil {
+	if inv, err = rr.DB.GetInvoice(parsedId); err != nil {
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)
 			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto no encontrado"})
@@ -134,6 +135,12 @@ func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	if inv.InvoiceTotal != 0 {
+		w.WriteHeader(http.StatusForbidden)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "No se puede eliminar la factura"})
 		return
 	}
 
