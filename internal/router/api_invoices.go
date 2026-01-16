@@ -144,6 +144,12 @@ func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = rr.DB.DeleteInvoice(parsedId); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "projectId": parsedId})
 }
