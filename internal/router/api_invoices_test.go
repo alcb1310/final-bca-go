@@ -59,6 +59,19 @@ func TestApiInvoices(t *testing.T) {
 				"invoice_date":   "La fecha de la factura es obligatoria",
 			},
 		},
+		{
+			name: "should pass a valid project id",
+			form: map[string]any{
+				"project_id": "invalid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"project_id":     "El código del proyecto es inválido",
+				"supplier_id":    "El proveedor es obligatorio",
+				"invoice_number": "El numero de factura es obligatorio",
+				"invoice_date":   "La fecha de la factura es obligatoria",
+			},
+		},
 	}
 
 	for _, tt := range testData {
