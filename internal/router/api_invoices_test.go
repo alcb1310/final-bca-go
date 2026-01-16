@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
 	"github.com/alcb1310/final-bca-go/internal/types"
@@ -189,6 +190,29 @@ func TestApiInvoices(t *testing.T) {
 			},
 			project:  db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
 			supplier: db.EXPECT().GetSupplier(supplierId).Return(types.Supplier{}, nil),
+		},
+		{
+			name: "should create an invoice",
+			form: map[string]any{
+				"project_id":     projectId.String(),
+				"supplier_id":    supplierId.String(),
+				"invoice_number": "001-001-100",
+				"invoice_date":   "2026-12-14",
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"message": "Factura creada",
+			},
+			project:  db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			supplier: db.EXPECT().GetSupplier(supplierId).Return(types.Supplier{}, nil),
+			create: db.EXPECT().CreateInvoice(types.InvoiceCreate{
+				ProjectId:     projectId,
+				SupplierId:    supplierId,
+				InvoiceNumber: "001-001-100",
+				InvoiceDate:   time.Date(2026, 12, 14, 0, 0, 0, 0, time.Now().Location()),
+				InvoiceTotal:  0.00,
+				IsBalanced:    false,
+			}).Return(nil),
 		},
 	}
 
