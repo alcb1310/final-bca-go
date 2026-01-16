@@ -113,6 +113,8 @@ create table if not exists invoice(
     unique (supplier_id, project_id, invoice_number)
 );
 
+alter table invoice alter column invoice_total set default 0;
+
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
