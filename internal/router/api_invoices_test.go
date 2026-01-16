@@ -160,6 +160,21 @@ func TestApiInvoices(t *testing.T) {
 			project:  db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
 			supplier: db.EXPECT().GetSupplier(supplierId).Return(types.Supplier{}, nil),
 		},
+		{
+			name: "should pass a non empty invoice date",
+			form: map[string]any{
+				"project_id":     projectId.String(),
+				"supplier_id":    supplierId.String(),
+				"invoice_number": "001-001-100",
+				"invoice_date":   "",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"invoice_date": "La fecha de la factura es inválida",
+			},
+			project:  db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			supplier: db.EXPECT().GetSupplier(supplierId).Return(types.Supplier{}, nil),
+		},
 	}
 
 	for _, tt := range testData {
