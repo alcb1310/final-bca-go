@@ -9,11 +9,14 @@ import (
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestApiInvoices(t *testing.T) {
+	projectId := uuid.New()
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
@@ -71,6 +74,19 @@ func TestApiInvoices(t *testing.T) {
 				"invoice_number": "El numero de factura es obligatorio",
 				"invoice_date":   "La fecha de la factura es obligatoria",
 			},
+		},
+		{
+			name: "should pass a supplier id",
+			form: map[string]any{
+				"project_id": projectId.String(),
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"supplier_id":    "El proveedor es obligatorio",
+				"invoice_number": "El numero de factura es obligatorio",
+				"invoice_date":   "La fecha de la factura es obligatoria",
+			},
+			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
 		},
 	}
 
