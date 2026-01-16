@@ -17,7 +17,7 @@ func TestApiInvoices(t *testing.T) {
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
-	testURL := "/api/v2/budgets"
+	testURL := "/api/v2/invoices"
 	testData := []struct {
 		name     string
 		form     map[string]any
@@ -33,6 +33,17 @@ func TestApiInvoices(t *testing.T) {
 			status: http.StatusUnprocessableEntity,
 			body: map[string]any{
 				"message": "Falta el cuerpo de la solicitud",
+			},
+		},
+		{
+			name:   "should pass a body",
+			form:   map[string]any{},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"project_id":     "El proyecto es obligatorio",
+				"supplier_id":    "El proveedor es obligatorio",
+				"invoice_number": "El numero de factura es obligatorio",
+				"invoice_date":   "La fecha de la factura es obligatoria",
 			},
 		},
 	}
