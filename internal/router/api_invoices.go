@@ -198,7 +198,7 @@ func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		invoice.InvoiceDate, err = time.ParseInLocation("2006-01-02", val, time.Local)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			_ = json.NewEncoder(w).Encode(err)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "La fecha de la factura es inválida"})
 			return
 		}
 	}
@@ -209,6 +209,5 @@ func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "invoice": invoice})
+	w.WriteHeader(http.StatusNoContent)
 }
