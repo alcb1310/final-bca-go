@@ -154,5 +154,27 @@ func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
+	pId := chi.URLParam(r, "projectId")
+	parsedId, err := uuid.Parse(pId)
+	inv := types.InvoiceResponse{}
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
+		return
+	}
+
+	if inv, err = rf.DB.GetInvoice(parsedId); err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Proyecto no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "invoice": inv})
 }
