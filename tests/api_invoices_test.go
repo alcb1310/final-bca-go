@@ -127,4 +127,23 @@ func TestApiInvoicesTest(t *testing.T) {
 		}
 	})
 
+	t.Run("should show conflict error", func(t *testing.T) {
+		form := map[string]any{
+			"project_id":     "1c6020db-39a0-451d-89ee-fdd20d519828",
+			"supplier_id":    "2da67854-8d6b-4787-a2ce-bde7e07eb1c4",
+			"invoice_number": "100-100-100",
+			"invoice_date":   "2022-01-01",
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest("POST", testUrl, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Set("Content-Type", "application/json")
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusConflict, res.Code)
+	})
 }
