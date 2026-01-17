@@ -1779,6 +1779,52 @@ func (_c *Service_UpdateCategory_Call) RunAndReturn(run func(types.Category) err
 	return _c
 }
 
+// UpdateInvoice provides a mock function with given fields: inv
+func (_m *Service) UpdateInvoice(inv types.InvoiceUpdate) error {
+	ret := _m.Called(inv)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateInvoice")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(types.InvoiceUpdate) error); ok {
+		r0 = rf(inv)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_UpdateInvoice_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateInvoice'
+type Service_UpdateInvoice_Call struct {
+	*mock.Call
+}
+
+// UpdateInvoice is a helper method to define mock.On call
+//   - inv types.InvoiceUpdate
+func (_e *Service_Expecter) UpdateInvoice(inv interface{}) *Service_UpdateInvoice_Call {
+	return &Service_UpdateInvoice_Call{Call: _e.mock.On("UpdateInvoice", inv)}
+}
+
+func (_c *Service_UpdateInvoice_Call) Run(run func(inv types.InvoiceUpdate)) *Service_UpdateInvoice_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(types.InvoiceUpdate))
+	})
+	return _c
+}
+
+func (_c *Service_UpdateInvoice_Call) Return(_a0 error) *Service_UpdateInvoice_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_UpdateInvoice_Call) RunAndReturn(run func(types.InvoiceUpdate) error) *Service_UpdateInvoice_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateItem provides a mock function with given fields: item
 func (_m *Service) UpdateItem(item types.Items) error {
 	ret := _m.Called(item)
