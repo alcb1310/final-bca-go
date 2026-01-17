@@ -22,6 +22,7 @@ func TestApiInvoicesTest(t *testing.T) {
 		postgres.WithOrderedInitScripts(
 			filepath.Join("..", "schema", "tables.sql"),
 			filepath.Join("scripts", "seed_projects.sql"),
+			filepath.Join("scripts", "seed_suppliers.sql"),
 		),
 		postgres.WithDatabase("testbca"),
 		postgres.WithUsername("postgres"),
