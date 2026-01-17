@@ -2,7 +2,11 @@ package tests
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -53,4 +57,18 @@ func TestApiInvoicesTest(t *testing.T) {
 		return
 	}
 	s.GenerateRoutes()
+
+	t.Run("should have no invoices", func(t *testing.T) {
+		req, err := http.NewRequest("GET", testUrl, nil)
+		assert.NoError(t, err)
+		res := httptest.NewRecorder()
+		s.Router.ServeHTTP(res, req)
+
+		assert.Equal(t, http.StatusOK, res.Code)
+		var r []any
+		err = json.Unmarshal(res.Body.Bytes(), &r)
+		assert.NoError(t, err)
+		assert.Equal(t, 0, len(r))
+		assert.Equal(t, "[]", strings.TrimSpace(res.Body.String()))
+	})
 }
