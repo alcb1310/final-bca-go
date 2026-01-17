@@ -175,6 +175,14 @@ func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	invoice := types.InvoiceUpdate{
+		Id:            parsedId,
+		SupplierId:    inv.Supplier.Id,
+		ProjectId:     inv.Project.Id,
+		InvoiceNumber: inv.InvoiceNumber,
+		InvoiceDate:   inv.InvoiceDate,
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "invoice": inv})
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "invoice": invoice})
 }
