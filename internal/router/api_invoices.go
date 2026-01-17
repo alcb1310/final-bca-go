@@ -183,6 +183,26 @@ func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		InvoiceDate:   inv.InvoiceDate,
 	}
 
+	p := make(map[string]any)
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	if val, ok := p["invoice_number"].(string); ok {
+		invoice.InvoiceNumber = val
+	}
+
+	if val, ok := p["invoice_date"].(string); ok {
+		invoice.InvoiceDate, err = time.ParseInLocation("2006-01-02", val, time.Local)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_ = json.NewEncoder(w).Encode(err)
+			return
+		}
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "invoice": invoice})
 }
