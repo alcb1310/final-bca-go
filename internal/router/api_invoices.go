@@ -203,6 +203,12 @@ func (rf *Router) UpdateInvoice(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if err = rf.DB.UpdateInvoice(invoice); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "invoice": invoice})
 }
