@@ -74,7 +74,10 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 			errorResponse["supplier_id"] = "El código del proveedor es inválido"
 		} else {
 			if _, err = rf.DB.GetSupplier(invoice.SupplierId); err != nil {
-				errorResponse["supplier_id"] = "El proveedor no existe"
+				w.WriteHeader(http.StatusNotFound)
+				errorResponse["message"] = "El proveedor no existe"
+				_ = json.NewEncoder(w).Encode(errorResponse)
+				return
 			}
 		}
 	}
