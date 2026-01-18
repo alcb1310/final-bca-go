@@ -273,5 +273,27 @@ func TestApiInvoicesTest(t *testing.T) {
 				assert.Equal(t, "2da67854-8d6b-4787-a2ce-bde7e07eb1c4", supplier["id"])
 			}
 		})
+
+		t.Run("should delete an invoice", func(t *testing.T) {
+			url := fmt.Sprintf("%s/%s", testUrl, invoice.Id.String())
+			req, err := http.NewRequest(http.MethodDelete, url, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res := httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			assert.Equal(t, http.StatusNoContent, res.Code)
+
+			req, err = http.NewRequest("GET", testUrl, nil)
+			assert.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+			res = httptest.NewRecorder()
+			s.Router.ServeHTTP(res, req)
+
+			var r []any
+			err = json.Unmarshal(res.Body.Bytes(), &r)
+			assert.NoError(t, err)
+			assert.Equal(t, 0, len(r))
+		})
 	})
 }
