@@ -58,7 +58,10 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 			errorResponse["project_id"] = "El código del proyecto es inválido"
 		} else {
 			if _, err = rf.DB.GetProject(invoice.ProjectId); err != nil {
-				errorResponse["project_id"] = "El proyecto no existe"
+				w.WriteHeader(http.StatusNotFound)
+				errorResponse["message"] = "El proyecto no existe"
+				_ = json.NewEncoder(w).Encode(errorResponse)
+				return
 			}
 		}
 	}
