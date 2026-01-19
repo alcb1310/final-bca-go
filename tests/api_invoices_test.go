@@ -200,7 +200,7 @@ func TestApiInvoicesTest(t *testing.T) {
 		err = json.Unmarshal(body, &mapBody)
 		assert.NoError(t, err)
 
-		assert.Equal(t, "El proveedor no existe", mapBody["message"])
+		assert.Equal(t, "La factura para ese proveedor ya existe", mapBody["message"])
 	})
 
 	t.Run("individual tests", func(t *testing.T) {

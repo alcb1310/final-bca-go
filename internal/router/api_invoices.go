@@ -108,7 +108,7 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		if errors.As(err, &e) {
 			if e.Code == "23505" {
 				w.WriteHeader(http.StatusConflict)
-				_ = json.NewEncoder(w).Encode(err)
+				_ = json.NewEncoder(w).Encode(map[string]any{"message": "La factura para ese proveedor ya existe"})
 				return
 			}
 		}
