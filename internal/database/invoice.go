@@ -21,7 +21,7 @@ func (s *service) GetInvoices() ([]types.InvoiceResponse, error) {
 			project_name,
 			is_active,
 			invoice_number,
-			invoice_date,
+			invoice_date at time zone 'UTC' as invoice_date,
 			invoice_total,
 			is_balanced
 		FROM vw_invoice
