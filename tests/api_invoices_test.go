@@ -147,6 +147,13 @@ func TestApiInvoicesTest(t *testing.T) {
 		s.Router.ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusConflict, res.Code)
+		body, err := io.ReadAll(res.Body)
+		assert.NoError(t, err)
+		mapBody := make(map[string]any)
+		err = json.Unmarshal(body, &mapBody)
+		assert.NoError(t, err)
+
+		assert.Equal(t, "La factura para ese proveedor ya existe", mapBody["message"])
 	})
 
 	t.Run("should return not found when non existent project", func(t *testing.T) {
@@ -200,7 +207,7 @@ func TestApiInvoicesTest(t *testing.T) {
 		err = json.Unmarshal(body, &mapBody)
 		assert.NoError(t, err)
 
-		assert.Equal(t, "La factura para ese proveedor ya existe", mapBody["message"])
+		assert.Equal(t, "El proveedor no existe", mapBody["message"])
 	})
 
 	t.Run("individual tests", func(t *testing.T) {
