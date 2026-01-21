@@ -28,6 +28,32 @@ func (rf *Router) GetInvoices(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(invoices)
 }
 
+func (rf *Router) GetInvoice(w http.ResponseWriter, r *http.Request) {
+	pId := chi.URLParam(r, "projectId")
+	parsedId, err := uuid.Parse(pId)
+	inv := types.InvoiceResponse{}
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
+		return
+	}
+
+	if inv, err = rf.DB.GetInvoice(parsedId); err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Factura no encontrada"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(inv)
+}
+
 func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	errorResponse := make(map[string]any)
 	p := make(map[string]any)

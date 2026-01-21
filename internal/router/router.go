@@ -99,6 +99,7 @@ func (rf *Router) GenerateRoutes() {
 				r.Post("/", rf.CreateInvoice)
 
 				r.Route("/{projectId}", func(r chi.Router) {
+					r.Get("/", rf.GetInvoice)
 					r.Put("/", rf.UpdateInvoice)
 					r.Delete("/", rf.DeleteInvoice)
 				})
