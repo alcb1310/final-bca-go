@@ -160,7 +160,7 @@ func (_c *Service_CreateCategory_Call) RunAndReturn(run func(types.Category) err
 }
 
 // CreateInvoice provides a mock function with given fields: inv
-func (_m *Service) CreateInvoice(inv types.InvoiceCreate) error {
+func (_m *Service) CreateInvoice(inv *types.InvoiceCreate) error {
 	ret := _m.Called(inv)
 
 	if len(ret) == 0 {
@@ -168,7 +168,7 @@ func (_m *Service) CreateInvoice(inv types.InvoiceCreate) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.InvoiceCreate) error); ok {
+	if rf, ok := ret.Get(0).(func(*types.InvoiceCreate) error); ok {
 		r0 = rf(inv)
 	} else {
 		r0 = ret.Error(0)
@@ -183,14 +183,14 @@ type Service_CreateInvoice_Call struct {
 }
 
 // CreateInvoice is a helper method to define mock.On call
-//   - inv types.InvoiceCreate
+//   - inv *types.InvoiceCreate
 func (_e *Service_Expecter) CreateInvoice(inv interface{}) *Service_CreateInvoice_Call {
 	return &Service_CreateInvoice_Call{Call: _e.mock.On("CreateInvoice", inv)}
 }
 
-func (_c *Service_CreateInvoice_Call) Run(run func(inv types.InvoiceCreate)) *Service_CreateInvoice_Call {
+func (_c *Service_CreateInvoice_Call) Run(run func(inv *types.InvoiceCreate)) *Service_CreateInvoice_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(types.InvoiceCreate))
+		run(args[0].(*types.InvoiceCreate))
 	})
 	return _c
 }
@@ -200,7 +200,7 @@ func (_c *Service_CreateInvoice_Call) Return(_a0 error) *Service_CreateInvoice_C
 	return _c
 }
 
-func (_c *Service_CreateInvoice_Call) RunAndReturn(run func(types.InvoiceCreate) error) *Service_CreateInvoice_Call {
+func (_c *Service_CreateInvoice_Call) RunAndReturn(run func(*types.InvoiceCreate) error) *Service_CreateInvoice_Call {
 	_c.Call.Return(run)
 	return _c
 }
