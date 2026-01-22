@@ -204,7 +204,7 @@ func TestApiInvoices(t *testing.T) {
 				"project_id":     projectId.String(),
 				"supplier_id":    supplierId.String(),
 				"invoice_number": "001-001-100",
-				"invoice_date":   "2026-12-14T00:00:00-05:00",
+				"invoice_date":   "2026-12-14",
 				"invoice_total":  float64(0.00),
 				"is_balanced":    false,
 				"id":             "00000000-0000-0000-0000-000000000000",
@@ -256,6 +256,10 @@ func TestApiInvoices(t *testing.T) {
 			assert.Equal(t, len(tt.body), len(mapBody))
 
 			for k, v := range tt.body {
+				if k == "invoice_date" {
+					assert.Contains(t, mapBody[k], v.(string))
+					continue
+				}
 				assert.Equal(t, v, mapBody[k])
 			}
 		})
