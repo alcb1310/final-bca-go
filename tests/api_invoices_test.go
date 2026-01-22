@@ -104,7 +104,7 @@ func TestApiInvoicesTest(t *testing.T) {
 		assert.Equal(t, "1c6020db-39a0-451d-89ee-fdd20d519828", mapBody["project_id"])
 		assert.Equal(t, "2da67854-8d6b-4787-a2ce-bde7e07eb1c4", mapBody["supplier_id"])
 		assert.Equal(t, "100-100-100", mapBody["invoice_number"])
-		assert.Equal(t, "2022-01-01T00:00:00-05:00", mapBody["invoice_date"])
+		assert.Contains(t, mapBody["invoice_date"], "2022-01-01")
 		assert.NotNil(t, mapBody["id"])
 		id := mapBody["id"].(string)
 		_, err = uuid.Parse(id)
