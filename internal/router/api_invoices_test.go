@@ -201,11 +201,17 @@ func TestApiInvoices(t *testing.T) {
 			},
 			status: http.StatusCreated,
 			body: map[string]any{
-				"message": "Factura creada",
+				"project_id":     projectId.String(),
+				"supplier_id":    supplierId.String(),
+				"invoice_number": "001-001-100",
+				"invoice_date":   "2026-12-14T00:00:00-05:00",
+				"invoice_total":  float64(0.00),
+				"is_balanced":    false,
+				"id":             "00000000-0000-0000-0000-000000000000",
 			},
 			project:  db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
 			supplier: db.EXPECT().GetSupplier(supplierId).Return(types.Supplier{}, nil),
-			create: db.EXPECT().CreateInvoice(types.InvoiceCreate{
+			create: db.EXPECT().CreateInvoice(&types.InvoiceCreate{
 				ProjectId:     projectId,
 				SupplierId:    supplierId,
 				InvoiceNumber: "001-001-100",
