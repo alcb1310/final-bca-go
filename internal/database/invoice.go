@@ -98,9 +98,9 @@ func (s *service) GetInvoice(id uuid.UUID) (types.InvoiceResponse, error) {
 	return inv, err
 }
 
-func (s *service) CreateInvoice(inv types.InvoiceCreate) error {
-	q := "INSERT INTO invoice (supplier_id, project_id, invoice_number, invoice_date) VALUES ($1, $2, $3, $4)"
-	_, err := s.db.Exec(q, inv.SupplierId, inv.ProjectId, inv.InvoiceNumber, inv.InvoiceDate)
+func (s *service) CreateInvoice(inv *types.InvoiceCreate) error {
+	q := "INSERT INTO invoice (supplier_id, project_id, invoice_number, invoice_date) VALUES ($1, $2, $3, $4) RETURNING id"
+	err := s.db.QueryRow(q, inv.SupplierId, inv.ProjectId, inv.InvoiceNumber, inv.InvoiceDate).Scan(&inv.Id)
 	return err
 }
 
