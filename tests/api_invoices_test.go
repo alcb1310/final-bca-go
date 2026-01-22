@@ -101,7 +101,14 @@ func TestApiInvoicesTest(t *testing.T) {
 		err = json.Unmarshal(body, &mapBody)
 		assert.NoError(t, err)
 
-		assert.Equal(t, "Factura creada", mapBody["message"])
+		assert.Equal(t, "1c6020db-39a0-451d-89ee-fdd20d519828", mapBody["project_id"])
+		assert.Equal(t, "2da67854-8d6b-4787-a2ce-bde7e07eb1c4", mapBody["supplier_id"])
+		assert.Equal(t, "100-100-100", mapBody["invoice_number"])
+		assert.Equal(t, "2022-01-01T00:00:00-05:00", mapBody["invoice_date"])
+		assert.NotNil(t, mapBody["id"])
+		id := mapBody["id"].(string)
+		_, err = uuid.Parse(id)
+		assert.NoError(t, err)
 
 		req, err = http.NewRequest("GET", testUrl, nil)
 		assert.NoError(t, err)
