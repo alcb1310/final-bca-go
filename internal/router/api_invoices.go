@@ -129,7 +129,7 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = rf.DB.CreateInvoice(invoice); err != nil {
+	if err = rf.DB.CreateInvoice(&invoice); err != nil {
 		var e *pgconn.PgError
 		if errors.As(err, &e) {
 			if e.Code == "23505" {
@@ -145,7 +145,7 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Factura creada"})
+	_ = json.NewEncoder(w).Encode(invoice)
 }
 
 func (rr *Router) DeleteInvoice(w http.ResponseWriter, r *http.Request) {
