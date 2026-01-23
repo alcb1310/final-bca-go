@@ -115,6 +115,19 @@ create table if not exists invoice(
 
 alter table invoice alter column invoice_total set default 0;
 
+create table if not exists invoice_details (
+     invoice_id uuid not null references invoice (id) on delete restrict,
+     budget_item_id uuid not null references budget_item (id) on delete restrict,
+     quantity numeric not null,
+     cost numeric not null,
+     total numeric not null,
+     created_at timestamp with time zone default now(),
+
+     unique (invoice_id, budget_item_id),
+     primary key (invoice_id, budget_item_id)
+);
+
+
 ----------------------------------------
 --                VIEWS               --
 ----------------------------------------
