@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *service) ListInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error) {
+func (s *service) GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error) {
 	invoiceDetails := []types.InvoiceDetailsResponse{}
 
 	query := `
@@ -17,7 +17,7 @@ func (s *service) ListInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsRespon
 			project_id,
 			project_name,
 			supplier_id,
-			supplier_number
+			supplier_number,
 			supplier_name,
 			budget_item_id,
 			budget_item_code,
