@@ -1073,6 +1073,64 @@ func (_c *Service_GetInvoice_Call) RunAndReturn(run func(uuid.UUID) (types.Invoi
 	return _c
 }
 
+// GetInvoiceDetails provides a mock function with given fields: id
+func (_m *Service) GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetInvoiceDetails")
+	}
+
+	var r0 []types.InvoiceDetailsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) ([]types.InvoiceDetailsResponse, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) []types.InvoiceDetailsResponse); ok {
+		r0 = rf(id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]types.InvoiceDetailsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetInvoiceDetails_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetInvoiceDetails'
+type Service_GetInvoiceDetails_Call struct {
+	*mock.Call
+}
+
+// GetInvoiceDetails is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) GetInvoiceDetails(id interface{}) *Service_GetInvoiceDetails_Call {
+	return &Service_GetInvoiceDetails_Call{Call: _e.mock.On("GetInvoiceDetails", id)}
+}
+
+func (_c *Service_GetInvoiceDetails_Call) Run(run func(id uuid.UUID)) *Service_GetInvoiceDetails_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetInvoiceDetails_Call) Return(_a0 []types.InvoiceDetailsResponse, _a1 error) *Service_GetInvoiceDetails_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetInvoiceDetails_Call) RunAndReturn(run func(uuid.UUID) ([]types.InvoiceDetailsResponse, error)) *Service_GetInvoiceDetails_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetInvoices provides a mock function with no fields
 func (_m *Service) GetInvoices() ([]types.InvoiceResponse, error) {
 	ret := _m.Called()
@@ -1636,64 +1694,6 @@ func (_c *Service_GetSuppliers_Call) Return(_a0 []types.Supplier, _a1 error) *Se
 }
 
 func (_c *Service_GetSuppliers_Call) RunAndReturn(run func() ([]types.Supplier, error)) *Service_GetSuppliers_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// ListInvoiceDetails provides a mock function with given fields: id
-func (_m *Service) ListInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error) {
-	ret := _m.Called(id)
-
-	if len(ret) == 0 {
-		panic("no return value specified for ListInvoiceDetails")
-	}
-
-	var r0 []types.InvoiceDetailsResponse
-	var r1 error
-	if rf, ok := ret.Get(0).(func(uuid.UUID) ([]types.InvoiceDetailsResponse, error)); ok {
-		return rf(id)
-	}
-	if rf, ok := ret.Get(0).(func(uuid.UUID) []types.InvoiceDetailsResponse); ok {
-		r0 = rf(id)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]types.InvoiceDetailsResponse)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
-		r1 = rf(id)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Service_ListInvoiceDetails_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListInvoiceDetails'
-type Service_ListInvoiceDetails_Call struct {
-	*mock.Call
-}
-
-// ListInvoiceDetails is a helper method to define mock.On call
-//   - id uuid.UUID
-func (_e *Service_Expecter) ListInvoiceDetails(id interface{}) *Service_ListInvoiceDetails_Call {
-	return &Service_ListInvoiceDetails_Call{Call: _e.mock.On("ListInvoiceDetails", id)}
-}
-
-func (_c *Service_ListInvoiceDetails_Call) Run(run func(id uuid.UUID)) *Service_ListInvoiceDetails_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uuid.UUID))
-	})
-	return _c
-}
-
-func (_c *Service_ListInvoiceDetails_Call) Return(_a0 []types.InvoiceDetailsResponse, _a1 error) *Service_ListInvoiceDetails_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-func (_c *Service_ListInvoiceDetails_Call) RunAndReturn(run func(uuid.UUID) ([]types.InvoiceDetailsResponse, error)) *Service_ListInvoiceDetails_Call {
 	_c.Call.Return(run)
 	return _c
 }
