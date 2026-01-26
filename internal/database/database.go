@@ -69,6 +69,9 @@ type Service interface {
 	GetInvoice(id uuid.UUID) (types.InvoiceResponse, error)
 	UpdateInvoice(inv types.InvoiceUpdate) error
 	DeleteInvoice(id uuid.UUID) error
+
+	// file invoice-detail.go
+	ListInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error)
 }
 
 type service struct {
