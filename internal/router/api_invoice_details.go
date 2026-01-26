@@ -64,6 +64,20 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	p := make(map[string]any)
+	errorResponse := make(map[string]any)
+
+	if r.Body == http.NoBody || r.Body == nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		errorResponse["message"] = "Falta el cuerpo de la solicitud"
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if err = json.NewDecoder(r.Body).Decode(&p); err != nil {
+		errorResponse["message"] = "Cuerpo de la solicitud no válido"
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(inv)
 }
