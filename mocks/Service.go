@@ -1640,6 +1640,64 @@ func (_c *Service_GetSuppliers_Call) RunAndReturn(run func() ([]types.Supplier, 
 	return _c
 }
 
+// ListInvoiceDetails provides a mock function with given fields: id
+func (_m *Service) ListInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error) {
+	ret := _m.Called(id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListInvoiceDetails")
+	}
+
+	var r0 []types.InvoiceDetailsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID) ([]types.InvoiceDetailsResponse, error)); ok {
+		return rf(id)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID) []types.InvoiceDetailsResponse); ok {
+		r0 = rf(id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]types.InvoiceDetailsResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID) error); ok {
+		r1 = rf(id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_ListInvoiceDetails_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListInvoiceDetails'
+type Service_ListInvoiceDetails_Call struct {
+	*mock.Call
+}
+
+// ListInvoiceDetails is a helper method to define mock.On call
+//   - id uuid.UUID
+func (_e *Service_Expecter) ListInvoiceDetails(id interface{}) *Service_ListInvoiceDetails_Call {
+	return &Service_ListInvoiceDetails_Call{Call: _e.mock.On("ListInvoiceDetails", id)}
+}
+
+func (_c *Service_ListInvoiceDetails_Call) Run(run func(id uuid.UUID)) *Service_ListInvoiceDetails_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_ListInvoiceDetails_Call) Return(_a0 []types.InvoiceDetailsResponse, _a1 error) *Service_ListInvoiceDetails_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_ListInvoiceDetails_Call) RunAndReturn(run func(uuid.UUID) ([]types.InvoiceDetailsResponse, error)) *Service_ListInvoiceDetails_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateBudget provides a mock function with given fields: budget, oldBudget
 func (_m *Service) UpdateBudget(budget types.CreateBudget, oldBudget types.SaveBudget) error {
 	ret := _m.Called(budget, oldBudget)
