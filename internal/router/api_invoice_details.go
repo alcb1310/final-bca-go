@@ -43,7 +43,6 @@ func (rf *Router) GetInvoiceDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
-	inv := types.InvoiceResponse{}
 	pId := chi.URLParam(r, "projectId")
 	parsedId, err := uuid.Parse(pId)
 	if err != nil {
@@ -52,7 +51,7 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if inv, err = rf.DB.GetInvoice(parsedId); err != nil {
+	if _, err = rf.DB.GetInvoice(parsedId); err != nil {
 		if err == sql.ErrNoRows {
 			w.WriteHeader(http.StatusNotFound)
 			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Factura no encontrada"})
@@ -65,7 +64,11 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	p := make(map[string]any)
+	invoiceDetail := types.InvoiceDetailsCreate{
+		InvoiceId: parsedId,
+	}
 	errorResponse := make(map[string]any)
+	var ok bool
 
 	if r.Body == http.NoBody || r.Body == nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
@@ -78,6 +81,29 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		errorResponse["message"] = "Cuerpo de la solicitud no válido"
 	}
 
+	if val, ok := p["budget_item_id"].(string); !ok {
+		errorResponse["budget_item_id"] = "El id de la partida es obligatorio"
+	} else {
+		invoiceDetail.BudgetItemId, err = uuid.Parse(val)
+		if err != nil {
+			errorResponse["budget_item_id"] = "El id de la partida es inválido"
+		}
+	}
+
+	if invoiceDetail.Quantity, ok = p["quantity"].(float64); !ok {
+		errorResponse["quantity"] = "La cantidad es obligatoria"
+	}
+
+	if invoiceDetail.Cost, ok = p["cost"].(float64); !ok {
+		errorResponse["cost"] = "El costo es obligatorio"
+	}
+
+	if len(errorResponse) > 0 {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_ = json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(inv)
+	_ = json.NewEncoder(w).Encode(invoiceDetail)
 }
