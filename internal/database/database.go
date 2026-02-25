@@ -71,6 +71,7 @@ type Service interface {
 	DeleteInvoice(id uuid.UUID) error
 
 	// file invoice-detail.go
+	CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error
 	GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error)
 }
 
