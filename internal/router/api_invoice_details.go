@@ -3,11 +3,13 @@ package router
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (rf *Router) GetInvoiceDetails(w http.ResponseWriter, r *http.Request) {
@@ -104,6 +106,21 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	if err = rf.DB.CreateInvoiceDetail(invoiceDetail); err != nil {
+		var e *pgconn.PgError
+		if errors.As(err, &e) {
+			switch e.Code {
+			case "23505":
+				w.WriteHeader(http.StatusConflict)
+				_ = json.NewEncoder(w).Encode(map[string]any{"message": "El detalle de la factura ya existe"})
+				return
+			}
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(invoiceDetail)
 }
