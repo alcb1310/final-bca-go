@@ -1,6 +1,8 @@
 package database
 
 import (
+	"log/slog"
+
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/google/uuid"
 )
@@ -69,18 +71,20 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 	if err != nil {
 		return err
 	}
-	defer func() { _ = tx.Commit() }()
+	defer func() { _ = tx.Rollback() }()
 	total := detail.Quantity * detail.Cost
 
 	query := "insert into invoice_details (invoice_id, budget_item_id, quantity, cost, total) values ($1, $2, $3, $4, $5)"
 	_, err = tx.Exec(query, detail.InvoiceId, detail.BudgetItemId, detail.Quantity, detail.Cost, total)
 	if err != nil {
+		slog.Error("Error creating invoice detail insert", "err", err)
 		_ = tx.Rollback()
 		return err
 	}
 	query = "update invoice set invoice_total = invoice_total + $1 where id = $2"
 	_, err = tx.Exec(query, total, detail.InvoiceId)
 	if err != nil {
+		slog.Error("Error creating invoice detail update", "err", err)
 		_ = tx.Rollback()
 		return err
 	}
@@ -88,6 +92,7 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 	var projectId uuid.UUID
 	query = "select project_id from invoice where id = $1"
 	if err := tx.QueryRow(query, detail.InvoiceId).Scan(&projectId); err != nil {
+		slog.Error("Error getting project id", "err", err)
 		_ = tx.Rollback()
 		return err
 	}
@@ -95,6 +100,7 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 	query = "select spent_quantity, spent_total, remaining_quantity, remaining_cost, remaining_total, updated_budget from budget where project_id = $1 and budget_item_id = $2"
 	var spentQuantity, spentTotal, remainingQuantity, remainingCost, remainingTotal, updatedBudget float64
 	if err := tx.QueryRow(query, projectId, detail.BudgetItemId).Scan(&spentQuantity, &spentTotal, &remainingQuantity, &remainingCost, &remainingTotal, &updatedBudget); err != nil {
+		slog.Error("Error getting budget", "err", err)
 		_ = tx.Rollback()
 		return err
 	}
@@ -114,7 +120,8 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 		where project_id = $6 and budget_item_id = $7
 	`
 
-	if _, err = tx.Exec(query, detail.Quantity, detail.Cost, newToSpendTotal, newUpdatedBudget, projectId, detail.BudgetItemId); err != nil {
+	if _, err = tx.Exec(query, detail.Quantity, detail.Cost, total, newToSpendTotal, newUpdatedBudget, projectId, detail.BudgetItemId); err != nil {
+		slog.Error("Error updating budget", "err", err)
 		_ = tx.Rollback()
 		return err
 	}
@@ -125,7 +132,8 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 	parentId := &detail.BudgetItemId
 	for {
 		query = "select parent_id from budget_item where id = $1"
-		if err := tx.QueryRow(query, *parentId).Scan(parentId); err != nil {
+		if err := tx.QueryRow(query, parentId).Scan(&parentId); err != nil {
+			slog.Error("Error getting parent id", "err", err)
 			_ = tx.Rollback()
 			return err
 		}
@@ -141,11 +149,15 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 			updated_budget = updated_budget + $3
 			where project_id = $4 and budget_item_id = $5
 		`
-		if _, err = tx.Exec(query, updatedDiff, remainingDiff, updatedDiff, projectId, *parentId); err != nil {
+		if _, err = tx.Exec(query, total, remainingDiff, updatedDiff, projectId, *parentId); err != nil {
+			slog.Error("Error updating parent budget", "err", err)
 			_ = tx.Rollback()
 			return err
 		}
 	}
+
+	slog.Info("Invoice detail created successfully")
+	_ = tx.Commit()
 
 	return nil
 }
