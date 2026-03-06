@@ -90,6 +90,20 @@ func TestApiInvoiceDetails(t *testing.T) {
 				"cost":     "El costo es obligatorio",
 			},
 		},
+		{
+			name:      "should pass a valid quantity",
+			invoiceId: invoiceId.String(),
+			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
+			form: map[string]any{
+				"budget_item_id": uuid.New().String(),
+				"quantity":       "invalid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"quantity": "La cantidad es obligatoria",
+				"cost":     "El costo es obligatorio",
+			},
+		},
 	}
 
 	for _, tt := range testData {
