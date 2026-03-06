@@ -19,17 +19,19 @@ import (
 
 func TestApiInvoiceDetails(t *testing.T) {
 	invoiceId := uuid.New()
+	budgetItemId := uuid.New()
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
 
 	testData := []struct {
-		name      string
-		form      map[string]any
-		body      map[string]any
-		status    int
-		invoiceId string
-		invoice   *mocks.Service_GetInvoice_Call
+		name          string
+		form          map[string]any
+		body          map[string]any
+		status        int
+		invoiceId     string
+		invoice       *mocks.Service_GetInvoice_Call
+		createInvoice *mocks.Service_CreateInvoiceDetail_Call
 	}{
 		{
 			name:      "should pass a valid invoice id",
@@ -82,7 +84,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 			invoiceId: invoiceId.String(),
 			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
 			form: map[string]any{
-				"budget_item_id": uuid.New().String(),
+				"budget_item_id": budgetItemId.String(),
 			},
 			status: http.StatusBadRequest,
 			body: map[string]any{
@@ -95,7 +97,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 			invoiceId: invoiceId.String(),
 			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
 			form: map[string]any{
-				"budget_item_id": uuid.New().String(),
+				"budget_item_id": budgetItemId.String(),
 				"quantity":       "invalid",
 			},
 			status: http.StatusBadRequest,
@@ -109,7 +111,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 			invoiceId: invoiceId.String(),
 			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
 			form: map[string]any{
-				"budget_item_id": uuid.New().String(),
+				"budget_item_id": budgetItemId.String(),
 				"quantity":       10.5,
 			},
 			status: http.StatusBadRequest,
@@ -122,7 +124,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 			invoiceId: invoiceId.String(),
 			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
 			form: map[string]any{
-				"budget_item_id": uuid.New().String(),
+				"budget_item_id": budgetItemId.String(),
 				"quantity":       10.5,
 				"cost":           "invalid",
 			},
@@ -130,6 +132,26 @@ func TestApiInvoiceDetails(t *testing.T) {
 			body: map[string]any{
 				"cost": "El costo es obligatorio",
 			},
+		},
+		{
+			name:      "should create the invoice detail",
+			invoiceId: invoiceId.String(),
+			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
+			form: map[string]any{
+				"budget_item_id": budgetItemId.String(),
+				"quantity":       10.5,
+				"cost":           5,
+			},
+			status: http.StatusCreated,
+			body: map[string]any{
+				"message": "Detalle de factura creado",
+			},
+			createInvoice: db.EXPECT().CreateInvoiceDetail(types.InvoiceDetailsCreate{
+				InvoiceId:    invoiceId,
+				BudgetItemId: budgetItemId,
+				Quantity:     10.5,
+				Cost:         5,
+			}).Return(nil),
 		},
 	}
 

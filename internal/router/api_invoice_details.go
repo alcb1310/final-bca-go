@@ -122,5 +122,5 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(invoiceDetail)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Detalle de factura creado"})
 }
