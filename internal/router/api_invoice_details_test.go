@@ -56,7 +56,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 			invoiceId: invoiceId.String(),
 			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
 			form:      make(map[string]any),
-			status:    http.StatusUnprocessableEntity,
+			status:    http.StatusBadRequest,
 			body: map[string]any{
 				"quantity":       "La cantidad es obligatoria",
 				"cost":           "El costo es obligatorio",
@@ -70,11 +70,24 @@ func TestApiInvoiceDetails(t *testing.T) {
 			form: map[string]any{
 				"budget_item_id": "invalid",
 			},
-			status: http.StatusUnprocessableEntity,
+			status: http.StatusBadRequest,
 			body: map[string]any{
 				"quantity":       "La cantidad es obligatoria",
 				"cost":           "El costo es obligatorio",
 				"budget_item_id": "El id de la partida es inválido",
+			},
+		},
+		{
+			name:      "should pass a quantity",
+			invoiceId: invoiceId.String(),
+			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
+			form: map[string]any{
+				"budget_item_id": uuid.New().String(),
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"quantity": "La cantidad es obligatoria",
+				"cost":     "El costo es obligatorio",
 			},
 		},
 	}
