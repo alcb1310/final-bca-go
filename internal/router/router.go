@@ -106,6 +106,7 @@ func (rf *Router) GenerateRoutes() {
 					r.Route("/details", func(r chi.Router) {
 						r.Get("/", rf.GetInvoiceDetails)
 						r.Post("/", rf.CreateInvoiceDetail)
+						r.Delete("/{detailId}", rf.DeleteInvoiceDetail)
 					})
 				})
 			})
