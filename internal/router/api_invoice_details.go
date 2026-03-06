@@ -101,7 +101,7 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(errorResponse) > 0 {
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.WriteHeader(http.StatusBadRequest)
 		_ = json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
