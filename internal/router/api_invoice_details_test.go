@@ -63,6 +63,20 @@ func TestApiInvoiceDetails(t *testing.T) {
 				"budget_item_id": "El id de la partida es obligatorio",
 			},
 		},
+		{
+			name:      "should pass a valid budget item",
+			invoiceId: invoiceId.String(),
+			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
+			form: map[string]any{
+				"budget_item_id": "invalid",
+			},
+			status: http.StatusUnprocessableEntity,
+			body: map[string]any{
+				"quantity":       "La cantidad es obligatoria",
+				"cost":           "El costo es obligatorio",
+				"budget_item_id": "El id de la partida es inválido",
+			},
+		},
 	}
 
 	for _, tt := range testData {
