@@ -51,6 +51,18 @@ func TestApiInvoiceDetails(t *testing.T) {
 				"message": "Factura no encontrada",
 			},
 		},
+		{
+			name:      "should pass a budget item",
+			invoiceId: invoiceId.String(),
+			invoice:   db.EXPECT().GetInvoice(invoiceId).Return(types.InvoiceResponse{}, nil),
+			form:      make(map[string]any),
+			status:    http.StatusUnprocessableEntity,
+			body: map[string]any{
+				"quantity":       "La cantidad es obligatoria",
+				"cost":           "El costo es obligatorio",
+				"budget_item_id": "El id de la partida es obligatorio",
+			},
+		},
 	}
 
 	for _, tt := range testData {
@@ -67,7 +79,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 				read = strings.NewReader(string(data))
 			}
 
-			req, err := http.NewRequest("GET", testURL, read)
+			req, err := http.NewRequest(http.MethodPost, testURL, read)
 			assert.NoError(t, err)
 			req.Header.Set("Content-Type", "application/json")
 			res := httptest.NewRecorder()
