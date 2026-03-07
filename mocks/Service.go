@@ -1119,6 +1119,63 @@ func (_c *Service_GetInvoice_Call) RunAndReturn(run func(uuid.UUID) (types.Invoi
 	return _c
 }
 
+// GetInvoiceDetail provides a mock function with given fields: invoiceId, budgetItemId
+func (_m *Service) GetInvoiceDetail(invoiceId uuid.UUID, budgetItemId uuid.UUID) (types.InvoiceDetailsResponse, error) {
+	ret := _m.Called(invoiceId, budgetItemId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetInvoiceDetail")
+	}
+
+	var r0 types.InvoiceDetailsResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID, uuid.UUID) (types.InvoiceDetailsResponse, error)); ok {
+		return rf(invoiceId, budgetItemId)
+	}
+	if rf, ok := ret.Get(0).(func(uuid.UUID, uuid.UUID) types.InvoiceDetailsResponse); ok {
+		r0 = rf(invoiceId, budgetItemId)
+	} else {
+		r0 = ret.Get(0).(types.InvoiceDetailsResponse)
+	}
+
+	if rf, ok := ret.Get(1).(func(uuid.UUID, uuid.UUID) error); ok {
+		r1 = rf(invoiceId, budgetItemId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Service_GetInvoiceDetail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetInvoiceDetail'
+type Service_GetInvoiceDetail_Call struct {
+	*mock.Call
+}
+
+// GetInvoiceDetail is a helper method to define mock.On call
+//   - invoiceId uuid.UUID
+//   - budgetItemId uuid.UUID
+func (_e *Service_Expecter) GetInvoiceDetail(invoiceId interface{}, budgetItemId interface{}) *Service_GetInvoiceDetail_Call {
+	return &Service_GetInvoiceDetail_Call{Call: _e.mock.On("GetInvoiceDetail", invoiceId, budgetItemId)}
+}
+
+func (_c *Service_GetInvoiceDetail_Call) Run(run func(invoiceId uuid.UUID, budgetItemId uuid.UUID)) *Service_GetInvoiceDetail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_GetInvoiceDetail_Call) Return(_a0 types.InvoiceDetailsResponse, _a1 error) *Service_GetInvoiceDetail_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *Service_GetInvoiceDetail_Call) RunAndReturn(run func(uuid.UUID, uuid.UUID) (types.InvoiceDetailsResponse, error)) *Service_GetInvoiceDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetInvoiceDetails provides a mock function with given fields: id
 func (_m *Service) GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error) {
 	ret := _m.Called(id)
