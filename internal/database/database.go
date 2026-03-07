@@ -73,6 +73,7 @@ type Service interface {
 	// file invoice-detail.go
 	CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error
 	GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error)
+	GetInvoiceDetail(invoiceId, budgetItemId uuid.UUID) (types.InvoiceDetailsResponse, error)
 }
 
 type service struct {

@@ -66,6 +66,51 @@ func (s *service) GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsRespons
 	return invoiceDetails, nil
 }
 
+func (s *service) GetInvoiceDetail(invoiceId, budgetItemId uuid.UUID) (types.InvoiceDetailsResponse, error) {
+	id := types.InvoiceDetailsResponse{}
+	query := `
+		SELECT
+			invoice_id,
+			invoice_number,
+			invoice_total,
+			invoice_date,
+			project_id,
+			project_name,
+			supplier_id,
+			supplier_number,
+			supplier_name,
+			budget_item_id,
+			budget_item_code,
+			budget_item_name,
+			budget_item_level,
+			quantity,
+			cost,
+			total
+		FROM vw_invoice_details
+		WHERE invoice_id = $1 and budget_item_id = $2
+	`
+	err := s.db.QueryRow(query, invoiceId, budgetItemId).Scan(
+		&id.Invoice.Id,
+		&id.Invoice.InvoiceNumber,
+		&id.Invoice.InvoiceTotal,
+		&id.Invoice.InvoiceDate,
+		&id.Project.Id,
+		&id.Project.Name,
+		&id.Supplier.Id,
+		&id.Supplier.SupplierId,
+		&id.Supplier.Name,
+		&id.BudgetItem.Id,
+		&id.BudgetItem.Code,
+		&id.BudgetItem.Name,
+		&id.BudgetItem.Level,
+		&id.Quantity,
+		&id.Cost,
+		&id.Total,
+	)
+
+	return id, err
+}
+
 func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 	tx, err := s.db.Begin()
 	if err != nil {
