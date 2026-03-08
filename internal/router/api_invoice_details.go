@@ -130,7 +130,7 @@ func (rf *Router) DeleteInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 	parsedId, err := uuid.Parse(pId)
 	if err != nil {
 		w.WriteHeader(http.StatusNotAcceptable)
-		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id inválido"})
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id de factura inválido"})
 		return
 	}
 
@@ -146,5 +146,26 @@ func (rf *Router) DeleteInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	pId = chi.URLParam(r, "budgetItemId")
+	detailId, err := uuid.Parse(pId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		_ = json.NewEncoder(w).Encode(map[string]any{"message": "Id de partida inválido"})
+		return
+	}
+
+	if _, err = rf.DB.GetInvoiceDetail(parsedId, detailId); err != nil {
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Detalle de factura no encontrado"})
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
+	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "detailId": detailId})
 }
