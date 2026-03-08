@@ -206,3 +206,13 @@ func (s *service) CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error {
 
 	return nil
 }
+
+func (s *service) DeleteInvoiceDetail(invoiceId uuid.UUID, budgetItemId uuid.UUID) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	return nil
+}

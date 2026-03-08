@@ -74,6 +74,7 @@ type Service interface {
 	CreateInvoiceDetail(detail types.InvoiceDetailsCreate) error
 	GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error)
 	GetInvoiceDetail(invoiceId, budgetItemId uuid.UUID) (types.InvoiceDetailsResponse, error)
+	DeleteInvoiceDetail(invoiceId, budgetItemId uuid.UUID) error
 }
 
 type service struct {
