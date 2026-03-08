@@ -166,6 +166,12 @@ func (rf *Router) DeleteInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = rf.DB.DeleteInvoiceDetail(parsedId, detailId); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "detailId": detailId})
 }

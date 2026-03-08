@@ -214,5 +214,70 @@ func (s *service) DeleteInvoiceDetail(invoiceId uuid.UUID, budgetItemId uuid.UUI
 	}
 	defer func() { _ = tx.Rollback() }()
 
+	var quantity, cost, total float64
+	query := "select quantity, cost, total from invoice_details where invoice_id = $1 and budget_item_id = $2"
+	if err := tx.QueryRow(query, invoiceId, budgetItemId).Scan(&quantity, &cost, &total); err != nil {
+		slog.Error("Error getting invoice detail", "err", err)
+		return err
+	}
+
+	query = "delete from invoice_details where invoice_id = $1 and budget_item_id = $2"
+	if _, err := tx.Exec(query, invoiceId, budgetItemId); err != nil {
+		slog.Error("Error deleting invoice detail", "err", err)
+		return err
+	}
+
+	query = "update invoice set invoice_total = invoice_total - $1 where id = $2"
+	if _, err := tx.Exec(query, total, invoiceId); err != nil {
+		slog.Error("Error updating invoice total", "err", err)
+		return err
+	}
+
+	var projectId uuid.UUID
+	query = "select project_id from invoice where id = $1"
+	if err := tx.QueryRow(query, invoiceId).Scan(&projectId); err != nil {
+		slog.Error("Error getting project id", "err", err)
+		return err
+	}
+
+	query = `
+		update budget set
+			spent_quantity = spent_quantity - $1,
+			spent_total = spent_total - $2,
+			remaining_quantity = remaining_quantity + $1,
+			remaining_cost = $3,
+			remaining_total = remaining_total + $2
+		where project_id = $4 and budget_item_id = $5
+	`
+	if _, err := tx.Exec(query, quantity, total, cost, projectId, budgetItemId); err != nil {
+		slog.Error("Error updating budget", "err", err)
+		return err
+	}
+
+	parentId := &budgetItemId
+	for {
+		query = "select parent_id from budget_item where id = $1"
+		if err := tx.QueryRow(query, parentId).Scan(&parentId); err != nil {
+			slog.Error("Error getting parent id", "err", err)
+			return err
+		}
+		if parentId == nil || parentId == &uuid.Nil {
+			break
+		}
+
+		query = `
+			update budget set
+				spent_total = spent_total - $1,
+				remaining_total = remaining_total + $1
+			where project_id = $2 and budget_item_id = $3
+		`
+
+		if _, err := tx.Exec(query, total, projectId, parentId); err != nil {
+			slog.Error("Error updating parent budget", "err", err)
+			return err
+		}
+	}
+
+	_ = tx.Commit()
 	return nil
 }
