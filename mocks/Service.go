@@ -527,6 +527,53 @@ func (_c *Service_DeleteInvoice_Call) RunAndReturn(run func(uuid.UUID) error) *S
 	return _c
 }
 
+// DeleteInvoiceDetail provides a mock function with given fields: invoiceId, budgetItemId
+func (_m *Service) DeleteInvoiceDetail(invoiceId uuid.UUID, budgetItemId uuid.UUID) error {
+	ret := _m.Called(invoiceId, budgetItemId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteInvoiceDetail")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID, uuid.UUID) error); ok {
+		r0 = rf(invoiceId, budgetItemId)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_DeleteInvoiceDetail_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteInvoiceDetail'
+type Service_DeleteInvoiceDetail_Call struct {
+	*mock.Call
+}
+
+// DeleteInvoiceDetail is a helper method to define mock.On call
+//   - invoiceId uuid.UUID
+//   - budgetItemId uuid.UUID
+func (_e *Service_Expecter) DeleteInvoiceDetail(invoiceId interface{}, budgetItemId interface{}) *Service_DeleteInvoiceDetail_Call {
+	return &Service_DeleteInvoiceDetail_Call{Call: _e.mock.On("DeleteInvoiceDetail", invoiceId, budgetItemId)}
+}
+
+func (_c *Service_DeleteInvoiceDetail_Call) Run(run func(invoiceId uuid.UUID, budgetItemId uuid.UUID)) *Service_DeleteInvoiceDetail_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID), args[1].(uuid.UUID))
+	})
+	return _c
+}
+
+func (_c *Service_DeleteInvoiceDetail_Call) Return(_a0 error) *Service_DeleteInvoiceDetail_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_DeleteInvoiceDetail_Call) RunAndReturn(run func(uuid.UUID, uuid.UUID) error) *Service_DeleteInvoiceDetail_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteItemMaterial provides a mock function with given fields: rubroId, materialId
 func (_m *Service) DeleteItemMaterial(rubroId uuid.UUID, materialId uuid.UUID) error {
 	ret := _m.Called(rubroId, materialId)
