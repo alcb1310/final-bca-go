@@ -185,7 +185,6 @@ func TestApiInvoiceDetails(t *testing.T) {
 		savedDetails, err := s.DB.GetInvoiceDetails(invoiceId)
 		assert.NoError(t, err)
 		assert.Equal(t, 1, len(savedDetails))
-		_ = budgetResponse
 
 		assert.Equal(t, savedDetails[0].BudgetItem.Id, invoiceDetails.BudgetItem.Id)
 		assert.Equal(t, savedDetails[0].Quantity, invoiceDetails.Quantity)
@@ -209,5 +208,26 @@ func TestApiInvoiceDetails(t *testing.T) {
 			assert.Equal(t, b.RemainingTotal, budgetResponse[i].RemainingTotal)
 			assert.Equal(t, b.UpdatedBudget, budgetResponse[i].UpdatedBudget)
 		}
+	})
+
+	t.Run("should create a conflict when creating the same detail twice", func(t *testing.T) {
+		form := map[string]any{
+			"budget_item_id": "b4b2e4e4-f22d-402e-9ab5-1d59347cbfcb",
+			"quantity":       1,
+			"cost":           25,
+		}
+
+		j, err := json.Marshal(form)
+		assert.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodPost, testURL, strings.NewReader(string(j)))
+		assert.NoError(t, err)
+		req.Header.Add("Content-Type", "application/json")
+		resp := httptest.NewRecorder()
+		s.Router.ServeHTTP(resp, req)
+		assert.NoError(t, err)
+
+		assert.Equal(t, http.StatusConflict, resp.Code)
+		assert.Equal(t, "{\"message\":\"El detalle de la factura ya existe\"}", strings.TrimSpace(resp.Body.String()))
 	})
 }
