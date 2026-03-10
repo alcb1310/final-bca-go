@@ -172,6 +172,5 @@ func (rf *Router) DeleteInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Función no implementada", "detailId": detailId})
+	w.WriteHeader(http.StatusNoContent)
 }
