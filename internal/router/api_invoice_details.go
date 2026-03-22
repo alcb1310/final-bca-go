@@ -116,6 +116,13 @@ func (rf *Router) CreateInvoiceDetail(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Partida no encontrada"})
+			return
+		}
+
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(err)
 		return
