@@ -26,6 +26,7 @@ func NewRouter(db database.Service) *Router {
 
 func (rf *Router) GenerateRoutes() {
 	rf.Router.Use(middleware.RequestID)
+	rf.Router.Use(middleware.RealIP)
 	rf.Router.Use(middleware.Logger)
 	rf.Router.Use(middleware.Recoverer)
 	rf.Router.Use(middleware.AllowContentType("application/json"))
