@@ -5,7 +5,8 @@ CREATE TABLE if NOT EXISTS project(
     gross_area NUMERIC NOT NULL DEFAULT 0,
     net_area NUMERIC NOT NULL DEFAULT 0,
     last_closure DATE DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT now() UNIQUE(name)
+    created_at TIMESTAMP DEFAULT now(),
+    UNIQUE(name)
 );
 CREATE TABLE if NOT EXISTS supplier(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -14,7 +15,8 @@ CREATE TABLE if NOT EXISTS supplier(
     contact_name TEXT,
     contact_email TEXT,
     contact_phone TEXT,
-    created_at TIMESTAMP DEFAULT now() UNIQUE(supplier_id),
+    created_at TIMESTAMP DEFAULT now(),
+    UNIQUE(supplier_id),
     UNIQUE(name)
 );
 CREATE TABLE if NOT EXISTS budget_item(
@@ -108,7 +110,8 @@ ON DELETE restrict,
     quantity NUMERIC NOT NULL,
     cost NUMERIC NOT NULL,
     total NUMERIC NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT now() UNIQUE(invoice_id,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    UNIQUE(invoice_id,
     budget_item_id),
     PRIMARY KEY(invoice_id,
     budget_item_id)
@@ -117,7 +120,8 @@ CREATE TABLE if NOT EXISTS historic(
     project_id UUID NOT NULL REFERENCES project(id)
 ON DELETE restrict,
     budget_item_id UUID NOT NULL REFERENCES budget_item(id)
-ON DELETE restrict DATE DATE NOT NULL,
+ON DELETE restrict,
+    historic_date DATE NOT NULL,
     initial_quantity NUMERIC,
     initial_cost NUMERIC,
     initial_total NUMERIC NOT NULL,
@@ -128,8 +132,16 @@ ON DELETE restrict DATE DATE NOT NULL,
     remaining_total NUMERIC NOT NULL,
     updated_budget NUMERIC NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
-    PRIMARY KEY(project_id,
-    budget_item_id DATE)
+    UNIQUE(
+        project_id,
+        budget_item_id,
+        historic_date
+    ),
+    PRIMARY KEY(
+        project_id,
+        budget_item_id,
+        historic_date
+    )
 );
 ----------------------------------------
 --                VIEWS               --
