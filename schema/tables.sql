@@ -64,8 +64,10 @@ ON DELETE restrict,
 ON DELETE restrict,
     quantity NUMERIC NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT now(),
-    PRIMARY KEY(item_id,
-    material_id)
+    PRIMARY KEY(
+        item_id,
+        material_id
+    )
 );
 CREATE TABLE if NOT EXISTS budget(
     project_id UUID REFERENCES project(id)
@@ -82,8 +84,10 @@ ON DELETE restrict,
     remaining_total NUMERIC NOT NULL,
     updated_budget NUMERIC NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
-    PRIMARY KEY(project_id,
-    budget_item_id)
+    PRIMARY KEY(
+        project_id,
+        budget_item_id
+    )
 );
 CREATE TABLE if NOT EXISTS invoice(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -96,9 +100,11 @@ ON DELETE restrict,
     invoice_total NUMERIC NOT NULL,
     is_balanced BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT now(),
-    UNIQUE(supplier_id,
-    project_id,
-    invoice_number)
+    UNIQUE(
+        supplier_id,
+        project_id,
+        invoice_number
+    )
 );
 ALTER TABLE invoice ALTER COLUMN invoice_total
 SET DEFAULT 0;
@@ -111,10 +117,14 @@ ON DELETE restrict,
     cost NUMERIC NOT NULL,
     total NUMERIC NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-    UNIQUE(invoice_id,
-    budget_item_id),
-    PRIMARY KEY(invoice_id,
-    budget_item_id)
+    UNIQUE(
+        invoice_id,
+        budget_item_id
+    ),
+    PRIMARY KEY(
+        invoice_id,
+        budget_item_id
+    )
 );
 CREATE TABLE if NOT EXISTS historic(
     project_id UUID NOT NULL REFERENCES project(id)
@@ -132,16 +142,12 @@ ON DELETE restrict,
     remaining_total NUMERIC NOT NULL,
     updated_budget NUMERIC NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
-    UNIQUE(
-        project_id,
-        budget_item_id,
-        historic_date
-    ),
-    PRIMARY KEY(
-        project_id,
-        budget_item_id,
-        historic_date
-    )
+    UNIQUE(project_id,
+    budget_item_id,
+    historic_date),
+    PRIMARY KEY(project_id,
+    budget_item_id,
+    historic_date)
 );
 ----------------------------------------
 --                VIEWS               --
@@ -263,3 +269,30 @@ JOIN supplier s
     ON i.supplier_id = s.id
 JOIN project p
     ON i.project_id = p.id;
+CREATE
+OR REPLACE VIEW vw_historic AS SELECT
+    b.historic_date AS historic_date,
+    bi.id AS budget_item_id,
+    bi.code AS budget_item_code,
+    bi.name AS budget_item_name,
+    bi.level AS budget_item_level,
+    bi.accumulate AS budget_item_accumulate,
+    p.id AS project_id,
+    p.name AS project_name,
+    p.gross_area AS project_gross_area,
+    p.net_area AS project_net_area,
+    b.initial_quantity,
+    b.initial_cost,
+    b.initial_total,
+    b.spent_quantity,
+    b.spent_total,
+    b.remaining_quantity,
+    b.remaining_cost,
+    b.remaining_total,
+    b.updated_budget
+FROM
+    historic AS b
+JOIN project AS p
+    ON b.project_id = p.id
+JOIN budget_item AS bi
+    ON b.budget_item_id = bi.id;
