@@ -111,6 +111,8 @@ func (rf *Router) GenerateRoutes() {
 					})
 				})
 			})
+
+			r.Post("/cierre", rf.Closure)
 		})
 	})
 }
