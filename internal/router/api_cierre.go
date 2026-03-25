@@ -60,6 +60,12 @@ func (rf *Router) Closure(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = rf.DB.GenerateClosure(projectId, closureDate); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	w.WriteHeader(http.StatusNotImplemented)
 	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "project_id": projectId, "date": closureDate})
 }

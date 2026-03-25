@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/google/uuid"
@@ -75,6 +76,9 @@ type Service interface {
 	GetInvoiceDetails(id uuid.UUID) ([]types.InvoiceDetailsResponse, error)
 	GetInvoiceDetail(invoiceId, budgetItemId uuid.UUID) (types.InvoiceDetailsResponse, error)
 	DeleteInvoiceDetail(invoiceId, budgetItemId uuid.UUID) error
+
+	// file closure.go
+	GenerateClosure(projectId uuid.UUID, data time.Time) error
 }
 
 type service struct {
