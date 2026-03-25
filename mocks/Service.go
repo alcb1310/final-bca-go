@@ -3,6 +3,8 @@
 package mocks
 
 import (
+	time "time"
+
 	types "github.com/alcb1310/final-bca-go/internal/types"
 	uuid "github.com/google/uuid"
 	mock "github.com/stretchr/testify/mock"
@@ -663,6 +665,53 @@ func (_c *Service_DeleteMaterial_Call) Return(_a0 error) *Service_DeleteMaterial
 }
 
 func (_c *Service_DeleteMaterial_Call) RunAndReturn(run func(uuid.UUID) error) *Service_DeleteMaterial_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GenerateClosure provides a mock function with given fields: projectId, data
+func (_m *Service) GenerateClosure(projectId uuid.UUID, data time.Time) error {
+	ret := _m.Called(projectId, data)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateClosure")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(uuid.UUID, time.Time) error); ok {
+		r0 = rf(projectId, data)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// Service_GenerateClosure_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GenerateClosure'
+type Service_GenerateClosure_Call struct {
+	*mock.Call
+}
+
+// GenerateClosure is a helper method to define mock.On call
+//   - projectId uuid.UUID
+//   - data time.Time
+func (_e *Service_Expecter) GenerateClosure(projectId interface{}, data interface{}) *Service_GenerateClosure_Call {
+	return &Service_GenerateClosure_Call{Call: _e.mock.On("GenerateClosure", projectId, data)}
+}
+
+func (_c *Service_GenerateClosure_Call) Run(run func(projectId uuid.UUID, data time.Time)) *Service_GenerateClosure_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uuid.UUID), args[1].(time.Time))
+	})
+	return _c
+}
+
+func (_c *Service_GenerateClosure_Call) Return(_a0 error) *Service_GenerateClosure_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *Service_GenerateClosure_Call) RunAndReturn(run func(uuid.UUID, time.Time) error) *Service_GenerateClosure_Call {
 	_c.Call.Return(run)
 	return _c
 }
