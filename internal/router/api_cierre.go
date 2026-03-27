@@ -38,9 +38,7 @@ func (rf *Router) Closure(w http.ResponseWriter, r *http.Request) {
 		} else {
 			if _, err = rf.DB.GetProject(projectId); err != nil {
 				w.WriteHeader(http.StatusNotFound)
-				errorResponse["message"] = "El proyecto no existe"
-				_ = json.NewEncoder(w).Encode(errorResponse)
-				return
+				errorResponse["project_id"] = "El proyecto no existe"
 			}
 		}
 	}
