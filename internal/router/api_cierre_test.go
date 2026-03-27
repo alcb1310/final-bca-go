@@ -1,6 +1,7 @@
 package router_test
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -9,7 +10,9 @@ import (
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
+	"github.com/alcb1310/final-bca-go/internal/types"
 	"github.com/alcb1310/final-bca-go/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,11 +21,14 @@ func TestApiCreateClosure(t *testing.T) {
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
 	testURL := "/api/v2/cierre"
+	projectId := uuid.New()
+
 	testData := []struct {
-		name   string
-		form   map[string]any
-		status int
-		body   map[string]any
+		name    string
+		form    map[string]any
+		status  int
+		body    map[string]any
+		project *mocks.Service_GetProject_Call
 	}{
 		{
 			name:   "should pass a form",
@@ -52,11 +58,27 @@ func TestApiCreateClosure(t *testing.T) {
 				"date":       "La fecha es obligatoria",
 			},
 		},
+		{
+			name: "should pass an existing project",
+			form: map[string]any{
+				"project_id": projectId.String(),
+			},
+			status: http.StatusNotFound,
+			body: map[string]any{
+				"project_id": "El proyecto no existe",
+				"date":       "La fecha es obligatoria",
+			},
+			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, sql.ErrNoRows),
+		},
 	}
 
 	for _, tt := range testData {
 		t.Run(tt.name, func(t *testing.T) {
 			var read io.Reader = nil
+
+			if tt.project != nil {
+				tt.project.Times(1)
+			}
 
 			if tt.form != nil {
 				j, err := json.Marshal(tt.form)
