@@ -25,6 +25,9 @@ func (s *service) GetInvoices() ([]types.InvoiceResponse, error) {
 			invoice_total,
 			is_balanced
 		FROM vw_invoice
+		WHERE
+			is_active = true AND
+			is_balanced = false
 	`
 	rows, err := s.db.Query(sql)
 	if err != nil {
