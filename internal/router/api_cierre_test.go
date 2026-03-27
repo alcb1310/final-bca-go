@@ -70,6 +70,18 @@ func TestApiCreateClosure(t *testing.T) {
 			},
 			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, sql.ErrNoRows),
 		},
+		{
+			name: "should pass a valid date",
+			form: map[string]any{
+				"project_id": projectId.String(),
+				"date":       "invalid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"date": "La fecha es inválida",
+			},
+			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+		},
 	}
 
 	for _, tt := range testData {
