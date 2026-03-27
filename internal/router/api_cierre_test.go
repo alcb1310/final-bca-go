@@ -17,7 +17,7 @@ func TestApiCreateClosure(t *testing.T) {
 	db := mocks.NewService(t)
 	s := router.NewRouter(db)
 	s.GenerateRoutes()
-	testURL := "/api/v2/categories"
+	testURL := "/api/v2/cierre"
 	testData := []struct {
 		name   string
 		form   map[string]any
@@ -30,6 +30,15 @@ func TestApiCreateClosure(t *testing.T) {
 			status: http.StatusUnprocessableEntity,
 			body: map[string]any{
 				"message": "Falta el cuerpo de la solicitud",
+			},
+		},
+		{
+			name:   "should pass a project",
+			form:   map[string]any{},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"project_id": "El proyecto es obligatorio",
+				"date":       "La fecha es obligatoria",
 			},
 		},
 	}

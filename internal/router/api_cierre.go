@@ -66,6 +66,5 @@ func (rf *Router) Closure(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
-	_ = json.NewEncoder(w).Encode(map[string]any{"message": "Not implemented", "project_id": projectId, "date": closureDate})
+	w.WriteHeader(http.StatusNoContent)
 }
