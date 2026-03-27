@@ -41,6 +41,17 @@ func TestApiCreateClosure(t *testing.T) {
 				"date":       "La fecha es obligatoria",
 			},
 		},
+		{
+			name: "should pass a valid project id",
+			form: map[string]any{
+				"project_id": "invalid",
+			},
+			status: http.StatusBadRequest,
+			body: map[string]any{
+				"project_id": "El código del proyecto es inválido",
+				"date":       "La fecha es obligatoria",
+			},
+		},
 	}
 
 	for _, tt := range testData {
