@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/router"
 	"github.com/alcb1310/final-bca-go/internal/types"
@@ -22,6 +23,9 @@ func TestApiCreateClosure(t *testing.T) {
 	s.GenerateRoutes()
 	testURL := "/api/v2/cierre"
 	projectId := uuid.New()
+	dateString := "2026-01-31"
+	date, err := time.ParseInLocation("2006-01-02", dateString, time.Local)
+	assert.NoError(t, err)
 
 	testData := []struct {
 		name    string
@@ -29,6 +33,7 @@ func TestApiCreateClosure(t *testing.T) {
 		status  int
 		body    map[string]any
 		project *mocks.Service_GetProject_Call
+		closure *mocks.Service_GenerateClosure_Call
 	}{
 		{
 			name:   "should pass a form",
@@ -106,6 +111,17 @@ func TestApiCreateClosure(t *testing.T) {
 			},
 			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
 		},
+		{
+			name: "should generate the closure",
+			form: map[string]any{
+				"project_id": projectId.String(),
+				"date":       dateString,
+			},
+			status:  http.StatusNoContent,
+			body:    map[string]any{},
+			project: db.EXPECT().GetProject(projectId).Return(types.Project{}, nil),
+			closure: db.EXPECT().GenerateClosure(projectId, date).Return(nil),
+		},
 	}
 
 	for _, tt := range testData {
@@ -114,6 +130,10 @@ func TestApiCreateClosure(t *testing.T) {
 
 			if tt.project != nil {
 				tt.project.Times(1)
+			}
+
+			if tt.closure != nil {
+				tt.closure.Times(1)
 			}
 
 			if tt.form != nil {
@@ -131,6 +151,10 @@ func TestApiCreateClosure(t *testing.T) {
 
 			body, err := io.ReadAll(res.Body)
 			assert.NoError(t, err)
+
+			if res.Code == http.StatusNoContent {
+				return
+			}
 
 			mapBody := make(map[string]any)
 			err = json.Unmarshal(body, &mapBody)
