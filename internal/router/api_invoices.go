@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/alcb1310/final-bca-go/internal/utils"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -138,6 +139,14 @@ func (rf *Router) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+
+		var e2 *utils.BcaError
+		if errors.As(err, &e2) {
+			w.WriteHeader(e2.Code)
+			_ = json.NewEncoder(w).Encode(map[string]any{"message": e2.Message})
+			return
+		}
+
 		slog.Error("CreateInvoice:", "err", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(err)
