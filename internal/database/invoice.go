@@ -1,7 +1,13 @@
 package database
 
 import (
+	"database/sql"
+	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/alcb1310/final-bca-go/internal/types"
+	"github.com/alcb1310/final-bca-go/internal/utils"
 	"github.com/google/uuid"
 )
 
@@ -102,8 +108,42 @@ func (s *service) GetInvoice(id uuid.UUID) (types.InvoiceResponse, error) {
 }
 
 func (s *service) CreateInvoice(inv *types.InvoiceCreate) error {
-	q := "INSERT INTO invoice (supplier_id, project_id, invoice_number, invoice_date) VALUES ($1, $2, $3, $4) RETURNING id"
-	err := s.db.QueryRow(q, inv.SupplierId, inv.ProjectId, inv.InvoiceNumber, inv.InvoiceDate).Scan(&inv.Id)
+	var isActive bool
+	var closureDate *time.Time
+
+	query := "select is_active, last_closure from project where id = $1"
+	if err := s.db.QueryRow(query, inv.ProjectId).Scan(&isActive, &closureDate); err != nil {
+		if err == sql.ErrNoRows {
+			return &utils.BcaError{
+				Code:    http.StatusNotFound,
+				Message: "Proyecto no encontrado",
+			}
+		}
+
+		return &utils.BcaError{
+			Code:    http.StatusInternalServerError,
+			Message: fmt.Sprintf("Error scanning project: %v", err),
+		}
+	}
+
+	if !isActive {
+		return &utils.BcaError{
+			Code:    http.StatusPreconditionFailed,
+			Message: "Proyecto no activo",
+		}
+	}
+
+	if closureDate != nil {
+		if inv.InvoiceDate.Before(time.Date(closureDate.Year(), closureDate.Month()+1, 1, 0, 0, 0, 0, time.UTC)) {
+			return &utils.BcaError{
+				Code:    http.StatusPreconditionFailed,
+				Message: "La fecha de la factura debe ser posterior a la última cierre",
+			}
+		}
+	}
+
+	query = "INSERT INTO invoice (supplier_id, project_id, invoice_number, invoice_date) VALUES ($1, $2, $3, $4) RETURNING id"
+	err := s.db.QueryRow(query, inv.SupplierId, inv.ProjectId, inv.InvoiceNumber, inv.InvoiceDate).Scan(&inv.Id)
 	return err
 }
 
