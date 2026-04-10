@@ -3,10 +3,12 @@ package router
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/database"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httprate"
 )
 
 type Router struct {
@@ -31,6 +33,7 @@ func (rf *Router) GenerateRoutes() {
 	rf.Router.Use(middleware.Recoverer)
 	rf.Router.Use(middleware.AllowContentType("application/json"))
 	rf.Router.Use(contentTypeMiddleware)
+	rf.Router.Use(httprate.LimitByIP(100, 1*time.Minute))
 
 	rf.Router.Route("/", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
