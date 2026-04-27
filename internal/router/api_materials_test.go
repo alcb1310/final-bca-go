@@ -17,8 +17,13 @@ import (
 
 func TestCreateMaterial(t *testing.T) {
 	db := mocks.NewService(t)
-	s := router.NewRouter(db)
-	s.GenerateRoutes()
+	s := router.Router{DB: db}
+	assert.NotNil(t, s)
+	s.Router()
+
+	server := httptest.NewServer(s.Router())
+	defer server.Close()
+
 	testURL := "/api/v2/materials"
 	catId, _ := uuid.NewUUID()
 	testData := []struct {
@@ -137,7 +142,7 @@ func TestCreateMaterial(t *testing.T) {
 			assert.NoError(t, err)
 			req.Header.Set("Content-Type", "application/json")
 			res := httptest.NewRecorder()
-			s.Router.ServeHTTP(res, req)
+			s.Router().ServeHTTP(res, req)
 			assert.Equal(t, tt.status, res.Code)
 
 			body, err := io.ReadAll(res.Body)
