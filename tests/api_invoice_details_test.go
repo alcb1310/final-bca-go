@@ -53,13 +53,15 @@ func TestApiInvoiceDetails(t *testing.T) {
 		}
 	})
 
-	s, err := createServer(t, ctx, pgContainer)
+	s, server, err := createServer(t, ctx, pgContainer)
 	assert.NoError(t, err)
 	if err != nil {
 		slog.Error("TestApiInvoiceDetails, failed to create server", "error", err)
 		panic(err)
 	}
-	s.GenerateRoutes()
+
+	defer server.Close()
+
 	invoiceId := uuid.MustParse("c3be2956-1c3c-46f7-af14-d28420116f14")
 	testURL := fmt.Sprintf("/api/v2/invoices/%s/details", invoiceId)
 
@@ -67,7 +69,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 		req, err := http.NewRequest(http.MethodGet, testURL, nil)
 		assert.NoError(t, err)
 		resp := httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 
 		assert.Equal(t, http.StatusOK, resp.Code)
 		assert.Equal(t, "[]", strings.TrimSpace(resp.Body.String()))
@@ -179,7 +181,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 
 		req.Header.Add("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 		assert.Equal(t, resp.Code, http.StatusCreated)
 
 		savedDetails, err := s.DB.GetInvoiceDetails(invoiceId)
@@ -224,7 +226,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Add("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 		assert.NoError(t, err)
 
 		assert.Equal(t, http.StatusConflict, resp.Code)
@@ -325,7 +327,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Add("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 		assert.NoError(t, err)
 		assert.Equal(t, http.StatusNoContent, resp.Code)
 
@@ -457,7 +459,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Add("Content-Type", "application/json")
 		resp := httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 		assert.Equal(t, resp.Code, http.StatusCreated)
 
 		savedDetails, err := s.DB.GetInvoiceDetail(invoiceId, uuid.MustParse("b4b2e4e4-f22d-402e-9ab5-1d59347cbfcb"))
@@ -491,7 +493,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 		req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/%s", testURL, "b4b2e4e4-f22d-402e-9ab5-1d59347cbfcb"), nil)
 		assert.NoError(t, err)
 		resp := httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 		assert.NoError(t, err)
 		assert.Equal(t, http.StatusNoContent, resp.Code)
 
@@ -598,7 +600,7 @@ func TestApiInvoiceDetails(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Add("Content-Type", "application/json")
 		resp = httptest.NewRecorder()
-		s.Router.ServeHTTP(resp, req)
+		s.Router().ServeHTTP(resp, req)
 		assert.Equal(t, resp.Code, http.StatusCreated)
 
 		savedDetails, err := s.DB.GetInvoiceDetails(invoiceId)

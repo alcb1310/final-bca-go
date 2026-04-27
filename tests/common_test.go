@@ -3,6 +3,7 @@ package tests
 import (
 	"context"
 	"fmt"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/alcb1310/final-bca-go/internal/database"
@@ -11,15 +12,20 @@ import (
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 )
 
-func createServer(t *testing.T, ctx context.Context, pgContainer *postgres.PostgresContainer) (*router.Router, error) {
+func createServer(t *testing.T, ctx context.Context, pgContainer *postgres.PostgresContainer) (*router.Router, *httptest.Server, error) {
 	connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
 	assert.NoError(t, err)
 	db, _ := database.New(connStr)
 	assert.NotNil(t, db)
 	if db == nil {
-		return nil, fmt.Errorf("db is nil")
+		return nil, nil, fmt.Errorf("db is nil")
 	}
 
-	s := router.NewRouter(db)
-	return s, err
+	server := &router.Router{
+		DB: db,
+	}
+
+	s := httptest.NewServer(server.Router())
+
+	return server, s, err
 }

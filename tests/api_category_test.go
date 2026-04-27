@@ -50,18 +50,19 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	s, err := createServer(t, ctx, pgContainer)
+	s, server, err := createServer(t, ctx, pgContainer)
 	assert.NoError(t, err)
 	if err != nil {
 		return
 	}
-	s.GenerateRoutes()
+
+	defer server.Close()
 
 	t.Run("should have no categories", func(t *testing.T) {
 		req, err := http.NewRequest("GET", testUrl, nil)
 		assert.NoError(t, err)
 		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusOK, res.Code)
 		var r []any
@@ -83,7 +84,7 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Set("Content-Type", "application/json")
 		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusCreated, res.Code)
 
@@ -99,7 +100,7 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Set("Content-Type", "application/json")
 		res = httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		var r []any
 		err = json.Unmarshal(res.Body.Bytes(), &r)
@@ -122,7 +123,7 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Set("Content-Type", "application/json")
 		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusConflict, res.Code)
 	})
@@ -140,7 +141,7 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Set("Content-Type", "application/json")
 		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusNotFound, res.Code)
 		body, err := io.ReadAll(res.Body)
@@ -156,7 +157,7 @@ func TestApiCategoryTest(t *testing.T) {
 		req, err := http.NewRequest("GET", testUrl, nil)
 		assert.NoError(t, err)
 		res := httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusOK, res.Code)
 		var r []any
@@ -176,7 +177,7 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Set("Content-Type", "application/json")
 		res = httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		assert.Equal(t, http.StatusNoContent, res.Code)
 
@@ -184,7 +185,7 @@ func TestApiCategoryTest(t *testing.T) {
 		assert.NoError(t, err)
 		req.Header.Set("Content-Type", "application/json")
 		res = httptest.NewRecorder()
-		s.Router.ServeHTTP(res, req)
+		s.Router().ServeHTTP(res, req)
 
 		err = json.Unmarshal(res.Body.Bytes(), &r)
 		assert.NoError(t, err)
