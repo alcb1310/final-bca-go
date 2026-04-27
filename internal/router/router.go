@@ -2,37 +2,46 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/alcb1310/final-bca-go/internal/database"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/httprate"
 )
 
 type Router struct {
-	Router *chi.Mux
-	DB     database.Service
+	DB database.Service
 }
 
-func NewRouter(db database.Service) *Router {
+func NewRouter(db database.Service, port string) *http.Server {
+	router := &Router{
+		DB: db,
+	}
 
-	r := chi.NewRouter()
-
-	return &Router{
-		Router: r,
-		DB:     db,
+	return &http.Server{
+		Addr:         fmt.Sprintf(":%s", port),
+		Handler:      router.Router(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 }
 
-func (rf *Router) GenerateRoutes() {
-	rf.Router.Use(middleware.RequestID)
-	rf.Router.Use(middleware.RealIP)
-	rf.Router.Use(middleware.Logger)
-	rf.Router.Use(middleware.Recoverer)
-	rf.Router.Use(middleware.AllowContentType("application/json"))
-	rf.Router.Use(contentTypeMiddleware)
+func (rf *Router) Router() http.Handler {
+	r := chi.NewRouter()
 
-	rf.Router.Route("/", func(r chi.Router) {
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.AllowContentType("application/json"))
+	r.Use(contentTypeMiddleware)
+	r.Use(httprate.LimitByIP(100, 1*time.Minute))
+
+	r.Route("/", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			_ = json.NewEncoder(w).Encode(map[string]any{"message": "Hello World"})
@@ -115,4 +124,6 @@ func (rf *Router) GenerateRoutes() {
 			r.Post("/cierre", rf.Closure)
 		})
 	})
+
+	return r
 }
